@@ -11,6 +11,12 @@ $config = [
 		'@bower' => '@vendor/bower-asset',
 		'@npm'   => '@vendor/npm-asset',
 	],
+	'modules'    => [
+		'admin' => [
+			'class'  => 'app\modules\admin\Module',
+			'layout' => 'main',
+		],
+	],
 	'components' => [
 		'request'      => [
 			// !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
@@ -46,8 +52,10 @@ $config = [
 
 		'urlManager' => [
 			'enablePrettyUrl' => true,
-			'showScriptName' => false,
-			'rules' => [
+			'showScriptName'  => false,
+			'rules'           => [
+				'/admin'                                   => '/admin/default/index',
+				'<ac:login|register|contact|about|logout>' => "site/<ac>",
 			],
 		],
 
