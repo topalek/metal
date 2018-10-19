@@ -18,7 +18,7 @@ class m181002_193520_create_product_table extends Migration {
 			'image'      => $this->string()->comment('картинка'),
 			'status'     => $this->boolean()->defaultValue(true)->comment('Публиковать'),
 			'updated_at' => $this->timestamp()->notNull()->defaultExpression('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP')->comment("Дата обновления"),
-			'created_at' => $this->timestamp()->defaultExpression('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP')->comment('Дата создания'),
+			'created_at' => $this->timestamp()->defaultExpression('CURRENT_TIMESTAMP')->comment('Дата создания'),
 		]);
 	}
 
