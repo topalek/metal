@@ -3,6 +3,15 @@ body {
     height: 100%;
 }
 
+.box {
+    min-width: 1024px;
+}
+
+td > img {
+    display: block;
+    max-width: 100%;
+    width: 76px;
+}
 .wrap {
     min-height: 100%;
     height: auto;
