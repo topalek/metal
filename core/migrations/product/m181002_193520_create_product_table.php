@@ -14,6 +14,7 @@ class m181002_193520_create_product_table extends Migration {
 			'id'         => $this->primaryKey(),
 			'title'      => $this->string(255)->notNull()->comment('Название'),
 			'price'      => $this->money(10, 2)->comment('Цена'),
+			'sale_price' => $this->money(10, 2)->comment('Цена'),
 			'slug'       => $this->string(255)->comment('Слаг'),
 			'image'      => $this->string()->comment('картинка'),
 			'status'     => $this->boolean()->defaultValue(true)->comment('Публиковать'),

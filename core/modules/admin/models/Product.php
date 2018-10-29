@@ -15,6 +15,7 @@ use yii\web\UploadedFile;
  * @property int $id
  * @property string $title Название
  * @property string $price Цена
+ * @property string $sale_price Цена продажи
  * @property string $slug Слаг
  * @property string $image картинка
  * @property int $status Публиковать
@@ -34,7 +35,7 @@ class Product extends BaseModel {
 	public function rules(){
 		return [
 			[['title', 'price'], 'required'],
-			[['price'], 'number'],
+			[['price', 'sale_price'], 'number'],
 			[['status'], 'integer'],
 			[['updated_at', 'created_at'], 'safe'],
 			[['title', 'slug', 'image'], 'string', 'max' => 255],
@@ -49,6 +50,7 @@ class Product extends BaseModel {
 			'id'         => 'ID',
 			'title'      => 'Название',
 			'price'      => 'Цена за кг.',
+			'sale_price' => 'Цена за кг.',
 			'slug'       => 'Слаг',
 			'image'      => 'картинка',
 			'img'        => 'картинка',
