@@ -33,6 +33,7 @@
 					['label' => 'Меню', 'options' => ['class' => 'header']],
 					['label' => 'Gii', 'icon' => 'file-code-o', 'url' => ['/gii']],
 					['label' => 'Товары', 'icon' => 'cubes', 'url' => ['/admin/product/']],
+					['label' => 'Операции', 'icon' => 'refresh', 'url' => ['/admin/operation/']],
 					['label' => 'Login', 'url' => ['site/login'], 'visible' => Yii::$app->user->isGuest],
 					[
 						'label' => 'Same tools',

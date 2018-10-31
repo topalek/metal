@@ -2,20 +2,22 @@
 
 namespace app\modules\admin\models;
 
+use yii\db\ActiveRecord;
+use yii\helpers\Json;
+
 /**
  * This is the model class for table "operation".
  *
  * @property int $id
  * @property int $type Тип операции
  * @property string $sum Общая сумма
+ * @property $products[] Товары
  * @property int $status Публиковать
  * @property string $updated_at Дата обновления
  * @property string $created_at Дата создания
  *
- * @property OperationProduct[] $operationProducts
- * @property Product[] $products
  */
-class Operation extends \yii\db\ActiveRecord {
+class Operation extends ActiveRecord {
 	const OPERATION_BUY = 0;
 	const OPERATION_SELL = 1;
 
@@ -48,17 +50,29 @@ class Operation extends \yii\db\ActiveRecord {
 		];
 	}
 
-	/**
-	 * @return \yii\db\ActiveQuery
-	 */
-	public function getOperationProducts(){
-		return $this->hasMany(OperationProduct::class, ['operation_id' => 'id']);
+	public function afterFind(){
+		if ($this->products){
+			$this->products = Json::decode($this->products);
+		}
+		parent::afterFind();
 	}
 
-	/**
-	 * @return \yii\db\ActiveQuery
-	 */
-	public function getProducts(){
-		return $this->hasMany(Product::class, ['id' => 'product_id'])->viaTable('operation_product', ['operation_id' => 'id']);
+	public function beforeSave($insert){
+		if ($this->products){
+			$this->products = Json::encode($this->products);
+		}
+
+		return parent::beforeSave($insert);
+	}
+
+	public function getList(){
+		return [
+			static::OPERATION_BUY  => 'Покупка',
+			static::OPERATION_SELL => 'Продажа',
+		];
+	}
+
+	public function getTypeName(){
+		return static::getList()[$this->type];
 	}
 }

@@ -93,11 +93,11 @@ class Product extends BaseModel
     public function saveImg()
     {
 
-        $dir = $this->moduleUploadsPath();
-        $file = UploadedFile::getInstance($this, 'file');
+	    $file = UploadedFile::getInstance($this, 'file');
 
-        if ($file) {
-            if (!is_dir($dir) && !file_exists($dir)) {
+	    if ($file){
+		    $dir = $this->moduleUploadsPath();
+		    if ( ! is_dir($dir) && ! file_exists($dir)){
                 FileHelper::createDirectory($dir);
             }
             $filePath = $dir . $this->slug . "." . $file->extension;
