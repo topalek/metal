@@ -3,19 +3,20 @@
 /* @var $this yii\web\View */
 
 use app\modules\admin\models\Operation;
+use yii\helpers\Html;
 
 $this->title = 'My Yii Application';
 ?>
 <div class="site-index">
 
-	<?= \yii\helpers\Html::a('<i class="fa fa-cart-arrow-down"></i>', [
+	<?= Html::a(Html::img('web_assets/images/buy.svg'), [
 		'operation/create', 'type' => Operation::OPERATION_BUY
 	], [
-		'class' => 'btn btn-default'
+		//'class' => 'btn btn-default'
 	]) ?>
-	<?= \yii\helpers\Html::a('<i class="fa fa-shopping-cart"></i>', [
+	<?= Html::a(Html::img('web_assets/images/sell.svg'), [
 		'operation/create', 'type' => Operation::OPERATION_SELL
 	], [
-		'class' => 'btn btn-default'
+		//'class' => 'btn btn-default'
 	]) ?>
 </div>

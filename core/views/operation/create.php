@@ -5,6 +5,16 @@
  * Time: 20:31
  */
 
-use app\modules\admin\models\Product;
+use yii\data\ActiveDataProvider;
+use yii\widgets\ListView;
 
-print_r(Product::getList());
+/*  @var $this yii\web\View */
+/* @var $model app\modules\admin\models\Operation */
+/* @var $dataProvider ActiveDataProvider */
+
+
+?>
+<?= ListView::widget([
+	'dataProvider' => $dataProvider,
+	'itemView'     => '_item_view'
+]); ?>
