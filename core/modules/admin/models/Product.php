@@ -12,128 +12,138 @@ use yii\web\UploadedFile;
 /**
  * This is the model class for table "product".
  *
- * @property int $id
- * @property string $title Название
- * @property string $price Цена
+ * @property int    $id
+ * @property string $title      Название
+ * @property string $price      Цена
  * @property string $sale_price Цена продажи
- * @property string $slug Слаг
- * @property string $image картинка
- * @property int $status Публиковать
+ * @property string $slug       Слаг
+ * @property string $image      картинка
+ * @property int    $status     Публиковать
  * @property string $updated_at Дата обновления
  * @property string $created_at Дата создания
  */
-class Product extends BaseModel {
-	public $file;
+class Product extends BaseModel
+{
+    public $file;
 
-	public static function tableName(){
-		return 'product';
-	}
+    public static function tableName()
+    {
+        return 'product';
+    }
 
-	/**
-	 * {@inheritdoc}
-	 */
-	public function rules(){
-		return [
-			[['title', 'price'], 'required'],
-			[['price', 'sale_price'], 'number'],
-			[['status'], 'integer'],
-			[['updated_at', 'created_at'], 'safe'],
-			[['title', 'slug', 'image'], 'string', 'max' => 255],
-		];
-	}
+    /**
+     * {@inheritdoc}
+     */
+    public function rules()
+    {
+        return [
+            [['title', 'price'], 'required'],
+            [['price', 'sale_price'], 'number'],
+            [['status'], 'integer'],
+            [['updated_at', 'created_at'], 'safe'],
+            [['title', 'slug', 'image'], 'string', 'max' => 255],
+        ];
+    }
 
-	/**
-	 * {@inheritdoc}
-	 */
-	public function attributeLabels(){
-		return [
-			'id'         => 'ID',
-			'title'      => 'Название',
-			'price'      => 'Цена за кг.',
-			'sale_price' => 'Цена за кг.',
-			'slug'       => 'Слаг',
-			'image'      => 'картинка',
-			'img'        => 'картинка',
-			'imgUrl'     => 'картинка',
-			'file'       => 'Картинка',
-			'status'     => 'Публиковать',
-			'updated_at' => 'Дата обновления',
-			'created_at' => 'Дата создания',
-		];
-	}
+    /**
+     * {@inheritdoc}
+     */
+    public function attributeLabels()
+    {
+        return [
+            'id'         => 'ID',
+            'title'      => 'Название',
+            'price'      => 'Цена за кг.',
+            'sale_price' => 'Цена за кг.',
+            'slug'       => 'Слаг',
+            'image'      => 'картинка',
+            'img'        => 'картинка',
+            'imgUrl'     => 'картинка',
+            'file'       => 'Картинка',
+            'status'     => 'Публиковать',
+            'updated_at' => 'Дата обновления',
+            'created_at' => 'Дата создания',
+        ];
+    }
 
-	public function behaviors(){
-		return [
-			[
-				'class'     => SluggableBehavior::class,
-				'attribute' => 'title',
-				// 'slugAttribute' => 'slug',
-			],
-		];
-	}
+    public function behaviors()
+    {
+        return [
+            [
+                'class'     => SluggableBehavior::class,
+                'attribute' => 'title',
+                // 'slugAttribute' => 'slug',
+            ],
+        ];
+    }
 
 
-	public function beforeSave($insert){
-		if ( ! parent::beforeSave($insert)){
-			return false;
-		}
+    public function beforeSave($insert)
+    {
+        if (!parent::beforeSave($insert)) {
+            return false;
+        }
 
-		// ...custom code here...
-		$this->saveImg();
+        // ...custom code here...
+        $this->saveImg();
 
-		return true;
-	}
+        return true;
+    }
 
-	public function saveImg(){
+    public function saveImg()
+    {
 
-		$dir  = $this->moduleUploadsPath();
-		$file = UploadedFile::getInstance($this, 'file');
-		if ( ! is_dir($dir) && ! file_exists($dir)){
-			FileHelper::createDirectory($dir);
-		}
-		if ($file){
-			$filePath = $dir . $this->slug . "." . $file->extension;
-			if ( ! $file->saveAs($filePath)){
-				dd($this->error);
-			}
-			$this->image = $this->slug . "." . $file->extension;
-		}
+        $dir = $this->moduleUploadsPath();
+        $file = UploadedFile::getInstance($this, 'file');
 
-		return true;
-	}
+        if ($file) {
+            if (!is_dir($dir) && !file_exists($dir)) {
+                FileHelper::createDirectory($dir);
+            }
+            $filePath = $dir . $this->slug . "." . $file->extension;
+            if (!$file->saveAs($filePath)) {
+                dd($this->error);
+            }
+            $this->image = $this->slug . "." . $file->extension;
+        }
 
-	/**
-	 * @param array $htmlOptions
-	 *
-	 * @return string
-	 * @throws \ReflectionException
-	 */
-	public function getImg($htmlOptions = []){
-		if ( ! $this->image){
-			return null;
-		}
-		$defaultOptions = [
-			'alt'   => $this->title,
-			'class' => 'img-responsive',
-		];
+        return true;
+    }
 
-		$options = ArrayHelper::merge($defaultOptions, $htmlOptions);
+    /**
+     * @param array $htmlOptions
+     *
+     * @return string
+     * @throws \ReflectionException
+     */
+    public function getImg($htmlOptions = [])
+    {
+        if (!$this->image) {
+            return null;
+        }
+        $defaultOptions = [
+            'alt'   => $this->title,
+            'class' => 'img-responsive',
+        ];
 
-		$imgSrc = $this->moduleUploadsUrl() . $this->image;
+        $options = ArrayHelper::merge($defaultOptions, $htmlOptions);
 
-		return Html::img($imgSrc, $options);
-	}
+        $imgSrc = $this->moduleUploadsUrl() . $this->image;
 
-	/**
-	 * @return string
-	 */
-	public function getImgUrl(){
-		$imgSrc = null;
-		if ($this->image){
-			$imgSrc = $this->moduleUploadsUrl() . $this->image;
-		}
+        return Html::img($imgSrc, $options);
+    }
 
-		return $imgSrc;
-	}
+    /**
+     * @return string
+     */
+    public function getImgUrl()
+    {
+        $imgSrc = null;
+        if ($this->image) {
+            $imgSrc = $this->moduleUploadsUrl() . $this->image;
+        }
+
+        return $imgSrc;
+    }
 
 }
