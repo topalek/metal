@@ -28,10 +28,8 @@ function buildItemList() {
     $('.item-list').html(html);
 }
 
-var products = localStorage.getItem('products') ? JSON.parse(localStorage.getItem('products')) : {};
 $(document).ready(function () {
     let date = new Date();
-    console.log(products);
     $('.date').html((date.getDate() < 10 ? '0' + date.getDate() : date.getDate()) + '.' + (date.getMonth() + 1) + '.' + date.getFullYear());
     setInterval(getTime, 1000);
 
