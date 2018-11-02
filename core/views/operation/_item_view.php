@@ -11,10 +11,12 @@ use app\modules\admin\models\Product;
 /* @var $model Product */
 
 ?>
+<div class="col-md-2">
+    <?= \yii\helpers\Html::a($model->title, [
+        'operation/get-item',
+        'id' => $model->id,
+    ], [
+        'class' => 'btn btn-default operation-item',
+    ]) ?>
+</div>
 
-<?= \yii\helpers\Html::a($model->title, [
-    'operation/get-item',
-    'id' => $model->id,
-], [
-    'class' => 'btn btn-default operation-item',
-]) ?>

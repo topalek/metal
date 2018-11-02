@@ -1,14 +1,11 @@
 $('.operation-item').click(function (e) {
     e.preventDefault();
-    showCart();
-});
-
-function showCart() {
-    let cartLink = $('.operation-item').attr('href');
+    let cartLink = $(this).attr('href');
     $.get(cartLink, function (result) {
         $('body').append('<div class="modals">' + result + '</div>');
     });
-}
+});
+
 
 function getTime() {
     let date = new Date();

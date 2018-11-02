@@ -13,28 +13,70 @@ use yii\helpers\Html;
     'size'   => Modal::SIZE_DEFAULT,
 ]); ?>
 
-<div class="product-form box-body">
+    <div class="product-form box-body">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="input-group">
+                        <?= Html::label('Вес', 'weight') ?>
+                        <?= Html::input('text', 'weight', 0, ['class' => 'form-control weight']) ?>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="input-group">
+                        <?= Html::label('Цена', 'sale_price') ?>
+                        <?= Html::input('text', 'sale_price', $model->price, ['class' => 'form-control price']) ?>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="input-group">
+                        <?= Html::label('Засор %', 'dirt') ?>
+                        <?= Html::input('text', 'dirt', 0, ['class' => 'form-control dirt']) ?>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="input-group">
+                        <?= Html::label('Стоимость', 'total') ?>
+                        <?= Html::input('text', 'total', $model->price, ['class' => 'form-control total']) ?>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <?= Html::a('Добавить товар', [
+                                'operation/add-item', 'id' => $model->id, 'sale_price' => $model->price,
+                            ], ['class' => 'btn btn-primary', 'data-dismiss' => "modal"]) ?>
 
-    <div class="col-md-12">
-        <?= Html::input('text', 'sale_price', $model->price, ['class' => 'form-control']) ?>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
     </div>
-    <div class="col-md-12">
-        <?= Html::input('text', 'sale_price', $model->price, ['class' => 'form-control']) ?>
-    </div>
-
-    <div class="form-group">
-		<?= Html::a('Add', [
-			'operation/add-item', 'id' => $model->id, 'sale_price' => $model->price
-		], ['class' => 'btn btn-primary']) ?>
-
-    </div>
-
-
-</div>
 
 <?php Modal::end();
 
 $this->registerJs(<<<JS
+
+$('input').on('input',(e)=>{
+    let el = $(e.target),
+    price = $('.price').val(),
+    weight = $('.weight').val(),
+    dirt = $('.dirt').val(),
+    total = $('.total');
+    
+   el.val(el.val().replace(',','.'));
+   let totalPrice = Math.round((price*(weight - weight*dirt/100))*100)/100;
+   total.val(totalPrice);
+});
 var modal = $('#item-modal');
 $(modal).modal('show');
 
