@@ -30,22 +30,22 @@ AppAsset::register($this);
 <div class="wrap">
 	<?php
 	NavBar::begin([
-		'brandLabel' => Yii::$app->name,
-		'brandUrl'   => Yii::$app->homeUrl,
-		'options'    => [
-			'class' => 'navbar-inverse navbar-fixed-top',
+        'brandLabel' => "<span class='date'></span> | <span class='time'></span>",
+        'brandUrl'   => Yii::$app->homeUrl,
+        'options'    => [
+            'class' => 'navbar navbar-fixed-top',
 		],
 	]);
 	echo Nav::widget([
 		'options' => ['class' => 'navbar-nav navbar-right'],
 		'items'   => [
-			['label' => 'Home', 'url' => ['/site/index']],
-			['label' => 'About', 'url' => ['/site/about']],
-			['label' => 'Contact', 'url' => ['/site/contact']],
+//			['label' => 'Home', 'url' => ['/site/index']],
+//			['label' => 'About', 'url' => ['/site/about']],
+//			['label' => 'Contact', 'url' => ['/site/contact']],
 			Yii::$app->user->isGuest ? (
 			['label' => 'Login', 'url' => ['/site/login']]
 			) : (
-			['label' => 'Logout (' . Yii::$app->user->identity->username . ')', 'url' => ['/site/logout']]
+            ['label' => 'ВЫХОД', 'url' => ['/site/logout']]
 			)
 		],
 	]);

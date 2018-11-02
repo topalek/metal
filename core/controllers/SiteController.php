@@ -71,6 +71,8 @@ class SiteController extends Controller {
 	 * @return Response|string
 	 */
 	public function actionLogin(){
+
+        $this->layout = 'main-login';
 		if ( ! Yii::$app->user->isGuest){
 			return $this->goHome();
 		}

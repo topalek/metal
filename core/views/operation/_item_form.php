@@ -7,12 +7,19 @@ use yii\helpers\Html;
 /* @var $model app\modules\admin\models\Product */
 /* @var $form yii\widgets\ActiveForm */
 ?>
-<?php Modal::begin() ?>
-<div class="product-form box-body">
-    <h3><?= $model->title ?></h3>
-    <div class="col-md-6">
+<?php Modal::begin([
+    'id'     => 'item-modal',
+    'header' => '<h3 class="modal-title">' . $model->title . '</h3>',
+    'size'   => Modal::SIZE_DEFAULT,
+]); ?>
 
-		<?= Html::input('text', 'sale_price', $model->price) ?>
+<div class="product-form box-body">
+
+    <div class="col-md-12">
+        <?= Html::input('text', 'sale_price', $model->price, ['class' => 'form-control']) ?>
+    </div>
+    <div class="col-md-12">
+        <?= Html::input('text', 'sale_price', $model->price, ['class' => 'form-control']) ?>
     </div>
 
     <div class="form-group">
@@ -24,4 +31,15 @@ use yii\helpers\Html;
 
 
 </div>
-<?php Modal::end() ?>
+
+<?php Modal::end();
+
+$this->registerJs(<<<JS
+var modal = $('#item-modal');
+$(modal).modal('show');
+
+$(modal).on('hidden.bs.modal', function (e) {
+  $('.modals').remove();
+});
+JS
+);

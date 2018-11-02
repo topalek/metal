@@ -7,16 +7,31 @@ use yii\helpers\Html;
 
 $this->title = 'My Yii Application';
 ?>
-<div class="site-index">
+<style>
+    .flex {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
 
-	<?= Html::a(Html::img('web_assets/images/buy.svg'), [
-		'operation/create', 'type' => Operation::OPERATION_BUY
-	], [
-		//'class' => 'btn btn-default'
-	]) ?>
-	<?= Html::a(Html::img('web_assets/images/sell.svg'), [
-		'operation/create', 'type' => Operation::OPERATION_SELL
-	], [
-		//'class' => 'btn btn-default'
-	]) ?>
+</style>
+<div class="site-index flex">
+    <div class="row">
+        <div class="col-md-6 col-md-offset-3">
+            <div class="flex">
+                <?= Html::a(Html::img('/web_assets/images/buy.svg', ['class' => 'img-responsive']), [
+                    'operation/create', 'type' => Operation::OPERATION_BUY,
+                ], [
+                    //'class' => 'btn btn-default'
+                ]) ?>
+                <?= Html::a(Html::img('/web_assets/images/sell.svg', ['class' => 'img-responsive']), [
+                    'operation/create', 'type' => Operation::OPERATION_SELL,
+                ], [
+                    //'class' => 'btn btn-default'
+                ]) ?>
+            </div>
+        </div>
+    </div>
+
+
 </div>

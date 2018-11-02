@@ -12,4 +12,9 @@ use app\modules\admin\models\Product;
 
 ?>
 
-<?= \yii\helpers\Html::a($model->title, ['operation/get-item', 'id' => $model->id], ['class' => 'btn btn-default']) ?>
+<?= \yii\helpers\Html::a($model->title, [
+    'operation/get-item',
+    'id' => $model->id,
+], [
+    'class' => 'btn btn-default operation-item',
+]) ?>
