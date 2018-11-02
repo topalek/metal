@@ -12,60 +12,71 @@ use yii\helpers\Html;
     'header' => '<h3 class="modal-title">' . $model->title . '</h3>',
     'size'   => Modal::SIZE_DEFAULT,
 ]); ?>
-
-    <div class="product-form box-body">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="input-group">
-                        <?= Html::label('Вес', 'weight') ?>
-                        <?= Html::input('text', 'weight', 0, ['class' => 'form-control weight']) ?>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="input-group">
-                        <?= Html::label('Цена', 'sale_price') ?>
-                        <?= Html::input('text', 'sale_price', $model->price, ['class' => 'form-control price']) ?>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="input-group">
-                        <?= Html::label('Засор %', 'dirt') ?>
-                        <?= Html::input('text', 'dirt', 0, ['class' => 'form-control dirt']) ?>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="input-group">
-                        <?= Html::label('Стоимость', 'total') ?>
-                        <?= Html::input('text', 'total', $model->price, ['class' => 'form-control total']) ?>
+    <form>
+        <div class="product-form box-body">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="input-group">
+                            <?= Html::label('Вес', 'weight') ?>
+                            <?= Html::input('text', 'weight', 0, ['class' => 'form-control weight']) ?>
+                        </div>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-md-12">
-                        <div class="form-group">
-                            <?= Html::a('Добавить товар', [
-                                'operation/add-item', 'id' => $model->id, 'sale_price' => $model->price,
-                            ], ['class' => 'btn btn-primary', 'data-dismiss' => "modal"]) ?>
-
+                        <div class="input-group">
+                            <?= Html::label('Цена', 'sale_price') ?>
+                            <?= Html::input('text', 'sale_price', $model->price, ['class' => 'form-control price']) ?>
                         </div>
                     </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="input-group">
+                            <?= Html::label('Засор %', 'dirt') ?>
+                            <?= Html::input('text', 'dirt', 0, ['class' => 'form-control dirt']) ?>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="input-group">
+                            <?= Html::label('Стоимость', 'total') ?>
+                            <?= Html::input('text', 'total', $model->price, ['class' => 'form-control total']) ?>
+                            <?= Html::hiddenInput('title', $model->title) ?>
+                            <?= Html::hiddenInput('id', $model->id) ?>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <?= Html::button('Добавить товар', ['class' => 'btn btn-primary add-item', 'data-dismiss' => "modal"]) ?>
 
+                            </div>
+                        </div>
+
+                    </div>
                 </div>
             </div>
+
         </div>
-
-    </div>
-
+    </form>
 <?php Modal::end();
 
 $this->registerJs(<<<JS
-
+    var products = localStorage.getItem('products')? JSON.parse(localStorage.getItem('products')): {};
+    var product = {};
+$('.add-item').on('click',()=>{
+    let json = $('form').serializeArray();
+    json.forEach((item)=>{
+        product[item.name] = item.value;
+    });
+    console.log(product);
+    products[product.id] = product;
+    console.log(products);
+    localStorage.setItem('products',JSON.stringify(products));
+});
 $('input').on('input',(e)=>{
     let el = $(e.target),
     price = $('.price').val(),
