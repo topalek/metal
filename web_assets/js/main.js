@@ -19,13 +19,23 @@ function getTime() {
 }
 
 function buildItemList() {
-    var products = (localStorage.getItem('products')) ? JSON.parse(localStorage.getItem('products')) : [];
+    var products = (localStorage.getItem('products')) ? JSON.parse(localStorage.getItem('products')) : {};
     var html = '<ul class="list-group">';
     $.each(products, (i, item) => {
         html = html + '<li class="list-group-item"> <span class="badge">&times;</span>' + item.title + '</li>';
     });
     html = html + '</ul>';
     $('.item-list').html(html);
+}
+
+function writeToStorage(json) {
+    var products = (localStorage.getItem('products')) ? JSON.parse(localStorage.getItem('products')) : {};
+    json.forEach((item) => {
+        product[item.name] = item.value;
+    });
+    products[product.id] = product;
+    localStorage.setItem('products', JSON.stringify(products));
+    return true;
 }
 
 $(document).ready(function () {
