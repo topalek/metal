@@ -49,6 +49,9 @@ use yii\helpers\Html;
 		                            'class'        => 'btn btn-primary add-item',
 		                            'data-dismiss' => "modal"
 	                            ]) ?>
+	                            <?= Html::button('Провести', [
+		                            'class' => 'btn btn-danger process',
+	                            ]) ?>
 
                             </div>
                         </div>
@@ -66,11 +69,17 @@ $this->registerJs(<<<JS
 
 buildItemList();
     var product = {};
-        var products = (localStorage.getItem('products')) ? JSON.parse(localStorage.getItem('products')) : [];
 
 $('.add-item').on('click',()=>{
     let json = $('form').serializeArray();
     writeToStorage(json);
+});
+
+$('.remove-item').on('click',(e)=>{
+    let el = $(e.target);
+    let id = el.data('id');
+    el.parents('li').remove();
+    removeItem(id);
 });
 $('input').on('input',(e)=>{
     let el = $(e.target),

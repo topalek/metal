@@ -122,3 +122,8 @@ a.desc:after {
 .nav > li > form > button.logout:focus {
     outline: none;
 }
+
+.remove-item {
+    cursor: pointer;
+    background-color: red;
+}

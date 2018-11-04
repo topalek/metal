@@ -22,7 +22,7 @@ function buildItemList() {
     var products = (localStorage.getItem('products')) ? JSON.parse(localStorage.getItem('products')) : {};
     var html = '<ul class="list-group">';
     $.each(products, (i, item) => {
-        html = html + '<li class="list-group-item"> <span class="badge">&times;</span>' + item.title + '</li>';
+        html = html + '<li class="list-group-item"> <span class="badge remove-item" data-id="' + item.id + '">&times;</span>' + item.title + '</li>';
     });
     html = html + '</ul>';
     $('.item-list').html(html);
@@ -36,6 +36,12 @@ function writeToStorage(json) {
     products[product.id] = product;
     localStorage.setItem('products', JSON.stringify(products));
     return true;
+}
+
+function removeItem(id) {
+    var products = (localStorage.getItem('products')) ? JSON.parse(localStorage.getItem('products')) : {};
+    delete products[id];
+    localStorage.setItem('products', JSON.stringify(products));
 }
 
 $(document).ready(function () {
