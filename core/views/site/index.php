@@ -15,7 +15,7 @@ $this->title = 'My Yii Application';
     }
 
 </style>
-<div class="site-index flex">
+<div class="site-index">
     <div class="row">
         <div class="col-md-6 col-md-offset-3">
             <div class="flex">

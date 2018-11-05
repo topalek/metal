@@ -101,8 +101,8 @@ class BaseModel extends ActiveRecord {
 
 	public static function getStatusList(){
 		return [
-			self::STATUS_PUBLISHED     => 'Опубліковано',
-			self::STATUS_NOT_PUBLISHED => 'Не опубліковано'
+			self::STATUS_PUBLISHED     => 'Опубликован',
+			self::STATUS_NOT_PUBLISHED => 'Не опубликован'
 		];
 	}
 

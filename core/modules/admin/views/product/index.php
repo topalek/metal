@@ -1,11 +1,13 @@
 <?php
 
+use app\modules\admin\models\Product;
 use yii\grid\GridView;
 use yii\helpers\Html;
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\modules\admin\models\ProductSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
+/* @var $model Product */
 
 $this->title                   = 'Товары';
 $this->params['breadcrumbs'][] = $this->title;
@@ -27,7 +29,13 @@ $this->params['breadcrumbs'][] = $this->title;
 				'price',
 				//'slug',
 				'imgUrl:image',
-				'status',
+				[
+					'attribute' => 'status',
+					'filter'    => ['Не опубликован', 'Опублинован'],
+					'value'     => function ($model){
+						return $model->status == $model::STATUS_PUBLISHED ? 'Опублинован' : 'Не опубликован';
+					}
+				],
 				//'updated_at',
 				//'created_at',
 

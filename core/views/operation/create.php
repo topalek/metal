@@ -15,7 +15,10 @@ use yii\widgets\ListView;
 
 ?>
 <?= ListView::widget([
-    'dataProvider' => $dataProvider,
-    'itemView'     => '_item_view',
-    'viewParams'   => ['operation' => $model],
+	'dataProvider' => $dataProvider,
+	'itemView'     => '_item_view',
+	'itemOptions'  => ['class' => 'col-md-2'],
+	'options'      => ['class' => 'flex'],
+	'summary'      => '',
+	'viewParams'   => ['operation' => $model],
 ]); ?>

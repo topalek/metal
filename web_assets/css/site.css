@@ -127,3 +127,14 @@ a.desc:after {
     cursor: pointer;
     background-color: red;
 }
+
+.flex {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.flex-item {
+    margin: 10px 5px;
+    display: block;
+}

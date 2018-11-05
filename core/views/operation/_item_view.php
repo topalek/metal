@@ -11,15 +11,18 @@ use app\modules\admin\models\Product;
 /*  @var $this yii\web\View */
 /* @var $model Product */
 /* @var $operation Operation */
-
+$attr = ['title' => $model->title, 'class' => 'btn btn-default flex-item'];
+if ($model->image){
+	$attr['title'] = $model->getImg();
+	$attr['class'] = 'flex-item';
+}
 ?>
-<div class="col-md-2">
-    <?= \yii\helpers\Html::a($model->title, [
-        'operation/get-item',
-        'id'   => $model->id,
-        'type' => $operation->type,
-    ], [
-        'class' => 'btn btn-default operation-item',
-    ]) ?>
-</div>
+<?= \yii\helpers\Html::a(
+	$attr['title'], [
+	'operation/get-item',
+	'id'   => $model->id,
+	'type' => $operation->type,
+], [
+	'class' => $attr['class'] . ' operation-item',
+]) ?>
 

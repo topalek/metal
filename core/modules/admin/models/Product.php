@@ -51,18 +51,19 @@ class Product extends BaseModel
     public function attributeLabels()
     {
         return [
-            'id'         => 'ID',
-            'title'      => 'Название',
-            'price'      => 'Цена за кг.',
-            'sale_price' => 'Цена за кг.',
-            'slug'       => 'Слаг',
-            'image'      => 'картинка',
-            'img'        => 'картинка',
-            'imgUrl'     => 'картинка',
-            'file'       => 'Картинка',
-            'status'     => 'Публиковать',
-            'updated_at' => 'Дата обновления',
-            'created_at' => 'Дата создания',
+	        'id'         => 'ID',
+	        'title'      => 'Название',
+	        'price'      => 'Цена за кг.',
+	        'sale_price' => 'Цена за кг.',
+	        'slug'       => 'Слаг',
+	        'image'      => 'картинка',
+	        'img'        => 'картинка',
+	        'imgUrl'     => 'картинка',
+	        'file'       => 'Картинка',
+	        'status'     => 'Публиковать',
+	        'statusName' => 'Публиковать',
+	        'updated_at' => 'Дата обновления',
+	        'created_at' => 'Дата создания',
         ];
     }
 
