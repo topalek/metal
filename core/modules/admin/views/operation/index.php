@@ -1,5 +1,6 @@
 <?php
 
+use app\modules\admin\models\Operation;
 use yii\grid\GridView;
 use yii\helpers\Html;
 
@@ -19,14 +20,17 @@ $this->params['breadcrumbs'][] = $this->title;
         </p>
 
 		<?= GridView::widget([
-			'dataProvider' => $dataProvider,
-			'filterModel'  => $searchModel,
-			'columns'      => [
+            'dataProvider' => $dataProvider,
+            'filterModel'  => $searchModel,
+            'rowOptions'   => function ($model) {
+                return $model->type == Operation::TYPE_BUY ? ['class' => 'danger'] : ['class' => 'info'];
+            },
+            'columns'      => [
 
 				'id',
-				'type',
+                'typeName',
 				'sum',
-				//'status',
+//				'products',
 				//'updated_at',
 				'created_at',
 

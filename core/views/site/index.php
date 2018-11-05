@@ -20,12 +20,12 @@ $this->title = 'My Yii Application';
         <div class="col-md-6 col-md-offset-3">
             <div class="flex">
                 <?= Html::a(Html::img('/web_assets/images/buy.svg', ['class' => 'img-responsive']), [
-                    'operation/create', 'type' => Operation::OPERATION_BUY,
+                    'operation/create', 'type' => Operation::TYPE_BUY,
                 ], [
                     //'class' => 'btn btn-default'
                 ]) ?>
                 <?= Html::a(Html::img('/web_assets/images/sell.svg', ['class' => 'img-responsive']), [
-                    'operation/create', 'type' => Operation::OPERATION_SELL,
+                    'operation/create', 'type' => Operation::TYPE_SELL,
                 ], [
                     //'class' => 'btn btn-default'
                 ]) ?>

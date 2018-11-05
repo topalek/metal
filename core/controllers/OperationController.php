@@ -7,6 +7,8 @@ use app\modules\admin\models\Product;
 use app\modules\admin\models\ProductSearch;
 use Yii;
 use yii\filters\VerbFilter;
+use yii\helpers\ArrayHelper;
+use yii\helpers\Url;
 use yii\web\Controller;
 
 /**
@@ -33,13 +35,28 @@ class OperationController extends Controller {
 		$dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
 		$model->type = $type;
-		if ($model->load(Yii::$app->request->post()) && $model->save()){
-			return $this->redirect(['view', 'id' => $model->id]);
-		}
+        if (Yii::$app->request->isPost) {
+            $post = Yii::$app->request->post();
+            $products = ArrayHelper::getValue($post, 'products');
+            if ($products) {
+                $total = 0;
+                foreach ($products as $id => $product) {
+                    if (!$product['weight']) {
+                        unset($products[$id]);
+                        continue;
+                    }
+                    $total += $product['total'];
+                }
+                $model->products = $products;
+                $model->sum = $total;
+                if ($model->save()) {
+                    return $this->redirect(Url::home());
+                }
+            }
+        }
 
 		return $this->render('create', [
 			'model'        => $model,
-			'searchModel'  => $searchModel,
 			'dataProvider' => $dataProvider,
 		]);
 	}
@@ -49,10 +66,11 @@ class OperationController extends Controller {
 
 	}
 
-	public function actionGetItem($id){
+    public function actionGetItem($id, $type = null)
+    {
 		$model = Product::findOne($id);
 
-		return $this->renderAjax('_item_form', ['model' => $model]);
+        return $this->renderAjax('_item_form', ['model' => $model, 'type' => $type]);
 	}
 
 }

@@ -1,5 +1,6 @@
 <?php
 
+use app\modules\admin\models\Operation;
 use app\modules\admin\models\Product;
 
 /**
@@ -9,12 +10,14 @@ use app\modules\admin\models\Product;
  */
 /*  @var $this yii\web\View */
 /* @var $model Product */
+/* @var $operation Operation */
 
 ?>
 <div class="col-md-2">
     <?= \yii\helpers\Html::a($model->title, [
         'operation/get-item',
-        'id' => $model->id,
+        'id'   => $model->id,
+        'type' => $operation->type,
     ], [
         'class' => 'btn btn-default operation-item',
     ]) ?>
