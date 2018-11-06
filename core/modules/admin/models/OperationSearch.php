@@ -64,8 +64,10 @@ class OperationSearch extends Operation
             'sum'        => $this->sum,
             'status'     => $this->status,
             'updated_at' => $this->updated_at,
-            'created_at' => $this->created_at,
+//            'created_at' => $this->created_at,
         ]);
+
+        $query->andFilterWhere(['between', 'created_at', $this->created_at, date('d-M-Y', strtotime($this->created_at . '+1 day'))]);
 
         return $dataProvider;
     }
