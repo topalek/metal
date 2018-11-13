@@ -58,16 +58,18 @@ class OperationSearch extends Operation
 
 // grid filtering conditions
         $query->andFilterWhere([
-            'id'         => $this->id,
-            'type'       => $this->type,
-            'typeName'   => $this->type,
-            'sum'        => $this->sum,
-            'status'     => $this->status,
-            'updated_at' => $this->updated_at,
-//            'created_at' => $this->created_at,
+	        'id'         => $this->id,
+	        'type'       => $this->type,
+	        //'typeName'   => $this->type,
+	        'sum'        => $this->sum,
+	        'status'     => $this->status,
+	        'updated_at' => $this->updated_at,
+	        'created_at' => $this->created_at,
         ]);
+	    //if ($this->created_at){
+	    //    $query->andFilterWhere(['between', 'created_at', $this->created_at." 00:00:00", date('Y-m-d', strtotime($this->created_at." 00:00:00" . '+1 day'))]);
+	    //}
 
-        $query->andFilterWhere(['between', 'created_at', $this->created_at, date('d-M-Y', strtotime($this->created_at . '+1 day'))]);
 
         return $dataProvider;
     }

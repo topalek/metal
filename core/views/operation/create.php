@@ -18,7 +18,7 @@ use yii\widgets\ListView;
 	'dataProvider' => $dataProvider,
 	'itemView'     => '_item_view',
 	'itemOptions'  => ['class' => 'col-md-2'],
-	'options'      => ['class' => 'flex'],
+	'options'      => ['class' => 'flex flex-w'],
 	'summary'      => '',
 	'viewParams'   => ['operation' => $model],
 ]); ?>

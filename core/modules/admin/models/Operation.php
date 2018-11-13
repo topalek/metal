@@ -4,6 +4,7 @@ namespace app\modules\admin\models;
 
 use yii\db\ActiveRecord;
 use yii\helpers\Json;
+use function date;
 
 /**
  * This is the model class for table "operation".
@@ -45,13 +46,13 @@ class Operation extends ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id'         => 'ID',
-            'type'       => 'Тип операции',
-            'typeName'   => 'Тип операции',
-            'sum'        => 'Общая сумма',
-            'status'     => 'Публиковать',
-            'updated_at' => 'Дата обновления',
-            'created_at' => 'Дата создания',
+	        'id'         => 'ID',
+	        'type'       => 'Тип операции',
+	        'typeName'   => 'Тип операции',
+	        'sum'        => 'Общая сумма',
+	        'status'     => 'Проведенные',
+	        'updated_at' => 'Дата обновления',
+	        'created_at' => 'Дата создания',
         ];
     }
 
@@ -68,11 +69,21 @@ class Operation extends ActiveRecord
         if ($this->products) {
             $this->products = Json::encode($this->products);
         }
-
+	    if ($insert){
+		    $this->created_at = date('Y-m-d');
+	    }
         return parent::beforeSave($insert);
     }
 
-    public function getTypeName()
+	public function afterSave($insert, $changedAttributes){
+		parent::afterSave($insert, $changedAttributes);
+		if ($insert){
+			Cash::Create($this->id);
+		}
+	}
+
+
+	public function getTypeName()
     {
         return static::getList()[$this->type];
     }
