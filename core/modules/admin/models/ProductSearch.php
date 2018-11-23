@@ -9,12 +9,12 @@ use yii\data\ActiveDataProvider;
  * ProductSearch represents the model behind the search form of `app\modules\admin\models\Product`.
  */
 class ProductSearch extends Product {
-	/**
-	 * {@inheritdoc}
-	 */
+
+    public $type;
+
 	public function rules(){
 		return [
-			[['id', 'status'], 'integer'],
+            [['id', 'status', 'sell_only'], 'integer'],
 			[['title', 'slug', 'image', 'updated_at', 'created_at'], 'safe'],
 			[['price'], 'number'],
 		];
@@ -54,7 +54,11 @@ class ProductSearch extends Product {
 			// $query->where('0=1');
 			return $dataProvider;
 		}
-
+        if ($this->type == Operation::TYPE_BUY) {
+            $query->andWhere(['sell_only' => Operation::TYPE_BUY]);
+        } else {
+            $query->andWhere(['sell_only' => [Operation::TYPE_SELL, Operation::TYPE_BUY]]);
+        }
 		// grid filtering conditions
 		$query->andFilterWhere([
 			'id'         => $this->id,

@@ -13,14 +13,15 @@ use yii\web\UploadedFile;
  * This is the model class for table "product".
  *
  * @property int    $id
- * @property string $title      Название
- * @property string $price      Цена
- * @property string $sale_price Цена продажи
- * @property string $slug       Слаг
- * @property string $image      картинка
- * @property int    $status     Публиковать
- * @property string $updated_at Дата обновления
- * @property string $created_at Дата создания
+ * @property string $title         Название
+ * @property string $price         Цена
+ * @property string $sale_price    Цена продажи
+ * @property string $slug          Слаг
+ * @property string $image         картинка
+ * @property int    $status        Публиковать
+ * @property int    $sell_only     Только продажа
+ * @property string $updated_at    Дата обновления
+ * @property string $created_at    Дата создания
  */
 class Product extends BaseModel
 {
@@ -39,7 +40,7 @@ class Product extends BaseModel
         return [
             [['title', 'price'], 'required'],
             [['price', 'sale_price'], 'number'],
-            [['status'], 'integer'],
+            [['status', 'sell_only'], 'integer'],
             [['updated_at', 'created_at'], 'safe'],
             [['title', 'slug', 'image'], 'string', 'max' => 255],
         ];
@@ -51,19 +52,20 @@ class Product extends BaseModel
     public function attributeLabels()
     {
         return [
-	        'id'         => 'ID',
-	        'title'      => 'Название',
-	        'price'      => 'Цена за кг.',
-	        'sale_price' => 'Цена за кг.',
-	        'slug'       => 'Слаг',
-	        'image'      => 'картинка',
-	        'img'        => 'картинка',
-	        'imgUrl'     => 'картинка',
-	        'file'       => 'Картинка',
-	        'status'     => 'Публиковать',
-	        'statusName' => 'Публиковать',
-	        'updated_at' => 'Дата обновления',
-	        'created_at' => 'Дата создания',
+            'id'         => 'ID',
+            'title'      => 'Название',
+            'price'      => 'Цена за кг.',
+            'sale_price' => 'Цена за кг.',
+            'slug'       => 'Слаг',
+            'image'      => 'картинка',
+            'img'        => 'картинка',
+            'imgUrl'     => 'картинка',
+            'file'       => 'Картинка',
+            'status'     => 'Публиковать',
+            'sell_only'  => 'Только продажа',
+            'statusName' => 'Публиковать',
+            'updated_at' => 'Дата обновления',
+            'created_at' => 'Дата создания',
         ];
     }
 
@@ -94,11 +96,11 @@ class Product extends BaseModel
     public function saveImg()
     {
 
-	    $file = UploadedFile::getInstance($this, 'file');
+        $file = UploadedFile::getInstance($this, 'file');
 
-	    if ($file){
-		    $dir = $this->moduleUploadsPath();
-		    if ( ! is_dir($dir) && ! file_exists($dir)){
+        if ($file) {
+            $dir = $this->moduleUploadsPath();
+            if (!is_dir($dir) && !file_exists($dir)) {
                 FileHelper::createDirectory($dir);
             }
             $filePath = $dir . $this->slug . "." . $file->extension;

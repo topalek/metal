@@ -31,10 +31,15 @@ class OperationController extends Controller {
 
 	public function actionCreate($type){
 		$model        = new Operation();
-		$searchModel  = new ProductSearch();
-		$dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $model->type = $type;
+        $searchModel = new ProductSearch();
+        if ($type == Operation::TYPE_BUY) {
+            $searchModel->type = Operation::TYPE_BUY;
+        } else {
+            $searchModel->type = Operation::TYPE_SELL;
+        }
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-		$model->type = $type;
         if (Yii::$app->request->isPost) {
             $post = Yii::$app->request->post();
             $products = ArrayHelper::getValue($post, 'products');
