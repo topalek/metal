@@ -5,7 +5,7 @@
 use app\modules\admin\models\Operation;
 use yii\helpers\Html;
 
-$this->title = 'My Yii Application';
+$this->title = 'Metal';
 ?>
 <div class="site-index">
     <div class="row">

@@ -21,4 +21,9 @@ use yii\widgets\ListView;
 	'options'      => ['class' => 'flex flex-w'],
 	'summary'      => '',
 	'viewParams'   => ['operation' => $model],
-]); ?>
+]);
+$this->registerJs(<<<JS
+$('.operation').attr('href',$('.operation').attr('href')+{$model->type})
+JS
+);
+

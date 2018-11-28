@@ -110,7 +110,19 @@ var modal = $('#item-modal');
 $(modal).modal('show');
 
 $(modal).on('hidden.bs.modal', function (e) {
+    var products = (localStorage.getItem('products')) ? JSON.parse(localStorage.getItem('products')) : {};
+    if (products){
+        $('.operation').removeClass('hidden');
+        $('.operation').on('click',(e)=>{
+            e.preventDefault();
+            let url = $(e.target).attr('href');
+            localStorage.removeItem('products');
+            $.post(url,{'products':products},(resp)=>{
+            });
+        });
+    } 
   $('.modals').remove();
+  
 });
 JS
 );

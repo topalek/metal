@@ -48,14 +48,21 @@ rmrevin\yii\fontawesome\AssetBundle::register($this);
 		'options'      => ['class' => 'navbar-nav navbar-right'],
 		'encodeLabels' => false,
 		'items'        => [
-//			['label' => 'Home', 'url' => ['/site/index']],
-//			['label' => 'About', 'url' => ['/site/about']],
-['label' => '<i class="fa fa-calculator"></i> ' . $cas, 'url' => ['/site/contact']],
-Yii::$app->user->isGuest ? (
-			['label' => 'Login', 'url' => ['/site/login']]
-			) : (
-            ['label' => 'ВЫХОД', 'url' => ['/site/logout']]
-			)
+			//			['label' => 'Home', 'url' => ['/site/index']],
+			//			['label' => 'About', 'url' => ['/site/about']],
+			[
+				'label'       => '<i class="fa fa-calculator"></i> <span>' . $cas . '</span>',
+				'url'         => ['/site/contact'],
+				'linkOptions' => ['class' => 'calculator']
+			],
+			Yii::$app->user->isGuest ? ['label' => 'Login', 'url' => ['/site/login']] : ['label'          => 'Провести',
+			                                                                             'url'            => [
+				                                                                             '/operation/create',
+				                                                                             'type' => ''
+			                                                                             ],
+			                                                                             'linkOptions'    => ['class' => 'hidden bg-danger operation']
+			], ['label' => 'ВЫХОД', 'url' => ['/site/logout']],
+
 		],
 	]);
 	NavBar::end();
