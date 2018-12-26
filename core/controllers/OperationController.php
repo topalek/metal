@@ -30,35 +30,35 @@ class OperationController extends Controller {
 	}
 
 	public function actionCreate($type){
-		$model        = new Operation();
-        $model->type = $type;
-        $searchModel = new ProductSearch();
-        if ($type == Operation::TYPE_BUY) {
-            $searchModel->type = Operation::TYPE_BUY;
-        } else {
-            $searchModel->type = Operation::TYPE_SELL;
-        }
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+		$model       = new Operation();
+		$model->type = $type;
+		$searchModel = new ProductSearch();
+		if ($type == Operation::TYPE_BUY){
+			$searchModel->type = Operation::TYPE_BUY;
+		}else{
+			$searchModel->type = Operation::TYPE_SELL;
+		}
+		$dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-        if (Yii::$app->request->isPost) {
-            $post = Yii::$app->request->post();
-            $products = ArrayHelper::getValue($post, 'products');
-            if ($products) {
-                $total = 0;
-                foreach ($products as $id => $product) {
-                    if (!$product['weight']) {
-                        unset($products[$id]);
-                        continue;
-                    }
-                    $total += $product['total'];
-                }
-                $model->products = $products;
-                $model->sum = $total;
-                if ($model->save()) {
-                    return $this->redirect(Url::home());
-                }
-            }
-        }
+		if (Yii::$app->request->isPost){
+			$post     = Yii::$app->request->post();
+			$products = ArrayHelper::getValue($post, 'products');
+			if ($products){
+				$total = 0;
+				foreach ($products as $id => $product){
+					if ( ! $product['weight']){
+						unset($products[$id]);
+						continue;
+					}
+					$total += $product['total'];
+				}
+				$model->products = $products;
+				$model->sum      = $total;
+				if ($model->save()){
+					return $this->redirect(Url::home());
+				}
+			}
+		}
 
 		return $this->render('create', [
 			'model'        => $model,
@@ -71,11 +71,10 @@ class OperationController extends Controller {
 
 	}
 
-    public function actionGetItem($id, $type = null)
-    {
+	public function actionGetItem($id, $type = null){
 		$model = Product::findOne($id);
 
-        return $this->renderAjax('_item_form', ['model' => $model, 'type' => $type]);
+		return $this->renderAjax('_item_form', ['model' => $model, 'type' => $type]);
 	}
 
 }

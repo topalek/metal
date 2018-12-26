@@ -10,9 +10,21 @@ use yii\helpers\Url;
 /* @var $type integer */
 ?>
 <?php Modal::begin([
-    'id'     => 'item-modal',
-    'header' => '<h3 class="modal-title">' . $model->title . '</h3>',
-    'size'   => Modal::SIZE_DEFAULT,
+	'id'     => 'item-modal',
+	'header' => '<h3 class="modal-title">' . $model->title . '</h3>',
+	'size'   => Modal::SIZE_DEFAULT,
+	'footer' => '<div class="col-md-12">
+                            <div class="form-group">' . Html::button('Добавить товар', [
+			'class'        => 'btn btn-primary add-item',
+			'data-dismiss' => "modal",
+		]) . Html::button('Провести', [
+			'class' => 'btn btn-danger process',
+			'data'  => [
+				'url' => Url::to(['operation/create', 'type' => $type]),
+			],
+		]) . '
+                            </div>
+                        </div>'
 ]); ?>
     <form>
         <div class="product-form box-body">
@@ -45,21 +57,7 @@ use yii\helpers\Url;
                                 <?= Html::hiddenInput('id', $model->id) ?>
                             </div>
                         </div>
-                        <div class="col-md-12">
-                            <div class="form-group">
-                                <?= Html::button('Добавить товар', [
-                                    'class'        => 'btn btn-primary add-item',
-                                    'data-dismiss' => "modal",
-                                ]) ?>
-                                <?= Html::button('Провести', [
-                                    'class' => 'btn btn-danger process',
-                                    'data'  => [
-                                        'url' => Url::to(['operation/create', 'type' => $type]),
-                                    ],
-                                ]) ?>
 
-                            </div>
-                        </div>
                     </div>
                 </div>
                 <div class="col-md-4">
