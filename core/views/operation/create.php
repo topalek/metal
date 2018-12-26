@@ -12,7 +12,7 @@ use yii\widgets\ListView;
 /* @var $model app\modules\admin\models\Operation */
 /* @var $dataProvider ActiveDataProvider */
 
-
+$this->title = "Метал : " . $model->getTypeName();
 ?>
 <?= ListView::widget([
 	'dataProvider' => $dataProvider,
