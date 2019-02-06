@@ -18,30 +18,57 @@ function getTime() {
 
 }
 
-function buildItemList() {
-    var products = (localStorage.getItem('products')) ? JSON.parse(localStorage.getItem('products')) : {};
-    var html = '<ul class="list-group">';
-    $.each(products, (i, item) => {
-        html = html + '<li class="list-group-item"> <span class="badge remove-item" data-id="' + item.id + '">&times;</span>' + item.title + ' (' + item.weight + ')' + '</li>';
-    });
-    html = html + '</ul>';
-    $('.item-list').html(html);
+function buildItemList(type) {
+    let name;
+    if (type == 0) {
+        name = 'buy';
+    } else {
+        name = 'sale';
+    }
+    let products = getFromStorage(name);
+    if (products) {
+        var html = '<ul class="list-group">';
+        $.each(products, (i, item) => {
+            html = html + '<li class="list-group-item"> <span class="badge remove-item" data-id="' + item.id + '">&times;</span>' + item.title + ' (' + item.weight + ')' + '</li>';
+        });
+        html = html + '</ul>';
+        $('.item-list').html(html);
+    }
+
 }
 
-function writeToStorage(json) {
-    var products = (localStorage.getItem('products')) ? JSON.parse(localStorage.getItem('products')) : {};
+function writeToStorage(json, type) {
+    let name;
+    if (type == 0) {
+        name = 'buy';
+    } else {
+        name = 'sale';
+    }
+    let products = getFromStorage(name);
+    var product = {};
     json.forEach((item) => {
         product[item.name] = item.value;
     });
     products[product.id] = product;
-    localStorage.setItem('products', JSON.stringify(products));
+    console.log(products);
+    // return false;
+    localStorage.setItem(name, JSON.stringify(products));
+
+
     return true;
 }
 
-function removeItem(id) {
-    var products = (localStorage.getItem('products')) ? JSON.parse(localStorage.getItem('products')) : {};
+function removeItem(id, type) {
+    let name;
+    if (type == 0) {
+        name = 'buy';
+    } else {
+        name = 'sale';
+    }
+    let products = getFromStorage(name);
     delete products[id];
-    localStorage.setItem('products', JSON.stringify(products));
+    localStorage.setItem(name, JSON.stringify(products));
+
 }
 
 $(document).ready(function () {
@@ -50,3 +77,7 @@ $(document).ready(function () {
     setInterval(getTime, 1000);
 
 });
+
+function getFromStorage(name) {
+    return (localStorage.getItem(name)) ? JSON.parse(localStorage.getItem(name)) : {};
+}

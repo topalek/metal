@@ -10,17 +10,24 @@ use yii\helpers\Url;
 /* @var $type integer */
 ?>
 <?php Modal::begin([
-	'id'     => 'item-modal',
-	'header' => '<h3 class="modal-title">' . $model->title . '</h3>',
-	'size'   => Modal::SIZE_DEFAULT,
-	'footer' => '<div class="col-md-12">
+	'id'            => 'item-modal',
+	'headerOptions' => [
+		'data-type' => $type
+	],
+	'header'        => '<h3 class="modal-title">' . $model->title . '</h3>',
+	'size'          => Modal::SIZE_DEFAULT,
+	'footer'        => '<div class="col-md-12">
                             <div class="form-group">' . Html::button('Добавить товар', [
-			'class'        => 'btn btn-primary add-item',
-			'data-dismiss' => "modal",
+			'class' => 'btn btn-primary add-item',
+			'data'  => [
+				'dismiss' => "modal",
+				'type'    => $type
+			],
 		]) . Html::button('Провести', [
 			'class' => 'btn btn-danger process',
 			'data'  => [
-				'url' => Url::to(['operation/create', 'type' => $type]),
+				'url'  => Url::to(['operation/create', 'type' => $type]),
+				'type' => $type
 			],
 		]) . '
                             </div>
@@ -69,22 +76,28 @@ use yii\helpers\Url;
 <?php Modal::end();
 
 $this->registerJs(<<<JS
-
-buildItemList();
-    var product = {};
+var type = $('#item-modal').data('type');
+buildItemList(type);
 $('.process').on('click',(e)=>{
     let json = $('form').serializeArray();
-    writeToStorage(json);
-    var products = (localStorage.getItem('products')) ? JSON.parse(localStorage.getItem('products')) : {};
+    let type = $(e.target).data('type');
+    writeToStorage(json,type);
+    let name;
+    if (type == 0){
+        name = 'buy';
+    } else {
+        name = 'sale';
+    }
+    var products = getFromStorage(name);
     let url = $(e.target).data('url');
-        localStorage.removeItem('products');
+        localStorage.removeItem(name);
 
-    $.post(url,{'products':products},(resp)=>{
-    });
+    $.post(url,{'products':products},(resp)=>{});
 });
-$('.add-item').on('click',()=>{
+$('.add-item').on('click',(e)=>{
     let json = $('form').serializeArray();
-    writeToStorage(json);
+    let type = $(e.target).data('type');
+    writeToStorage(json,type);
 });
 
 $('.remove-item').on('click',(e)=>{
@@ -108,7 +121,7 @@ var modal = $('#item-modal');
 $(modal).modal('show');
 
 $(modal).on('hidden.bs.modal', function (e) {
-    var products = (localStorage.getItem('products')) ? JSON.parse(localStorage.getItem('products')) : {};
+    var products = getFromStorage();
     if (products){
         $('.operation').removeClass('hidden');
         $('.operation').on('click',(e)=>{
