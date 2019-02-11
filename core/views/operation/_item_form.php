@@ -10,13 +10,13 @@ use yii\helpers\Url;
 /* @var $type integer */
 ?>
 <?php Modal::begin([
-	'id'            => 'item-modal',
-	'headerOptions' => [
+	'id'      => 'item-modal',
+	'options' => [
 		'data-type' => $type
 	],
-	'header'        => '<h3 class="modal-title">' . $model->title . '</h3>',
-	'size'          => Modal::SIZE_DEFAULT,
-	'footer'        => '<div class="col-md-12">
+	'header'  => '<h3 class="modal-title">' . $model->title . '</h3>',
+	'size'    => Modal::SIZE_DEFAULT,
+	'footer'  => '<div class="col-md-12">
                             <div class="form-group">' . Html::button('Добавить товар', [
 			'class' => 'btn btn-primary add-item',
 			'data'  => [

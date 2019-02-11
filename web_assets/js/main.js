@@ -50,8 +50,6 @@ function writeToStorage(json, type) {
         product[item.name] = item.value;
     });
     products[product.id] = product;
-    console.log(products);
-    // return false;
     localStorage.setItem(name, JSON.stringify(products));
 
 
