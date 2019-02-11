@@ -131,10 +131,10 @@ class InitController extends Controller
 				'price'      => 11.00,
 				'sale_price' => 11.00,
 				'title'      => "Деловой металл",
+				'sell_only'  => 1
 			],
 		];
-//        $model = new Product();
-//        print_r(0++);die;
+
 
 		Console::startProgress($i=0, count($products));
 		foreach ($products as $product) {
@@ -146,7 +146,6 @@ class InitController extends Controller
 				die;
 			}
 			Console::updateProgress($i ++, count($products));
-//            print_r($model->attributes);die;
 		}
 		Console::endProgress();
 
