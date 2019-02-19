@@ -77,4 +77,17 @@ class OperationController extends Controller {
 		return $this->renderAjax('_item_form', ['model' => $model, 'type' => $type]);
 	}
 
+	public function actionFillCash(){
+		$model          = new Operation();
+		$model->type    = Operation::TYPE_FILL_CASH;
+		$model->comment = Operation::TYPE_FILL_CASH;
+
+		if ($model->load(Yii::$app->request->post()) && $model->save()){
+			return $this->goHome();
+		}
+
+		return $this->render('fill-cash', [
+			'model' => $model,
+		]);
+	}
 }

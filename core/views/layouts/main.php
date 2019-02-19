@@ -32,10 +32,10 @@ rmrevin\yii\fontawesome\AssetBundle::register($this);
 <div class="wrap">
 	<?php
 	NavBar::begin([
-        'brandLabel' => "<span class='date'></span> | <span class='time'></span>",
-        'brandUrl'   => Yii::$app->homeUrl,
-        'options'    => [
-	        'class' => 'navbar navbar-fixed-top navbar-default',
+		'brandLabel' => "<span class='date'></span> | <span class='time'></span>",
+		'brandUrl'   => Yii::$app->homeUrl,
+		'options'    => [
+			'class' => 'navbar navbar-fixed-top navbar-default',
 		],
 	]);
 	$cas = Cash::find()->orderBy('id DESC')->one();
@@ -51,17 +51,20 @@ rmrevin\yii\fontawesome\AssetBundle::register($this);
 			//			['label' => 'Home', 'url' => ['/site/index']],
 			//			['label' => 'About', 'url' => ['/site/about']],
 			[
-				'label'       => '<i class="fa fa-calculator"></i> <span>' . $cas . '</span>',
-				'url'         => ['/site/contact'],
-				'linkOptions' => ['class' => 'calculator']
+				'label'       => '<i class="fa fa-usd fa-4"></i>',
+				'url'         => ['/operation/fill-cash'],
+				'linkOptions' => ['title' => "Пополнить кассу"]
 			],
-			Yii::$app->user->isGuest ? ['label' => 'Login', 'url' => ['/site/login']] : ['label'          => 'Провести',
-			                                                                             'url'            => [
-				                                                                             '/operation/create',
-				                                                                             'type' => ''
-			                                                                             ],
-			                                                                             'linkOptions'    => ['class' => 'hidden bg-danger operation']
-			], ['label' => 'ВЫХОД', 'url' => ['/site/logout']],
+			Yii::$app->user->isGuest ?
+				['label' => 'Login', 'url' => ['/site/login']] :
+				[
+					'label'       => 'Провести',
+					'url'         => [
+						'/operation/create',
+						'type' => ''
+					],
+					'linkOptions' => ['class' => 'hidden bg-danger operation']
+				], ['label' => 'ВЫХОД', 'url' => ['/site/logout']],
 
 		],
 	]);

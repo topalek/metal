@@ -57,6 +57,7 @@ $config = [
 			'rules'           => [
 				'/admin'                                   => '/admin/default/index',
 				'<ac:login|register|contact|about|logout>' => "site/<ac>",
+				"fill-cash"                                => "/operation/fill-cash"
 			],
 		],
 

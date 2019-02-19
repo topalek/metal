@@ -13,6 +13,7 @@ use function date;
  * @property int    $type       Тип операции
  * @property string $sum        Общая сумма
  * @property        $products   [] Товары
+ * @property        $comment    Коментарий
  * @property int    $status     Публиковать
  * @property string $updated_at Дата обновления
  * @property string $created_at Дата создания
@@ -22,6 +23,7 @@ class Operation extends ActiveRecord
 {
     const TYPE_BUY = 0;
     const TYPE_SELL = 1;
+	const TYPE_FILL_CASH = 2;
 
     public static function tableName()
     {
