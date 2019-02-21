@@ -17,7 +17,9 @@ use yii\helpers\Url;
 	'header'  => '<h3 class="modal-title">' . $model->title . '</h3>',
 	'size'    => Modal::SIZE_DEFAULT,
 	'footer'  => '<div class="col-md-12">
-                            <div class="form-group">' . Html::button('Добавить товар', [
+                            <div class="form-group">' . Html::button('Просчитать', [
+			'class' => 'btn btn-success', 'id' => 'calculate'
+		]) . Html::button('Добавить товар', [
 			'class' => 'btn btn-primary add-item',
 			'data'  => [
 				'dismiss' => "modal",
@@ -69,6 +71,7 @@ use yii\helpers\Url;
                 </div>
                 <div class="col-md-4">
                     <div class="item-list"></div>
+                    <div id="total"></div>
                 </div>
             </div>
         </div>
@@ -76,19 +79,32 @@ use yii\helpers\Url;
 <?php Modal::end();
 
 $this->registerJs(<<<JS
-var type = $('#item-modal').data('type');
+var modal = $('#item-modal');
+$(modal).modal('show');
+$(modal).on('hidden.bs.modal', function (e) {
+    var products = getFromStorage();
+    if (products){
+        $('.operation').removeClass('hidden');
+        $('.operation').on('click',(e)=>{
+            e.preventDefault();
+            let url = $(e.target).attr('href');
+            localStorage.removeItem(getStorageName(type));
+            $.post(url,{'products':products},(resp)=>{
+            });
+        });
+    } 
+  $('.modals').remove();
+  
+});
+var type = modal.data('type');
+
 buildItemList(type);
 $('.process').on('click',(e)=>{
     let json = $('form').serializeArray();
     let type = $(e.target).data('type');
     writeToStorage(json,type);
-    let name;
-    if (type == 0){
-        name = 'buy';
-    } else {
-        name = 'sale';
-    }
-    var products = getFromStorage(name);
+
+    var products = getFromStorage(getFromStorage(type));
     let url = $(e.target).data('url');
         localStorage.removeItem(name);
 
@@ -104,7 +120,7 @@ $('.remove-item').on('click',(e)=>{
     let el = $(e.target);
     let id = el.data('id');
     el.parents('li').remove();
-    removeItem(id);
+    removeItem(id,type);
 });
 $('input').on('input',(e)=>{
     let el = $(e.target),
@@ -117,23 +133,14 @@ $('input').on('input',(e)=>{
    let totalPrice = Math.round((price*(weight - weight*dirt/100))*100)/100;
    total.val(totalPrice);
 });
-var modal = $('#item-modal');
-$(modal).modal('show');
-
-$(modal).on('hidden.bs.modal', function (e) {
-    var products = getFromStorage();
-    if (products){
-        $('.operation').removeClass('hidden');
-        $('.operation').on('click',(e)=>{
-            e.preventDefault();
-            let url = $(e.target).attr('href');
-            localStorage.removeItem('products');
-            $.post(url,{'products':products},(resp)=>{
-            });
-        });
-    } 
-  $('.modals').remove();
-  
+$('#calculate').on('click',()=>{
+    let products = getFromStorage(type);
+    let total = 0;
+    Object.keys(products).forEach((i)=>{
+        total+= parseFloat(products[i].total);
+    });
+    
+    console.log(total);
 });
 JS
 );
