@@ -14,26 +14,36 @@ use yii\widgets\ActiveForm;
 	<?php $form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data']]); ?>
 
 	<?= $form->field($model, 'title')->textInput(['maxlength' => true]) ?>
-    <div class="col-md-4">
+    <div class="col-md-2">
 		<?= $form->field($model, 'price')->textInput() ?>
     </div>
-    <div class="col-md-4">
+    <div class="col-md-6">
+        <div class="row">
+            <div class="col-md-6">
+				<?= $form->field($model, 'amount_for_discount')->textInput() ?>
+            </div>
+            <div class="col-md-6">
+				<?= $form->field($model, 'discount_price')->textInput() ?>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-2">
 		<?= $form->field($model, 'status')->widget(SwitchInput::class, [
 			'pluginOptions' => [
 				'onText'   => 'Да',
 				'offText'  => 'Нет',
 				'offColor' => 'danger',
 			]
-        ]) ?>
+		]) ?>
     </div>
-    <div class="col-md-4">
-        <?= $form->field($model, 'sell_only')->widget(SwitchInput::class, [
-            'pluginOptions' => [
-                'onText'   => 'Да',
-                'offText'  => 'Нет',
-                'offColor' => 'danger',
-            ],
-        ]) ?>
+    <div class="col-md-2">
+		<?= $form->field($model, 'sell_only')->widget(SwitchInput::class, [
+			'pluginOptions' => [
+				'onText'   => 'Да',
+				'offText'  => 'Нет',
+				'offColor' => 'danger',
+			],
+		]) ?>
     </div>
 
 	<?= $form->field($model, 'file')->widget(\kartik\file\FileInput::class, [

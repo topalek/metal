@@ -42,28 +42,36 @@ use yii\helpers\Url;
                     <div class="row">
                         <div class="col-md-12">
                             <div class="input-group">
-                                <?= Html::label('Вес', 'weight') ?>
-                                <?= Html::input('text', 'weight', 0, ['class' => 'form-control weight']) ?>
+	                            <?= Html::label('Вес', 'weight') ?>
+	                            <?= Html::input('text', 'weight', 0, [
+			                            'class' => 'form-control weight',
+			                            'data'  => [
+				                            'discount_weight' => $model->amount_for_discount,
+				                            'discount_price'  => $model->discount_price,
+				                            'price'           => $model->price
+			                            ]
+		                            ]
+	                            ) ?>
                             </div>
                         </div>
                         <div class="col-md-12">
                             <div class="input-group">
-                                <?= Html::label('Цена', 'sale_price') ?>
-                                <?= Html::input('text', 'sale_price', $model->price, ['class' => 'form-control price']) ?>
+	                            <?= Html::label('Цена', 'sale_price') ?>
+	                            <?= Html::input('text', 'sale_price', $model->price, ['class' => 'form-control price']) ?>
                             </div>
                         </div>
                         <div class="col-md-12">
                             <div class="input-group">
-                                <?= Html::label('Засор %', 'dirt') ?>
-                                <?= Html::input('text', 'dirt', 0, ['class' => 'form-control dirt']) ?>
+	                            <?= Html::label('Засор %', 'dirt') ?>
+	                            <?= Html::input('text', 'dirt', 0, ['class' => 'form-control dirt']) ?>
                             </div>
                         </div>
                         <div class="col-md-12">
                             <div class="input-group">
-                                <?= Html::label('Стоимость', 'total') ?>
-                                <?= Html::input('text', 'total', $model->price, ['class' => 'form-control total']) ?>
-                                <?= Html::hiddenInput('title', $model->title) ?>
-                                <?= Html::hiddenInput('id', $model->id) ?>
+	                            <?= Html::label('Стоимость', 'total') ?>
+	                            <?= Html::input('text', 'total', 0, ['class' => 'form-control total']) ?>
+	                            <?= Html::hiddenInput('title', $model->title) ?>
+	                            <?= Html::hiddenInput('id', $model->id) ?>
                             </div>
                         </div>
 
@@ -80,9 +88,10 @@ use yii\helpers\Url;
 
 $this->registerJs(<<<JS
 var modal = $('#item-modal');
+var type = modal.data('type');
 $(modal).modal('show');
 $(modal).on('hidden.bs.modal', function (e) {
-    var products = getFromStorage();
+    var products = getFromStorage(type);
     if (products){
         $('.operation').removeClass('hidden');
         $('.operation').on('click',(e)=>{
@@ -96,15 +105,15 @@ $(modal).on('hidden.bs.modal', function (e) {
   $('.modals').remove();
   
 });
-var type = modal.data('type');
+var form = $('form');
 
 buildItemList(type);
 $('.process').on('click',(e)=>{
-    let json = $('form').serializeArray();
+    let json = form.serializeArray();
     let type = $(e.target).data('type');
     writeToStorage(json,type);
 
-    var products = getFromStorage(getFromStorage(type));
+    var products = getFromStorage(type);
     let url = $(e.target).data('url');
         localStorage.removeItem(name);
 
@@ -126,9 +135,21 @@ $('input').on('input',(e)=>{
     let el = $(e.target),
     price = $('.price').val(),
     weight = $('.weight').val(),
+    discount_price = $('.weight').data('discount_price'),
+    discount_weight = $('.weight').data('discount_weight'),
+    _price = $('.weight').data('price'),
     dirt = $('.dirt').val(),
     total = $('.total');
-    
+    if (discount_price && discount_weight){
+        if (weight>= discount_weight){
+            price = parseFloat(discount_price);
+            $('.price').val(price);
+            
+        } else {
+            price = _price;
+            $('.price').val(_price);
+        }
+    }
    el.val(el.val().replace(',','.'));
    let totalPrice = Math.round((price*(weight - weight*dirt/100))*100)/100;
    total.val(totalPrice);
@@ -139,8 +160,9 @@ $('#calculate').on('click',()=>{
     Object.keys(products).forEach((i)=>{
         total+= parseFloat(products[i].total);
     });
-    
-    console.log(total);
+    let formTotal = $('.total').val();
+    total += parseFloat(formTotal);
+    $('#total').html("Всего: "+total);
 });
 JS
 );
