@@ -13,10 +13,15 @@ $config = [
 		'@npm'   => '@vendor/npm-asset',
 	],
 	'components'          => [
-		'cache' => [
+		'authManager' => [
+			'class' => 'yii\rbac\DbManager',
+			// uncomment if you want to cache RBAC items hierarchy
+			'cache' => 'cache',
+		],
+		'cache'       => [
 			'class' => 'yii\caching\FileCache',
 		],
-		'log'   => [
+		'log'         => [
 			'targets' => [
 				[
 					'class'  => 'yii\log\FileTarget',
@@ -24,7 +29,7 @@ $config = [
 				],
 			],
 		],
-		'db'    => $db,
+		'db'          => $db,
 	],
 	'params'              => $params,
 	/*
