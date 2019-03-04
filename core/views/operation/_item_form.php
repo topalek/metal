@@ -1,5 +1,6 @@
 <?php
 
+use app\modules\admin\models\Operation;
 use yii\bootstrap\Modal;
 use yii\helpers\Html;
 use yii\helpers\Url;
@@ -8,6 +9,12 @@ use yii\helpers\Url;
 /* @var $model app\modules\admin\models\Product */
 /* @var $form yii\widgets\ActiveForm */
 /* @var $type integer */
+
+$data = ($type == Operation::TYPE_BUY) ? [
+	'discount_weight' => $model->amount_for_discount,
+	'discount_price'  => $model->discount_price,
+	'price'           => $model->price
+] : ['price' => $model->price];
 ?>
 <?php Modal::begin([
 	'id'      => 'item-modal',
@@ -45,11 +52,7 @@ use yii\helpers\Url;
 	                            <?= Html::label('Вес', 'weight') ?>
 	                            <?= Html::input('text', 'weight', 0, [
 			                            'class' => 'form-control weight',
-			                            'data'  => [
-				                            'discount_weight' => $model->amount_for_discount,
-				                            'discount_price'  => $model->discount_price,
-				                            'price'           => $model->price
-			                            ]
+			                            'data'  => $data
 		                            ]
 	                            ) ?>
                             </div>

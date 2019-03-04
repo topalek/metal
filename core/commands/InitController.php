@@ -9,6 +9,7 @@ namespace app\commands;
 
 use app\common\Inflector;
 use app\modules\admin\models\Product;
+use Yii;
 use yii\console\Controller;
 use yii\console\ExitCode;
 use yii\helpers\Console;
@@ -149,5 +150,29 @@ class InitController extends Controller
 		}
 		Console::endProgress();
 
+	}
+
+	public function actionRbac(){
+
+		$role              = Yii::$app->authManager->createRole('admin');
+		$role->description = 'Администратор';
+		Yii::$app->authManager->add($role);
+
+		$role              = Yii::$app->authManager->createRole('user');
+		$role->description = 'Пользователь';
+		Yii::$app->authManager->add($role);
+
+		$permit              = Yii::$app->authManager->createPermission('canAdmin');
+		$permit->description = 'Право входа в админку';
+		Yii::$app->authManager->add($permit);
+
+		$role   = Yii::$app->authManager->getRole('admin');
+		$permit = Yii::$app->authManager->getPermission('canAdmin');
+		Yii::$app->authManager->addChild($role, $permit);
+
+		$userRole = Yii::$app->authManager->getRole('admin');
+		Yii::$app->authManager->assign($userRole, 1);
+
+		echo "Roles & rule created";
 	}
 }
