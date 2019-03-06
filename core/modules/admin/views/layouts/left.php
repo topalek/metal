@@ -32,6 +32,7 @@
 				'items'   => [
 					['label' => 'Меню', 'options' => ['class' => 'header']],
 					['label' => 'Gii', 'icon' => 'file-code-o', 'url' => ['/gii']],
+                    ['label' => 'Пользователи', 'icon' => 'user', 'url' => ['/admin/user']],
 					['label' => 'Касса', 'icon' => 'money', 'url' => ['/admin/cash']],
 					['label' => 'Товары', 'icon' => 'cubes', 'url' => ['/admin/product/']],
 					['label' => 'Операции', 'icon' => 'refresh', 'url' => ['/admin/operation/']],
