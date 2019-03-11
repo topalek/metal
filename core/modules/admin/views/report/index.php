@@ -1,117 +1,183 @@
 <?php
 
+use app\models\User;
+use app\modules\admin\models\AuthAssignment;
+use kartik\date\DatePicker;
 use yii\data\ArrayDataProvider;
 use yii\helpers\Html;
 use yii2tech\spreadsheet\Spreadsheet;
 
 /* @var $this yii\web\View */
 
-$this->title = 'Пользователи';
+$this->title = 'Отчеты';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="report-index box">
+<div class="col-md-6">
+    <div class="report-index box">
 
-    <?php
-    $data = [[
-        'column1' => '1.1',
-        'column2' => '1.2',
-        'column3' => '1.3',
-        'column4' => '1.4',
-        'column5' => '1.5',
-        'column6' => '1.6',
-        'column7' => '1.7',
-    ], [
-        'column1' => '2.1',
-        'column2' => '2.2',
-        'column3' => '2.3',
-        'column4' => '2.4',
-        'column5' => '2.5',
-        'column6' => '2.6',
-        'column7' => '2.7',
-    ],
-    ];
-    $exporter = new Spreadsheet([
-        'dataProvider'       => new ArrayDataProvider([
-            'allModels' => $data,
-        ]),
-        'headerColumnUnions' => [
+        <?php
+        print_r(AuthAssignment::findOne(['user_id' => 1])->item_name);
+        $data = [
             [
-                'header' => 'Skip 1 column and group 2 next',
-                'offset' => 1,
-                'length' => 2,
+                'column1' => '1.1',
+                'column2' => '1.2',
+                'column3' => '1.3',
+                'column4' => '1.4',
+                'column5' => '1.5',
+                'column6' => '1.6',
+                'column7' => '1.7',
+            ], [
+                'column1' => '2.1',
+                'column2' => '2.2',
+                'column3' => '2.3',
+                'column4' => '2.4',
+                'column5' => '2.5',
+                'column6' => '2.6',
+                'column7' => '2.7',
             ],
-            [
-                'header' => 'Skip 2 columns and group 2 next',
-                'offset' => 2,
-                'length' => 2,
+        ];
+        $exporter = new Spreadsheet([
+            'dataProvider'       => new ArrayDataProvider([
+                'allModels' => $data,
+            ]),
+            'headerColumnUnions' => [
+                [
+                    'header' => 'Skip 1 column and group 2 next',
+                    'offset' => 1,
+                    'length' => 2,
+                ],
+                [
+                    'header' => 'Skip 2 columns and group 2 next',
+                    'offset' => 2,
+                    'length' => 2,
+                ],
             ],
-        ],
-    ]);
-    /*    $i = "A";
-        foreach ($data[0] as $datum) {
-            $exporter->renderCell($i."4",null,[
-                'fill' => [
-                    'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
-                    'color' => [
-                        'rgb' => 'ff7a70', // красный
+        ]);
+        /*    $i = "A";
+            foreach ($data[0] as $datum) {
+                $exporter->renderCell($i."4",null,[
+                    'fill' => [
+                        'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+                        'color' => [
+                            'rgb' => 'ff7a70', // красный
+                        ],
                     ],
-                ],
-                'borders' => [
-                    'top' => [
-                        'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                    'borders' => [
+                        'top' => [
+                            'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                        ],
+                        'left' => [
+                            'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                        ],
+                        'right' => [
+                            'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                        ],
+                        'bottom' => [
+                            'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                        ],
                     ],
-                    'left' => [
-                        'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                ]);
+                $i++;
+            }
+            $i = "A";
+            foreach ($data[0] as $datum) {
+                $exporter->renderCell($i."3",null,[
+                    'fill' => [
+                        'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+                        'color' => [
+                            'rgb' => '66c365', // зеленый
+                        ],
                     ],
-                    'right' => [
-                        'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                    'borders' => [
+                        'top' => [
+                            'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                        ],
+                        'left' => [
+                            'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                        ],
+                        'right' => [
+                            'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                        ],
+                        'bottom' => [
+                            'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                        ],
                     ],
-                    'bottom' => [
-                        'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
-                    ],
-                ],
-            ]);
-            $i++;
-        }
-        $i = "A";
-        foreach ($data[0] as $datum) {
-            $exporter->renderCell($i."3",null,[
-                'fill' => [
-                    'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
-                    'color' => [
-                        'rgb' => '66c365', // зеленый
-                    ],
-                ],
-                'borders' => [
-                    'top' => [
-                        'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
-                    ],
-                    'left' => [
-                        'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
-                    ],
-                    'right' => [
-                        'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
-                    ],
-                    'bottom' => [
-                        'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
-                    ],
-                ],
-            ]);
-            $i++;
-        }*/
-    print_r($exporter->getLast)
-    //    $exporter->save('file.xls');
-    ?>
-    <div class="box-body">
-        <p>
-            <!--            --><? //= Html::input($type)?>
-            <?= Html::a('Создать', ['create'], ['class' => 'btn btn-success']) ?>
-            <?php print_r(Yii::$app->user->identity->role) ?>
+                ]);
+                $i++;
+            }*/
+        //        $exporter->send('file.xls');
+        ?>
+        <div class="box-body">
+            <div class="row">
+                <div class="col-md-2">
+                    <p>
+                        <?= Html::a('Отчет за день', ['day'], ['class' => 'btn btn-success']) ?>
+                    </p>
+                </div>
+            </div>
+            <div class="row">
+                <?= Html::beginForm(['period']) ?>
+                <div class="col-md-2">
+                    <div class="form-group field-user-username">
+                        <label class="control-label" for="from_date">Начало периода</label>
+                        <?= DatePicker::widget([
+                            'name'          => 'from_date',
+                            'id'            => 'from_date',
+                            'value'         => date('d-m-Y', strtotime('-1 day')),
+                            'type'          => DatePicker::TYPE_INPUT,
+                            'pluginOptions' => [
+                                'autoclose' => true,
+                                'format'    => 'dd-mm-yyyy',
+                            ],
+                        ]) ?>
 
-        </p>
+                        <div class="help-block"></div>
+                    </div>
+
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group field-user-username">
+                        <label class="control-label" for="to_date">Конец периода</label>
+                        <?= DatePicker::widget([
+                            'type'          => DatePicker::TYPE_INPUT,
+                            'name'          => 'to_date',
+                            'id'            => 'to_date',
+                            'value'         => date('d-m-Y'),
+                            'pluginOptions' => [
+                                'autoclose' => true,
+                                'format'    => 'dd-mm-yyyy',
+                            ],
+                        ]) ?>
+
+                        <div class="help-block"></div>
+                    </div>
+
+                </div>
+                <div class="col-md-6">
+                    <?= Html::submitButton('Отчет за период', ['class' => 'btn btn-info', 'id' => 'period']) ?>
+
+                </div>
+                <?= Html::endForm() ?>
+            </div>
+            <p>
+                <?php
+                $user = User::findOne(1);
+                var_dump($user->assignment) ?>
+            </p>
+
+
+        </div>
 
 
     </div>
-
-
 </div>
+
+<?php
+$css = "
+#period{
+    position:relative;
+    top:25px;
+}
+";
+$this->registerCss($css) ?>
+

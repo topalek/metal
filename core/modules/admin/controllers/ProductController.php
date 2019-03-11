@@ -19,8 +19,8 @@ class ProductController extends Controller {
 	public function behaviors(){
 		return [
 			'verbs' => [
-				'class'   => VerbFilter::className(),
-				'actions' => [
+                'class'   => VerbFilter::class,
+                'actions' => [
 					'delete' => ['POST'],
 				],
 			],
