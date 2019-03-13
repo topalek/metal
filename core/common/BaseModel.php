@@ -21,6 +21,9 @@ use yii\helpers\FileHelper;
 use yii\helpers\Inflector;
 use yii\helpers\Url;
 
+/**
+ * @property mixed status
+ */
 class BaseModel extends ActiveRecord {
 	const STATUS_PUBLISHED = 1;
 	const STATUS_NOT_PUBLISHED = 0;
@@ -96,7 +99,8 @@ class BaseModel extends ActiveRecord {
 	}
 
 	public function getStatusName(){
-		return self::getStatusList()[$this->status];
+
+        return ArrayHelper::getValue(self::getStatusList(), $this->status);
 	}
 
 	public static function getStatusList(){

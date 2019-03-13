@@ -12,20 +12,23 @@ use yii\web\UploadedFile;
 /**
  * This is the model class for table "product".
  *
- * @property int $id
- * @property string $title         Название
- * @property string $price         Цена
+ * @property int    $id
+ * @property string $title                       Название
+ * @property string $price                       Цена
  * @property string $amount_for_discount         Цена
- * @property string $discount_price         Цена
- * @property string $sale_price    Цена продажи
- * @property string $slug          Слаг
- * @property string $image         картинка
- * @property int $status        Публиковать
- * @property int $sell_only     Только продажа
- * @property string $updated_at    Дата обновления
- * @property string $created_at    Дата создания
+ * @property string $discount_price              Цена
+ * @property string $sale_price                  Цена продажи
+ * @property string $slug                        Слаг
+ * @property string $image                       картинка
+ * @property int    $status                      Публиковать
+ * @property int    $sell_only                   Только продажа
+ * @property string $updated_at                  Дата обновления
+ * @property string $imgUrl
+ * @property string $created_at                  Дата создания
+ * @property mixed  error
  */
 class Product extends BaseModel {
+
 	public $file;
 
 	public static function tableName(){
@@ -132,9 +135,10 @@ class Product extends BaseModel {
 		return Html::img($imgSrc, $options);
 	}
 
-	/**
-	 * @return string
-	 */
+    /**
+     * @return string
+     * @throws \ReflectionException
+     */
 	public function getImgUrl(){
 		$imgSrc = null;
 		if ($this->image){

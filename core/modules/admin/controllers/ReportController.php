@@ -35,9 +35,11 @@ class ReportController extends \yii\web\Controller
         $toDate = date('Y-m-d', strtotime($toDate));
         $date = $fromDate . " - " . $toDate;
         $operations = Operation::find()
-            ->where(['>=', 'created_at', $fromDate])
-            ->andWhere(['<=', 'created_at', $toDate])
+//            ->where(['>=', 'created_at', $fromDate])
+//            ->andWhere(['<=', 'created_at', $toDate])
+            ->asArray()
             ->all();
+
 
         return $this->render('period', ["operations" => $operations, "date" => $date]);
 

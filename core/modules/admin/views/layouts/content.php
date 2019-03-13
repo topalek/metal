@@ -1,6 +1,8 @@
 <?php
 
 use dmstr\widgets\Alert;
+use yii\helpers\Html;
+use yii\helpers\Inflector;
 use yii\widgets\Breadcrumbs;
 
 ?>
@@ -12,22 +14,15 @@ use yii\widgets\Breadcrumbs;
             <h1>
 				<?php
 				if ($this->title !== null){
-					echo \yii\helpers\Html::encode($this->title);
+                    echo Html::encode($this->title);
 				}else{
-					echo \yii\helpers\Inflector::camel2words(
-						\yii\helpers\Inflector::id2camel($this->context->module->id)
-					);
+                    echo Inflector::camel2words(Inflector::id2camel($this->context->module->id));
 					echo ($this->context->module->id !== \Yii::$app->id) ? '<small>Module</small>' : '';
 				} ?>
             </h1>
 		<?php } ?>
 
-		<?=
-		Breadcrumbs::widget(
-			[
-				'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
-			]
-		) ?>
+        <?= Breadcrumbs::widget(['links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],]) ?>
     </section>
 
     <section class="content">
@@ -40,10 +35,19 @@ use yii\widgets\Breadcrumbs;
     <div class="pull-right hidden-xs">
         <b>Version</b> 2.0
     </div>
-    <strong>Copyright &copy; 2014-2015 <a href="http://almsaeedstudio.com">Almsaeed Studio</a>.</strong> All rights
+    <strong>Copyright &copy; 2014-<?= date("Y") ?> {<span style="color: red">Red</span>} October.</strong> All rights
     reserved.
 </footer>
-
+<?php
+$css = ".content-wrapper{
+display:flex;
+flex-direction:column;
+}
+.content{
+    margin-right:initial;
+    margin-left:initial;
+}";
+$this->registerCss($css) ?>
 <!-- Control Sidebar -->
 <aside class="control-sidebar control-sidebar-dark">
     <!-- Create the tabs -->
