@@ -99,8 +99,8 @@ $data = ($type == Operation::TYPE_BUY) ? [
 <?php Modal::end();
 
 $this->registerJs(<<<JS
-var modal = $('#item-modal');
-var type = modal.data('type');
+let modal = $('#item-modal');
+let type = modal.data('type');
 $(modal).modal('show');
 $(modal).on('hidden.bs.modal', function (e) {
     var products = getFromStorage(type);
@@ -117,7 +117,7 @@ $(modal).on('hidden.bs.modal', function (e) {
   $('.modals').remove();
   
 });
-var form = $('form');
+let form = $('form');
 
 buildItemList(type);
 $('.process').on('click',(e)=>{

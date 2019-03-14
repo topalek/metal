@@ -1,7 +1,7 @@
 <?php
 
 use app\models\User;
-use app\modules\admin\models\AuthAssignment;
+use app\modules\admin\models\Product;
 use kartik\date\DatePicker;
 use yii\data\ArrayDataProvider;
 use yii\helpers\Html;
@@ -14,98 +14,140 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="col-md-6">
     <div class="report-index box">
-
+<pre>
+    <? // print_r(Operation::getArrayForReport(Operation::find()->asArray()->all()));?>
+</pre>
         <?php
-        print_r(AuthAssignment::findOne(['user_id' => 1])->item_name);
-        $data = [
-            [
-                'column1' => '1.1',
-                'column2' => '1.2',
-                'column3' => '1.3',
-                'column4' => '1.4',
-                'column5' => '1.5',
-                'column6' => '1.6',
-                'column7' => '1.7',
-            ], [
-                'column1' => '2.1',
-                'column2' => '2.2',
-                'column3' => '2.3',
-                'column4' => '2.4',
-                'column5' => '2.5',
-                'column6' => '2.6',
-                'column7' => '2.7',
-            ],
+
+        $data          = [
+            //[
+            //    'column1' => '1.1',
+            //    'column2' => '1.2',
+            //    'column3' => '1.3',
+            //    '1.4',
+            //    '1.4',
+            //    '1.5',
+            //    '1.6',
+            //    '1.7',
+            //], [
+            //    'column1' => '2.1',
+            //    'column2' => '2.2',
+            //    'column3' => '2.3',
+            //    '2.4',
+            //    '2.4',
+            //    '2.5',
+            //    '2.6',
+            //    '2.7',
+            //],
         ];
+        $data[]        = array_fill(1, 77, rand(1, 4560));
+        $data[]        = array_fill(1, 77, rand(1, 4560));
+        $data[]        = array_fill(1, 77, rand(1, 4560));
+        $products      = Product::getList();
+        $headerColumns = [];
+        foreach ($products as $prod){
+            if (empty($headerColumns)){
+                $headerColumns[] = [
+                    'header' => $prod,
+                    'offset' => 2,
+                    'length' => 3,
+                ];
+            }else{
+                $headerColumns[] = [
+                    'header' => $prod,
+                    'offset' => 0,
+                    'length' => 3,
+                ];
+            }
+        }
+        //echo "<pre>";
+        //print_r($data);die;
         $exporter = new Spreadsheet([
             'dataProvider'       => new ArrayDataProvider([
                 'allModels' => $data,
             ]),
-            'headerColumnUnions' => [
+            'headerColumnUnions' => $headerColumns/*[
                 [
                     'header' => 'Skip 1 column and group 2 next',
-                    'offset' => 1,
-                    'length' => 2,
+                    'offset' => 2,
+                    'length' => 3,
                 ],
                 [
                     'header' => 'Skip 2 columns and group 2 next',
-                    'offset' => 2,
-                    'length' => 2,
+                    'offset' => 0,
+                    'length' => 3,
                 ],
-            ],
+            ],*/
         ]);
-        /*    $i = "A";
+        $i        = "A";
+        $t        = ['масса', 'цена', 'сумма'];
+        $idx      = 1;
             foreach ($data[0] as $datum) {
-                $exporter->renderCell($i."4",null,[
+                if ($idx < 3){
+                    $idx ++;
+                    $i ++;
+                    continue;
+                }
+                $exporter->renderCell($i . "2", $t[$idx % 3], [
                     'fill' => [
                         'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
-                        'color' => [
-                            'rgb' => 'ff7a70', // красный
-                        ],
-                    ],
-                    'borders' => [
-                        'top' => [
-                            'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
-                        ],
-                        'left' => [
-                            'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
-                        ],
-                        'right' => [
-                            'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
-                        ],
-                        'bottom' => [
-                            'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                        'color'    => [
+                            'rgb' => 'ff' . (($idx % 3) * 2) . 'a70', // красный
                         ],
                     ],
                 ]);
+                $idx ++;
+                //$exporter->renderCell($i."2",null,[
+                //    'fill' => [
+                //        'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+                //        'color' => [
+                //            'rgb' => 'ff7a70', // красный
+                //        ],
+                //    ],
+                //    'borders' => [
+                //        'top' => [
+                //            'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                //        ],
+                //        'left' => [
+                //            'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                //        ],
+                //        'right' => [
+                //            'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                //        ],
+                //        'bottom' => [
+                //            'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                //        ],
+                //    ],
+                //]);
                 $i++;
             }
-            $i = "A";
-            foreach ($data[0] as $datum) {
-                $exporter->renderCell($i."3",null,[
-                    'fill' => [
-                        'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
-                        'color' => [
-                            'rgb' => '66c365', // зеленый
-                        ],
-                    ],
-                    'borders' => [
-                        'top' => [
-                            'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
-                        ],
-                        'left' => [
-                            'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
-                        ],
-                        'right' => [
-                            'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
-                        ],
-                        'bottom' => [
-                            'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
-                        ],
-                    ],
-                ]);
-                $i++;
-            }*/
-        //        $exporter->send('file.xls');
+        /* $i = "A";
+         foreach ($data[0] as $datum) {
+             $exporter->renderCell($i."3",null,[
+                 'fill' => [
+                     'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+                     'color' => [
+                         'rgb' => '66c365', // зеленый
+                     ],
+                 ],
+                 'borders' => [
+                     'top' => [
+                         'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                     ],
+                     'left' => [
+                         'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                     ],
+                     'right' => [
+                         'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                     ],
+                     'bottom' => [
+                         'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                     ],
+                 ],
+             ]);
+             $i++;
+         }*/
+        $exporter->send('file.xls');
         ?>
         <div class="box-body">
             <div class="row">
