@@ -1,7 +1,7 @@
 <?php
 
 use app\models\User;
-use app\modules\admin\models\Product;
+use app\modules\admin\models\Operation;
 use kartik\date\DatePicker;
 use yii\data\ArrayDataProvider;
 use yii\helpers\Html;
@@ -15,11 +15,11 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="col-md-6">
     <div class="report-index box">
 <pre>
-    <? // print_r(Operation::getArrayForReport(Operation::find()->asArray()->all()));?>
+    <? $data = Operation::getArrayForReport(Operation::find()->asArray()->all()); ?>
 </pre>
         <?php
-
-        $data          = [
+        //die;
+        //        $data          = [
             //[
             //    'column1' => '1.1',
             //    'column2' => '1.2',
@@ -39,45 +39,45 @@ $this->params['breadcrumbs'][] = $this->title;
             //    '2.6',
             //    '2.7',
             //],
-        ];
-        $data[]        = array_fill(1, 77, rand(1, 4560));
-        $data[]        = array_fill(1, 77, rand(1, 4560));
-        $data[]        = array_fill(1, 77, rand(1, 4560));
-        $products      = Product::getList();
-        $headerColumns = [];
-        foreach ($products as $prod){
-            if (empty($headerColumns)){
-                $headerColumns[] = [
-                    'header' => $prod,
-                    'offset' => 2,
-                    'length' => 3,
-                ];
-            }else{
-                $headerColumns[] = [
-                    'header' => $prod,
-                    'offset' => 0,
-                    'length' => 3,
-                ];
-            }
-        }
+        //        ];
+        //        $data[]        = array_fill(1, 77, rand(1, 4560));
+        //        $data[]        = array_fill(1, 77, rand(1, 4560));
+        //        $data[]        = array_fill(1, 77, rand(1, 4560));
+        //        $products      = Product::getList();
+        //        $headerColumns = [];
+        //        foreach ($products as $prod){
+        //            if (empty($headerColumns)){
+        //                $headerColumns[] = [
+        //                    'header' => $prod,
+        //                    'offset' => 2,
+        //                    'length' => 3,
+        //                ];
+        //            }else{
+        //                $headerColumns[] = [
+        //                    'header' => $prod,
+        //                    'offset' => 0,
+        //                    'length' => 3,
+        //                ];
+        //            }
+        //        }
         //echo "<pre>";
         //print_r($data);die;
         $exporter = new Spreadsheet([
             'dataProvider'       => new ArrayDataProvider([
                 'allModels' => $data,
             ]),
-            'headerColumnUnions' => $headerColumns/*[
-                [
-                    'header' => 'Skip 1 column and group 2 next',
-                    'offset' => 2,
-                    'length' => 3,
-                ],
-                [
-                    'header' => 'Skip 2 columns and group 2 next',
-                    'offset' => 0,
-                    'length' => 3,
-                ],
-            ],*/
+            /* 'headerColumnUnions' => $headerColumns[
+                 [
+                     'header' => 'Skip 1 column and group 2 next',
+                     'offset' => 2,
+                     'length' => 3,
+                 ],
+                 [
+                     'header' => 'Skip 2 columns and group 2 next',
+                     'offset' => 0,
+                     'length' => 3,
+                 ],
+             ],*/
         ]);
         $i        = "A";
         $t        = ['масса', 'цена', 'сумма'];
