@@ -24,7 +24,7 @@ class ReportController extends \yii\web\Controller
         $sheet->setCellValue("A1", "Дата")->mergeCells("A1:A2");
         $sheet->setCellValue("B1", "Касса")->mergeCells("B1:B2");
 //        print_r($this->getLetterIdx($columnsCount));die;
-        $sheet->getStyleByColumnAndRow("A", 3, $this->getLetterIdx($columnsCount), 3)->applyFromArray([
+        $sheet->getStyle("A3:" . $this->getLetterIdx($columnsCount) . 3)->applyFromArray([
             'fill'      => [
                 'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
                 'color'    => [
