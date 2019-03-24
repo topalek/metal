@@ -136,8 +136,9 @@ class Operation extends ActiveRecord {
 
     public function getNameList(){
         return [
-            static::TYPE_BUY  => 'Покупка',
-            static::TYPE_SELL => 'Продажа',
+            static::TYPE_BUY       => 'Покупка',
+            static::TYPE_SELL      => 'Продажа',
+            static::TYPE_FILL_CASH => 'Пополнение кассы',
         ];
     }
 }

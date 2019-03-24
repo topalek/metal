@@ -12,94 +12,111 @@ use PhpOffice\PhpSpreadsheet\Writer\Xls;
 use Yii;
 use yii\helpers\ArrayHelper;
 use yii\web\Controller;
-use function count;
-use function print_r;
-use function strtotime;
 
 class ReportController extends Controller {
 
     public function actionIndex(){
 
 
-        $spreadsheet       = new Spreadsheet();
-        $sheet             = $spreadsheet->getActiveSheet();
-        $operations        = Operation::getArrayForReport(Operation::find()->asArray()->all());
-        $products          = Product::getList();
-        $columnsCount      = (count($products) * 3) + 2;
-        $sellStyle         = [
+        $spreadsheet  = new Spreadsheet();
+        $sheet        = $spreadsheet->getActiveSheet();
+        $operations   = Operation::getArrayForReport(Operation::find()->asArray()->all());
+        $products     = Product::getList();
+        $columnsCount = (count($products) * 3) + 2;
+        $sellStyle    = [
             'fill' => [
                 'fillType' => Fill::FILL_SOLID,
                 'color'    => [
-                    'rgb' => 'ff7a70', // красный
+                    'rgb' => 'ffc66d', // orange
                 ],
             ],
         ];
-        $cash              = [
+        $totalStyle   = [
             'fill' => [
                 'fillType' => Fill::FILL_SOLID,
                 'color'    => [
-                    'rgb' => 'bff6ff', // красный
+                    'rgb' => 'fceabb', // yellow
                 ],
             ],
         ];
-        $alignStyle        = [
+        $cash         = [
+            'fill' => [
+                'fillType' => Fill::FILL_SOLID,
+                'color'    => [
+                    'rgb' => 'bff6ff', // blue
+                ],
+            ],
+        ];
+        $alignStyle   = [
             'alignment' => [
                 'horizontal' => Alignment::HORIZONTAL_CENTER,
                 'vertical'   => Alignment::VERTICAL_CENTER,
             ]
         ];
-        $lastColumn        = $this->getLetterIdx($columnsCount);
-        $rowIndex          = 1;
-        $columnNumberIndex = 1;
+        $lastColumn   = $this->getLetterIdx($columnsCount);
+        $rowIndex     = 1;
         foreach ($operations as $i => $operation){
-            $columnIndex = $startColumn = 'A';
-            $date        = date("d.m.Y", strtotime($operation['created_at']));
+            $columnNumberIndex = 1;
+            $columnIndex       = $startColumn = 'A';
+            $date              = date("d.m.Y", strtotime($operation['created_at']));
             if ($operation['type'] == 0){
                 $sheet->getStyle($startColumn . $rowIndex . ":" . $lastColumn . $rowIndex)->applyFromArray($sellStyle);
             }
             if ($operation['type'] == 2){
                 $sheet->getStyle($startColumn . $rowIndex . ":" . $lastColumn . $rowIndex)->applyFromArray($cash);
-                while ($columnIndex <= $lastColumn){
+                while ($columnIndex !== $lastColumn){
                     if ($columnIndex == "A"){
                         $sheet->setCellValue($columnIndex . $rowIndex, $date);
                         $columnIndex ++;
+                        $columnNumberIndex ++;
                         continue;
                     }
                     if ($columnIndex == "B"){
                         $sheet->setCellValue($columnIndex . $rowIndex, $operation['sum']);
                         $columnIndex ++;
+                        $columnNumberIndex ++;
                         continue;
                     }
                     $sheet->setCellValue($columnIndex . $rowIndex, 0);
                     $columnIndex ++;
+                    $columnNumberIndex ++;
                 }
                 continue;
             }
 
-            while ($columnIndex <= $lastColumn){
-                print_r($operation);
-                die;
+            while ($columnIndex !== $lastColumn){
+
                 if ($columnIndex == "A"){
                     $sheet->setCellValue($columnIndex . $rowIndex, $date);
                     $columnIndex ++;
+                    $columnNumberIndex ++;
                     continue;
                 }
                 if ($columnIndex == "B"){
                     $sheet->setCellValue($columnIndex . $rowIndex, 0);
                     $columnIndex ++;
+                    $columnNumberIndex ++;
                     continue;
                 }
-                foreach ($operation['products'] as $id => $product){
-                    print_r($product);
-                    die;
-                    $sheet->setCellValue($columnIndex . $rowIndex, $product['weight']);
-                    $columnIndex ++;
-                    $sheet->setCellValue($columnIndex . $rowIndex, $product['sale_price']);
-                    $columnIndex ++;
-                    $sheet->setCellValue($columnIndex . $rowIndex, $product['total']);
-                    $columnIndex ++;
-                    continue;
+                if (isset($operation['products']) && $operation['products']){
+                    foreach ($operation['products'] as $id => $product){
+
+                        try {
+                            $sheet->setCellValue($columnIndex . $rowIndex, $product['weight']);
+                        }catch (\Exception $e){
+                            echo "<pre>";
+                            print_r([$columnIndex, $rowIndex, $product]);
+                            die;
+                        }
+                        $columnIndex ++;
+                        //$sheet->setCellValue($columnIndex . $rowIndex, $product['sale_price']);
+                        //$columnIndex ++;$k++;
+                        //$sheet->setCellValue($columnIndex . $rowIndex, $product['total'])->getStyle($columnIndex . $rowIndex)->applyFromArray($totalStyle);
+                        //$columnIndex ++;
+                        //continue;
+                    }
                 }
+
                 continue;
             }
             $rowIndex ++;
@@ -129,7 +146,7 @@ class ReportController extends Controller {
         $xls = new Xls($spreadsheet);
         $xls->save('file.xls');
 
-        return Yii::$app->response->sendFile('file.xls');
+        //return Yii::$app->response->sendFile('file.xls');
 
         return $this->render('index');
     }
@@ -165,7 +182,7 @@ class ReportController extends Controller {
 
     public function getLetterIdx(int $idx){
         $lIdx = "A";
-        for ($i = 1; $i <= $idx; $i ++){
+        for ($i = 1; $i < $idx; $i ++){
             $lIdx ++;
         }
 

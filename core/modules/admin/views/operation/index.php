@@ -29,11 +29,21 @@ $this->params['breadcrumbs'][] = $this->title;
             'emptyText'    => 'Операций не найдено',
             'summary'      => 'Операций не найдено',
             'rowOptions'   => function ($model) {
-                return $model->type == Operation::TYPE_BUY ? ['class' => 'info'] : ['class' => 'danger'];
+                if ($model->type == Operation::TYPE_BUY){
+                    return ['class' => 'info'];
+                }
+                if ($model->type == Operation::TYPE_FILL_CASH){
+                    return ['class' => 'success'];
+                }
+
+                return ['class' => 'danger'];
             },
-            'afterRow'     => function ($item) {
+            'afterRow'     => function ($model){
+                if ($model->type == Operation::TYPE_FILL_CASH){
+                    return "";
+                }
                 $html = '<tr><th>название</th><th>вес</th><th>цена</th><th>засор</th><th>общаяя стоимость</th></tr> ';
-                foreach ($item->products as $product) {
+                foreach ($model->products as $product){
                     $html .= '<tr><td>' . $product['title'] . '</td><td>' . $product['weight'] . '</td><td>' . $product['sale_price'] . '</td><td>' . $product['dirt'] . '</td><td>' . $product['total'] . '</td></tr>';
                 }
 
