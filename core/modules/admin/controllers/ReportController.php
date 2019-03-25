@@ -12,11 +12,14 @@ use PhpOffice\PhpSpreadsheet\Writer\Xls;
 use Yii;
 use yii\helpers\ArrayHelper;
 use yii\web\Controller;
+use function print_r;
 
 class ReportController extends Controller {
 
     public function actionIndex(){
 
+        print_r(Yii::$app->runtimePath);
+        die;
 
         $spreadsheet  = new Spreadsheet();
         $sheet        = $spreadsheet->getActiveSheet();
@@ -59,19 +62,19 @@ class ReportController extends Controller {
             $columnNumberIndex = 1;
             $columnIndex       = $startColumn = 'A';
             $date              = date("d.m.Y", strtotime($operation['created_at']));
-            if ($operation['type'] == 0){
+            if ($operation['type'] == 1){
                 $sheet->getStyle($startColumn . $rowIndex . ":" . $lastColumn . $rowIndex)->applyFromArray($sellStyle);
             }
             if ($operation['type'] == 2){
                 $sheet->getStyle($startColumn . $rowIndex . ":" . $lastColumn . $rowIndex)->applyFromArray($cash);
-                while ($columnIndex !== $lastColumn){
-                    if ($columnIndex == "A"){
+                while ($columnNumberIndex < $columnsCount){
+                    if ($columnNumberIndex == 1){
                         $sheet->setCellValue($columnIndex . $rowIndex, $date);
                         $columnIndex ++;
                         $columnNumberIndex ++;
                         continue;
                     }
-                    if ($columnIndex == "B"){
+                    if ($columnNumberIndex == 2){
                         $sheet->setCellValue($columnIndex . $rowIndex, $operation['sum']);
                         $columnIndex ++;
                         $columnNumberIndex ++;
@@ -81,47 +84,38 @@ class ReportController extends Controller {
                     $columnIndex ++;
                     $columnNumberIndex ++;
                 }
+                $rowIndex ++;
                 continue;
             }
 
-            while ($columnIndex !== $lastColumn){
-
-                if ($columnIndex == "A"){
+            for ($columnNumberIndex = 1; $columnNumberIndex < $columnsCount; $columnNumberIndex ++){
+                if ($columnNumberIndex == 1){
                     $sheet->setCellValue($columnIndex . $rowIndex, $date);
                     $columnIndex ++;
                     $columnNumberIndex ++;
                     continue;
                 }
-                if ($columnIndex == "B"){
+                if ($columnNumberIndex == 2){
                     $sheet->setCellValue($columnIndex . $rowIndex, 0);
                     $columnIndex ++;
                     $columnNumberIndex ++;
                     continue;
                 }
-                if (isset($operation['products']) && $operation['products']){
-                    foreach ($operation['products'] as $id => $product){
 
-                        try {
-                            $sheet->setCellValue($columnIndex . $rowIndex, $product['weight']);
-                        }catch (\Exception $e){
-                            echo "<pre>";
-                            print_r([$columnIndex, $rowIndex, $product]);
-                            die;
+                if (isset($operation['products']) && $operation['products']){
+                    $columnIndex = "C";
+                    foreach ($operation['products'] as $id => $product){
+                        foreach ($product as $key => $item){
+                            $sheet->setCellValue($columnIndex . $rowIndex, $item);
+                            $columnIndex ++;
+
                         }
-                        $columnIndex ++;
-                        //$sheet->setCellValue($columnIndex . $rowIndex, $product['sale_price']);
-                        //$columnIndex ++;$k++;
-                        //$sheet->setCellValue($columnIndex . $rowIndex, $product['total'])->getStyle($columnIndex . $rowIndex)->applyFromArray($totalStyle);
-                        //$columnIndex ++;
-                        //continue;
                     }
                 }
-
-                continue;
             }
             $rowIndex ++;
         }
-        //print_r($headerColumns);die;
+
         $t = ['масса', 'цена', 'сумма'];
         //$sheet->setCellValue("A1", "Дата")->mergeCells("A1:A2");
         //$sheet->setCellValue("B1", "Касса")->mergeCells("B1:B2");
