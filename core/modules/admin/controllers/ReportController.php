@@ -12,21 +12,64 @@ use PhpOffice\PhpSpreadsheet\Writer\Xls;
 use Yii;
 use yii\helpers\ArrayHelper;
 use yii\web\Controller;
-use function print_r;
 
 class ReportController extends Controller {
 
     public function actionIndex(){
 
-        print_r(Yii::$app->runtimePath);
-        die;
+        $operations = Operation::getArrayForReport(Operation::find()->asArray()->all());
 
-        $spreadsheet  = new Spreadsheet();
-        $sheet        = $spreadsheet->getActiveSheet();
-        $operations   = Operation::getArrayForReport(Operation::find()->asArray()->all());
-        $products     = Product::getList();
-        $columnsCount = (count($products) * 3) + 2;
-        $sellStyle    = [
+
+        //return Yii::$app->response->sendFile('file.xls');
+
+        return $this->render('index');
+    }
+
+    public function actionDay(){
+        $date       = date('Y-m-d');
+        $operations = Operation::find()->where(['created_at' => $date])->all();
+
+        return $this->render('day', ["operations" => $operations, "date" => $date]);
+
+    }
+
+    public function actionPeriod(){
+        $post     = Yii::$app->request->post();
+        $fromDate = ArrayHelper::getValue($post, 'from_date');
+        $toDate   = ArrayHelper::getValue($post, 'to_date');
+        if ( ! $fromDate or ! $toDate){
+            throw new InvalidArgumentException('Неверно заполнена дата');
+        }
+        $fromDate   = date('Y-m-d', strtotime($fromDate));
+        $toDate     = date('Y-m-d', strtotime($toDate));
+        $date       = $fromDate . " - " . $toDate;
+        $operations = Operation::find()
+            //            ->where(['>=', 'created_at', $fromDate])
+            //            ->andWhere(['<=', 'created_at', $toDate])
+                               ->asArray()
+                               ->all();
+
+
+        return $this->render('period', ["operations" => $operations, "date" => $date]);
+
+    }
+
+    public function getLetterIdx(int $idx){
+        $lIdx = "A";
+        for ($i = 1; $i < $idx; $i ++){
+            $lIdx ++;
+        }
+
+        return $lIdx;
+    }
+
+    public function generateReportFile(array $operations){
+        $fileName          = Yii::$app->runtimePath . "/report.xls";
+        $spreadsheet       = new Spreadsheet();
+        $sheet             = $spreadsheet->getActiveSheet();
+        $products          = Product::getList();
+        $columnsCount      = (count($products) * 3) + 2;
+        $sellStyle         = [
             'fill' => [
                 'fillType' => Fill::FILL_SOLID,
                 'color'    => [
@@ -34,7 +77,7 @@ class ReportController extends Controller {
                 ],
             ],
         ];
-        $totalStyle   = [
+        $totalStyle        = [
             'fill' => [
                 'fillType' => Fill::FILL_SOLID,
                 'color'    => [
@@ -42,7 +85,7 @@ class ReportController extends Controller {
                 ],
             ],
         ];
-        $cash         = [
+        $cash              = [
             'fill' => [
                 'fillType' => Fill::FILL_SOLID,
                 'color'    => [
@@ -50,14 +93,24 @@ class ReportController extends Controller {
                 ],
             ],
         ];
-        $alignStyle   = [
+        $alignStyle        = [
             'alignment' => [
                 'horizontal' => Alignment::HORIZONTAL_CENTER,
                 'vertical'   => Alignment::VERTICAL_CENTER,
             ]
         ];
-        $lastColumn   = $this->getLetterIdx($columnsCount);
-        $rowIndex     = 1;
+        $lastColumn        = $this->getLetterIdx($columnsCount);
+        $rowIndex          = 1;
+        $columnNumberIndex = 3;
+        $columnIndex       = $startColumn = 'C';
+        $t                 = ['масса', 'цена', 'сумма'];
+
+        $sheet->setCellValue("A1", "Дата")->mergeCells("A1:A2")->getStyle("A1:A2")->applyFromArray($alignStyle);
+        $sheet->setCellValue("B1", "Касса")->mergeCells("B1:B2")->getStyle("B1:B2")->applyFromArray($alignStyle);
+        while ($columnNumberIndex < $columnsCount){
+
+        }
+
         foreach ($operations as $i => $operation){
             $columnNumberIndex = 1;
             $columnIndex       = $startColumn = 'A';
@@ -116,9 +169,7 @@ class ReportController extends Controller {
             $rowIndex ++;
         }
 
-        $t = ['масса', 'цена', 'сумма'];
-        //$sheet->setCellValue("A1", "Дата")->mergeCells("A1:A2");
-        //$sheet->setCellValue("B1", "Касса")->mergeCells("B1:B2");
+
         //        print_r($this->getLetterIdx($columnsCount));die;
         //$sheet->getStyle("A3:" . $this->getLetterIdx($columnsCount) . 3)->applyFromArray();
 
@@ -138,50 +189,8 @@ class ReportController extends Controller {
         //        ]);
 
         $xls = new Xls($spreadsheet);
-        $xls->save('file.xls');
+        $xls->save($fileName);
 
-        //return Yii::$app->response->sendFile('file.xls');
-
-        return $this->render('index');
+        return $fileName;
     }
-
-    public function actionDay(){
-        $date       = date('Y-m-d');
-        $operations = Operation::find()->where(['created_at' => $date])->all();
-
-        return $this->render('day', ["operations" => $operations, "date" => $date]);
-
-    }
-
-    public function actionPeriod(){
-        $post     = Yii::$app->request->post();
-        $fromDate = ArrayHelper::getValue($post, 'from_date');
-        $toDate   = ArrayHelper::getValue($post, 'to_date');
-        if ( ! $fromDate or ! $toDate){
-            throw new InvalidArgumentException('Неверно заполнена дата');
-        }
-        $fromDate   = date('Y-m-d', strtotime($fromDate));
-        $toDate     = date('Y-m-d', strtotime($toDate));
-        $date       = $fromDate . " - " . $toDate;
-        $operations = Operation::find()
-            //            ->where(['>=', 'created_at', $fromDate])
-            //            ->andWhere(['<=', 'created_at', $toDate])
-                               ->asArray()
-                               ->all();
-
-
-        return $this->render('period', ["operations" => $operations, "date" => $date]);
-
-    }
-
-    public function getLetterIdx(int $idx){
-        $lIdx = "A";
-        for ($i = 1; $i < $idx; $i ++){
-            $lIdx ++;
-        }
-
-        return $lIdx;
-    }
-
-
 }
