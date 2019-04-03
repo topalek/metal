@@ -7,6 +7,7 @@ use app\modules\admin\models\Product;
 use InvalidArgumentException;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Writer\Xls;
 use Yii;
@@ -17,19 +18,16 @@ class ReportController extends Controller {
 
     public function actionIndex(){
 
-        $operations = Operation::getArrayForReport(Operation::find()->asArray()->all());
-
-
-        //return Yii::$app->response->sendFile('file.xls');
-
         return $this->render('index');
     }
 
     public function actionDay(){
         $date       = date('Y-m-d');
-        $operations = Operation::find()->where(['created_at' => $date])->all();
+        $operations = Operation::find()->where(['created_at' => $date])->asArray()->all();
+        $operations = Operation::getArrayForReport($operations);
+        $file       = $this->generateReportFile($operations);
 
-        return $this->render('day', ["operations" => $operations, "date" => $date]);
+        return Yii::$app->response->sendFile($file);
 
     }
 
@@ -42,15 +40,17 @@ class ReportController extends Controller {
         }
         $fromDate   = date('Y-m-d', strtotime($fromDate));
         $toDate     = date('Y-m-d', strtotime($toDate));
-        $date       = $fromDate . " - " . $toDate;
         $operations = Operation::find()
-            //            ->where(['>=', 'created_at', $fromDate])
-            //            ->andWhere(['<=', 'created_at', $toDate])
+                               ->where(['>=', 'created_at', $fromDate])
+                               ->andWhere(['<=', 'created_at', $toDate])
                                ->asArray()
                                ->all();
 
 
-        return $this->render('period', ["operations" => $operations, "date" => $date]);
+        $operations = Operation::getArrayForReport($operations);
+        $file       = $this->generateReportFile($operations);
+
+        return Yii::$app->response->sendFile($file);
 
     }
 
@@ -70,26 +70,104 @@ class ReportController extends Controller {
         $products          = Product::getList();
         $columnsCount      = (count($products) * 3) + 2;
         $sellStyle         = [
-            'fill' => [
+            'fill'    => [
                 'fillType' => Fill::FILL_SOLID,
                 'color'    => [
                     'rgb' => 'ffc66d', // orange
                 ],
             ],
+            'borders' => [
+                'top'    => [
+                    'borderStyle' => Border::BORDER_THIN,
+                    'color'       => [
+                        'rgb' => 'd0d7e5'
+                    ]
+                ],
+                'bottom' => [
+                    'borderStyle' => Border::BORDER_THIN,
+                    'color'       => [
+                        'rgb' => 'd0d7e5'
+                    ]
+                ],
+                'left'   => [
+                    'borderStyle' => Border::BORDER_THIN,
+                    'color'       => [
+                        'rgb' => 'd0d7e5'
+                    ]
+                ],
+                'right'  => [
+                    'borderStyle' => Border::BORDER_THIN,
+                    'color'       => [
+                        'rgb' => 'd0d7e5'
+                    ]
+                ],
+            ],
         ];
         $totalStyle        = [
-            'fill' => [
+            'fill'    => [
                 'fillType' => Fill::FILL_SOLID,
                 'color'    => [
                     'rgb' => 'fceabb', // yellow
                 ],
             ],
+            'borders' => [
+                'top'    => [
+                    'borderStyle' => Border::BORDER_THIN,
+                    'color'       => [
+                        'rgb' => 'd0d7e5'
+                    ]
+                ],
+                'bottom' => [
+                    'borderStyle' => Border::BORDER_THIN,
+                    'color'       => [
+                        'rgb' => 'd0d7e5'
+                    ]
+                ],
+                'left'   => [
+                    'borderStyle' => Border::BORDER_THIN,
+                    'color'       => [
+                        'rgb' => 'd0d7e5'
+                    ]
+                ],
+                'right'  => [
+                    'borderStyle' => Border::BORDER_THIN,
+                    'color'       => [
+                        'rgb' => 'd0d7e5'
+                    ]
+                ],
+            ],
         ];
         $cash              = [
-            'fill' => [
+            'fill'    => [
                 'fillType' => Fill::FILL_SOLID,
                 'color'    => [
                     'rgb' => 'bff6ff', // blue
+                ],
+            ],
+            'borders' => [
+                'top'    => [
+                    'borderStyle' => Border::BORDER_THIN,
+                    'color'       => [
+                        'rgb' => 'd0d7e5'
+                    ]
+                ],
+                'bottom' => [
+                    'borderStyle' => Border::BORDER_THIN,
+                    'color'       => [
+                        'rgb' => 'd0d7e5'
+                    ]
+                ],
+                'left'   => [
+                    'borderStyle' => Border::BORDER_THIN,
+                    'color'       => [
+                        'rgb' => 'd0d7e5'
+                    ]
+                ],
+                'right'  => [
+                    'borderStyle' => Border::BORDER_THIN,
+                    'color'       => [
+                        'rgb' => 'd0d7e5'
+                    ]
                 ],
             ],
         ];
@@ -104,13 +182,33 @@ class ReportController extends Controller {
         $columnNumberIndex = 3;
         $columnIndex       = $startColumn = 'C';
         $t                 = ['масса', 'цена', 'сумма'];
-
+        $i                 = 1;
         $sheet->setCellValue("A1", "Дата")->mergeCells("A1:A2")->getStyle("A1:A2")->applyFromArray($alignStyle);
         $sheet->setCellValue("B1", "Касса")->mergeCells("B1:B2")->getStyle("B1:B2")->applyFromArray($alignStyle);
-        while ($columnNumberIndex < $columnsCount){
 
+        foreach ($products as $i => $product){
+            $endCol = $this->getLetterIdx(($i * 3) + 2);
+            $sheet->setCellValue($columnIndex . $rowIndex, $product)->mergeCells($columnIndex . $rowIndex . ":" . $endCol . $rowIndex)->getStyle($columnIndex . $rowIndex . ":" . $endCol . $rowIndex)->applyFromArray($alignStyle);
+            $columnIndex ++;
+            $columnIndex ++;
+            $columnIndex ++;
         }
-
+        $rowIndex ++;
+        $columnNumberIndex = 3;
+        $columnIndex       = $startColumn = 'C';
+        while ($columnNumberIndex < $columnsCount){
+            $tIdx = 0;
+            foreach ($t as $item){
+                if ($tIdx == 2){
+                    $sheet->getStyle($columnIndex . ($rowIndex))->applyFromArray(array_merge($totalStyle, $alignStyle));
+                }
+                $sheet->setCellValue($columnIndex . ($rowIndex), $item)->getStyle($columnIndex . ($rowIndex))->applyFromArray($alignStyle);
+                $tIdx ++;
+                $columnIndex ++;
+                $columnNumberIndex ++;
+            }
+        }
+        $rowIndex ++;
         foreach ($operations as $i => $operation){
             $columnNumberIndex = 1;
             $columnIndex       = $startColumn = 'A';
@@ -156,11 +254,16 @@ class ReportController extends Controller {
                 }
 
                 if (isset($operation['products']) && $operation['products']){
-                    $columnIndex = "C";
+                    $columnIndex       = "C";
+                    $columnNumberIndex = 3;
                     foreach ($operation['products'] as $id => $product){
                         foreach ($product as $key => $item){
+                            if ($columnNumberIndex % 3 == 2){
+                                $sheet->getStyle($columnIndex . $rowIndex)->applyFromArray($totalStyle);
+                            }
                             $sheet->setCellValue($columnIndex . $rowIndex, $item);
                             $columnIndex ++;
+                            $columnNumberIndex ++;
 
                         }
                     }
@@ -168,25 +271,6 @@ class ReportController extends Controller {
             }
             $rowIndex ++;
         }
-
-
-        //        print_r($this->getLetterIdx($columnsCount));die;
-        //$sheet->getStyle("A3:" . $this->getLetterIdx($columnsCount) . 3)->applyFromArray();
-
-        //        $sheet->setCellValue("C3", "Hello world");
-        //        $sheet->setCellValue("A1", "Metal");
-        //        $sheet->mergeCells("A1:C1")->getStyle("A1:C1")->applyFromArray([
-        //            'fill'      => [
-        //                'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
-        //                'color'    => [
-        //                    'rgb' => 'ff7a70', // красный
-        //                ],
-        //            ],
-        //            'alignment' => [
-        //                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
-        //                'vertical'   => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
-        //            ],
-        //        ]);
 
         $xls = new Xls($spreadsheet);
         $xls->save($fileName);
