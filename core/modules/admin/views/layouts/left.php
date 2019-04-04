@@ -30,39 +30,39 @@
 			[
 				'options' => ['class' => 'sidebar-menu tree', 'data-widget' => 'tree'],
 				'items'   => [
-					['label' => 'Меню', 'options' => ['class' => 'header']],
-					['label' => 'Gii', 'icon' => 'file-code-o', 'url' => ['/gii']],
+                    ['label' => 'Меню', 'options' => ['class' => 'header']],
+                    //['label' => 'Gii', 'icon' => 'file-code-o', 'url' => ['/gii']],
                     ['label' => 'Пользователи', 'icon' => 'user', 'url' => ['/admin/user']],
                     ['label' => 'Отчет', 'icon' => 'file-excel-o', 'url' => ['/admin/report']],
-					['label' => 'Товары', 'icon' => 'cubes', 'url' => ['/admin/product/']],
-					['label' => 'Операции', 'icon' => 'refresh', 'url' => ['/admin/operation/']],
-					['label' => 'Login', 'url' => ['site/login'], 'visible' => Yii::$app->user->isGuest],
-					[
-						'label' => 'Same tools',
-						'icon'  => 'share',
-						'url'   => '#',
-						'items' => [
-							['label' => 'Gii', 'icon' => 'file-code-o', 'url' => ['/gii'],],
-							['label' => 'Debug', 'icon' => 'dashboard', 'url' => ['/debug'],],
-							[
-								'label' => 'Level One',
-								'icon'  => 'circle-o',
-								'url'   => '#',
-								'items' => [
-									['label' => 'Level Two', 'icon' => 'circle-o', 'url' => '#',],
-									[
-										'label' => 'Level Two',
-										'icon'  => 'circle-o',
-										'url'   => '#',
-										'items' => [
-											['label' => 'Level Three', 'icon' => 'circle-o', 'url' => '#',],
-											['label' => 'Level Three', 'icon' => 'circle-o', 'url' => '#',],
-										],
-									],
-								],
-							],
-						],
-					],
+                    ['label' => 'Товары', 'icon' => 'cubes', 'url' => ['/admin/product/']],
+                    ['label' => 'Операции', 'icon' => 'refresh', 'url' => ['/admin/operation/']],
+                    ['label' => 'Login', 'url' => ['site/login'], 'visible' => Yii::$app->user->isGuest],
+                    /*[
+                        'label' => 'Same tools',
+                        'icon'  => 'share',
+                        'url'   => '#',
+                        'items' => [
+                            ['label' => 'Gii', 'icon' => 'file-code-o', 'url' => ['/gii'],],
+                            ['label' => 'Debug', 'icon' => 'dashboard', 'url' => ['/debug'],],
+                            [
+                                'label' => 'Level One',
+                                'icon'  => 'circle-o',
+                                'url'   => '#',
+                                'items' => [
+                                    ['label' => 'Level Two', 'icon' => 'circle-o', 'url' => '#',],
+                                    [
+                                        'label' => 'Level Two',
+                                        'icon'  => 'circle-o',
+                                        'url'   => '#',
+                                        'items' => [
+                                            ['label' => 'Level Three', 'icon' => 'circle-o', 'url' => '#',],
+                                            ['label' => 'Level Three', 'icon' => 'circle-o', 'url' => '#',],
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],*/
 				],
 			]
 		) ?>
