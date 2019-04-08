@@ -6,6 +6,7 @@
  */
 
 use yii\data\ActiveDataProvider;
+use yii\helpers\Html;
 use yii\widgets\ListView;
 
 /*  @var $this yii\web\View */
@@ -14,14 +15,22 @@ use yii\widgets\ListView;
 
 $this->title = "Метал : " . $model->getTypeName();
 ?>
-<?= ListView::widget([
-	'dataProvider' => $dataProvider,
-	'itemView'     => '_item_view',
-	'itemOptions'  => ['class' => 'col-md-2'],
-	'options'      => ['class' => 'flex flex-w'],
-	'summary'      => '',
-	'viewParams'   => ['operation' => $model],
-]);
+    <div class="col-md-2">
+        <?= Html::ul([]) ?>
+    </div>
+    <div class="col-md-10">
+        <?= ListView::widget([
+            'dataProvider' => $dataProvider,
+            'itemView'     => '_item_view',
+            'itemOptions'  => ['class' => 'col-md-2'],
+            'options'      => ['class' => 'flex flex-w'],
+            'summary'      => '',
+            'viewParams'   => ['operation' => $model],
+        ]); ?>
+    </div>
+
+
+<?php
 $this->registerJs(<<<JS
 $('.operation').attr('href',$('.operation').attr('href')+{$model->type})
 JS

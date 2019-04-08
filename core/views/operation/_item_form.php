@@ -127,7 +127,7 @@ $('.process').on('click',(e)=>{
 
     var products = getFromStorage(type);
     let url = $(e.target).data('url');
-        localStorage.removeItem(name);
+        localStorage.removeItem(getStorageName(type));
 
     $.post(url,{'products':products},(resp)=>{});
 });

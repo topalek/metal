@@ -30,7 +30,10 @@ class InitController extends Controller
 		return ExitCode::OK;
 	}
 
-	public function actionImport(){
+    /**
+     * Команда создает товары из массива
+     */
+    public function actionImport(){
 		$products = [
 			[
 				'price'      => 4.70,
@@ -152,8 +155,17 @@ class InitController extends Controller
 
 	}
 
-	public function actionRbac(){
+    /**
+     *
+     * Команда создает Роли и Разрешения
+     *
+     * @throws \yii\base\Exception
+     */
+    public function actionRbac(){
 
+        //if (\Yii::$app->db->getTableSchema('{{%table_name}}', true) !== null) {
+        //    // какой-то код для работы с данной таблицей...
+        //}
 		$role              = Yii::$app->authManager->createRole('admin');
 		$role->description = 'Администратор';
 		Yii::$app->authManager->add($role);
