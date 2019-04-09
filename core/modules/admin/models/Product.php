@@ -3,6 +3,7 @@
 namespace app\modules\admin\models;
 
 use app\common\BaseModel;
+use Yii;
 use yii\behaviors\SluggableBehavior;
 use yii\helpers\ArrayHelper;
 use yii\helpers\FileHelper;
@@ -148,4 +149,11 @@ class Product extends BaseModel {
 		return $imgSrc;
 	}
 
+    public static function getCachePrice()
+    {
+        $data = Yii::$app->cache->getOrSet('price_list', function () {
+            return Product::find()->where(['status' => Product::STATUS_PUBLISHED])->select(['title', 'price', 'id'])->asArray()->all();
+        });
+        return $data;
+    }
 }

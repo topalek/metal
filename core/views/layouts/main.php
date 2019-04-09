@@ -65,6 +65,7 @@ rmrevin\yii\fontawesome\AssetBundle::register($this);
 					],
 					'linkOptions' => ['class' => 'hidden bg-danger operation']
 				], ['label' => 'ВЫХОД', 'url' => ['/site/logout']],
+            ['label' => '<i class="fa fa-user-secret"></i>', 'url' => ['/admin']],
 
 		],
 	]);

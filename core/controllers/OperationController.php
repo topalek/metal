@@ -40,6 +40,7 @@ class OperationController extends Controller {
 		}
 		$dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
+        $priceList = $this->renderPartial('price_list', ['products' => Product::getCachePrice()]);
 		if (Yii::$app->request->isPost){
 			$post     = Yii::$app->request->post();
 			$products = ArrayHelper::getValue($post, 'products');
@@ -61,8 +62,9 @@ class OperationController extends Controller {
 		}
 
 		return $this->render('create', [
-			'model'        => $model,
-			'dataProvider' => $dataProvider,
+            'model'        => $model,
+            'dataProvider' => $dataProvider,
+            'priceList'    => $priceList,
 		]);
 	}
 

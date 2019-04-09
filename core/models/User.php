@@ -74,7 +74,7 @@ class User extends ActiveRecord implements IdentityInterface
     public function rules()
     {
         return [
-            [['email', 'password'], 'required', 'on' => 'register'],
+            [['email', 'password'], 'required', 'on' => 'registration'],
             [['username', 'auth_key', 'status', 'role', 'rememberMe'], 'safe', 'on' => 'registration'],
             ['email', 'unique', 'message' => 'Еmail уже зарегистрован'],
             ['username', 'unique', 'message' => 'Пользователь уже зарегистрован'],
@@ -82,7 +82,7 @@ class User extends ActiveRecord implements IdentityInterface
             [['status'], 'integer'],
             [
                 ['updated_at', 'created_at', 'username', 'auth_key', 'status'], 'safe',
-                'on' => 'register',
+                'on' => 'registration',
             ],
             [['email', 'username', 'password', 'auth_key', 'access_token'], 'string', 'max' => 255],
 
@@ -238,7 +238,10 @@ class User extends ActiveRecord implements IdentityInterface
 
     public function afterSave($insert, $changedAttributes)
     {
-        $this->assignRole();
+        if ($insert) {
+            $this->assignRole();
+        }
+
         parent::afterSave($insert, $changedAttributes);
     }
 

@@ -3,22 +3,25 @@
  * Created by topalek
  * Date: 31.10.2018
  * Time: 20:31
+ *
+ * @var $this         yii\web\View
+ * @var $model        app\modules\admin\models\Operation
+ * @var $dataProvider ActiveDataProvider
+ * @var $priceList    string
+ *
  */
 
 use yii\data\ActiveDataProvider;
-use yii\helpers\Html;
 use yii\widgets\ListView;
 
-/*  @var $this yii\web\View */
-/* @var $model app\modules\admin\models\Operation */
-/* @var $dataProvider ActiveDataProvider */
 
 $this->title = "Метал : " . $model->getTypeName();
 ?>
-    <div class="col-md-2">
-        <?= Html::ul([]) ?>
+    <div class="row">
+        <div class="col-md-4">
+            <?= $priceList ?>
     </div>
-    <div class="col-md-10">
+        <div class="col-md-8">
         <?= ListView::widget([
             'dataProvider' => $dataProvider,
             'itemView'     => '_item_view',
@@ -28,6 +31,8 @@ $this->title = "Метал : " . $model->getTypeName();
             'viewParams'   => ['operation' => $model],
         ]); ?>
     </div>
+    </div>
+
 
 
 <?php

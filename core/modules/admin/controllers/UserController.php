@@ -109,9 +109,13 @@ class UserController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
+        $model->scenario = "registration";
         $model->password = '';
         if ($model->load(Yii::$app->request->post())) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            if ($model->save()) {
+                return $this->redirect(['view', 'id' => $model->id]);
+            }
+
         }
 
         return $this->render('update', [
@@ -127,6 +131,8 @@ class UserController extends Controller
      *
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
+     * @throws \Throwable
+     * @throws \yii\db\StaleObjectException
      */
     public function actionDelete($id)
     {
