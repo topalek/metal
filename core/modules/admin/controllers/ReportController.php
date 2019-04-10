@@ -215,6 +215,7 @@ class ReportController extends Controller {
             $date              = date("d.m.Y", strtotime($operation['created_at']));
             if ($operation['type'] == 1){
                 $sheet->getStyle($startColumn . $rowIndex . ":" . $lastColumn . $rowIndex)->applyFromArray($sellStyle);
+                $sheet->setCellValue("B" . $rowIndex, $operation['comment']);
             }
             if ($operation['type'] == 2){
                 $sheet->getStyle($startColumn . $rowIndex . ":" . $lastColumn . $rowIndex)->applyFromArray($cash);

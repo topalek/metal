@@ -145,3 +145,28 @@ a.desc:after {
     margin: 10px 5px;
     display: block;
 }
+
+.check {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.check input[type=checkbox] {
+    display: none;
+}
+
+.check label {
+    display: block;
+    padding: 10px 20px;
+    color: #ffffff;
+    background-color: #999;
+    border-radius: 7px;
+    margin: 5px;
+    cursor: pointer;
+}
+
+.check input[type=checkbox]:checked + label {
+    background-color: #d23232;
+}

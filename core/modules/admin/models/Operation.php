@@ -99,6 +99,7 @@ class Operation extends ActiveRecord {
             'type'       => 'Тип операции',
             'typeName'   => 'Тип операции',
             'sum'        => 'Общая сумма',
+            'comment'    => 'Коментарий',
             'status'     => 'Проведенные',
             'updated_at' => 'Дата обновления',
             'created_at' => 'Дата создания',

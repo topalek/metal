@@ -77,7 +77,12 @@ class BaseModel extends ActiveRecord {
 		return $models;
 	}
 
-	/**
+    public static function getTitle($key)
+    {
+        return ArrayHelper::getValue(self::getList(), $key);
+    }
+
+    /**
 	 * @param null $table
 	 * @param string $field
 	 *
