@@ -50,7 +50,7 @@ $data = ($type == Operation::TYPE_BUY) ? [
                         <div class="col-md-12">
                             <div class="form-group">
 	                            <?= Html::label('Вес', 'weight') ?>
-                                <?= Html::input('text', 'weight', null, [
+                                <?= Html::input('number', 'weight', null, [
 			                            'class' => 'form-control weight',
 			                            'data'  => $data
 		                            ]
@@ -60,32 +60,23 @@ $data = ($type == Operation::TYPE_BUY) ? [
                         <div class="col-md-12">
                             <div class="form-group">
 	                            <?= Html::label('Цена', 'sale_price') ?>
-	                            <?= Html::input('text', 'sale_price', $model->price, ['class' => 'form-control price']) ?>
+                                <?= Html::input('number', 'sale_price', $model->price, ['class' => 'form-control price']) ?>
                             </div>
                         </div>
                         <div class="col-md-12">
                             <div class="form-group">
 	                            <?= Html::label('Засор %', 'dirt') ?>
-	                            <?= Html::input('text', 'dirt', 0, ['class' => 'form-control dirt']) ?>
+                                <?= Html::input('number', 'dirt', 0, ['class' => 'form-control dirt']) ?>
                             </div>
                         </div>
                         <div class="col-md-12">
                             <div class="form-group">
 	                            <?= Html::label('Стоимость', 'total') ?>
-	                            <?= Html::input('text', 'total', 0, ['class' => 'form-control total']) ?>
+                                <?= Html::input('number', 'total', 0, ['class' => 'form-control total']) ?>
 	                            <?= Html::hiddenInput('title', $model->title) ?>
 	                            <?= Html::hiddenInput('id', $model->id) ?>
                             </div>
                         </div>
-	                    <?php if ($type == Operation::TYPE_SELL): ?>
-                            <div class="col-md-12">
-                                <div class="form-group">
-				                    <?= Html::label('Коментарий', 'comment') ?>
-				                    <?= Html::textarea('comment', '', ['class' => 'form-control', 'rows' => 3]) ?>
-
-                                </div>
-                            </div>
-	                    <?php endif; ?>
 
                     </div>
                 </div>
