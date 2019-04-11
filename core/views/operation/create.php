@@ -25,7 +25,7 @@ $this->title = "Метал : " . $model->getTypeName();
         <?= ListView::widget([
             'dataProvider' => $dataProvider,
             'itemView'     => '_item_view',
-            'itemOptions'  => ['class' => 'col-md-2'],
+            'itemOptions'  => ['class' => 'col-md-3'],
             'options'      => ['class' => 'flex flex-w'],
             'summary'      => '',
             'viewParams'   => ['operation' => $model],
