@@ -50,7 +50,7 @@ $data = ($type == Operation::TYPE_BUY) ? [
                         <div class="col-md-12">
                             <div class="form-group">
 	                            <?= Html::label('Вес', 'weight') ?>
-	                            <?= Html::input('text', 'weight', 0, [
+                                <?= Html::input('text', 'weight', null, [
 			                            'class' => 'form-control weight',
 			                            'data'  => $data
 		                            ]
