@@ -156,4 +156,13 @@ class Product extends BaseModel {
         });
         return $data;
     }
+
+    public function afterSave($insert, $changedAttributes){
+        Yii::$app->cache->set('price_list', Product::find()->where(['status' => Product::STATUS_PUBLISHED])->select([
+            'title', 'price', 'id'
+        ])->asArray()->all());
+        parent::afterSave($insert, $changedAttributes);
+    }
+
+
 }
