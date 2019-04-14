@@ -18,9 +18,6 @@ use yii\widgets\ListView;
 $this->title = "Метал : " . $model->getTypeName();
 ?>
     <div class="row">
-        <div class="col-md-4 hidden-sm hidden-xs">
-            <?= $priceList ?>
-    </div>
         <div class="col-md-8">
         <?= ListView::widget([
             'dataProvider' => $dataProvider,
@@ -31,6 +28,9 @@ $this->title = "Метал : " . $model->getTypeName();
             'viewParams'   => ['operation' => $model],
         ]); ?>
     </div>
+        <div class="col-md-4">
+            <?= $priceList ?>
+        </div>
     </div>
 
 
