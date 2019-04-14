@@ -165,6 +165,7 @@ $('#calculate').on('click',()=>{
     });
     let formTotal = $('.total').val();
     total += parseFloat(formTotal);
+    total = Math.ceil(total*100)/100;
     $('#total').html("Всего: "+total+" грн." );
 });
 JS
