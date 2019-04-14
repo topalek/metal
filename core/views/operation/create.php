@@ -18,14 +18,14 @@ use yii\widgets\ListView;
 $this->title = "Метал : " . $model->getTypeName();
 ?>
     <div class="row">
-        <div class="col-md-4">
+        <div class="col-md-4 hidden-sm hidden-xs">
             <?= $priceList ?>
     </div>
         <div class="col-md-8">
         <?= ListView::widget([
             'dataProvider' => $dataProvider,
             'itemView'     => '_item_view',
-            'itemOptions'  => ['class' => 'col-md-3'],
+            'itemOptions'  => ['class' => 'col-md-3 col-sm-3 col-xs-4'],
             'options'      => ['class' => 'flex flex-w'],
             'summary'      => '',
             'viewParams'   => ['operation' => $model],
