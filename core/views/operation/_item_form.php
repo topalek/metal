@@ -136,16 +136,16 @@ $('.remove-item').on('click',(e)=>{
 });
 $('input').on('input',(e)=>{
     let el = $(e.target),
-    price = $('.price').val(),
-    weight = $('.weight').val(),
-    discount_price = $('.weight').data('discount_price'),
-    discount_weight = $('.weight').data('discount_weight'),
-    _price = $('.weight').data('price'),
-    dirt = $('.dirt').val(),
+    price = parseFloat($('.price').val()),
+    weight = parseFloat($('.weight').val()),
+    discount_price = parseFloat($('.weight').data('discount_price')),
+    discount_weight = parseFloat($('.weight').data('discount_weight')),
+    _price = parseFloat($('.weight').data('price')),
+    dirt = parseFloat($('.dirt').val()),
     total = $('.total');
     if (discount_price && discount_weight){
         if (weight>= discount_weight){
-            price = parseFloat(discount_price);
+            price = discount_price;
             $('.price').val(price);
             
         } else {
@@ -153,7 +153,7 @@ $('input').on('input',(e)=>{
             $('.price').val(_price);
         }
     }
-   el.val(el.val().replace(',','.'));
+   // el.val(el.val().replace(',','.'));
    let totalPrice = Math.round((price*(weight - weight*dirt/100))*100)/100;
    total.val(totalPrice);
 });
