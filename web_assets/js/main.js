@@ -24,7 +24,7 @@ function buildItemList(type) {
     if (products) {
         var html = '<ul class="list-group">';
         $.each(products, (i, item) => {
-            html = html + '<li class="list-group-item"> <span class="badge remove-item" data-id="' + item.id + '">&times;</span>' + item.title + ' (' + item.weight + 'x' + item.sale_price + ')' + '</li>';
+            html = html + '<li class="list-group-item"> <span class="badge remove-item" data-id="' + item.id + '">&times;</span>' + item.title + ' (' + item.weight + 'x' + item.sale_price + ') - ' + item.dirt + '% = ' + item.total + '</li>';
         });
         html = html + '</ul>';
         $('.item-list').html(html);

@@ -17,12 +17,15 @@ use yii\widgets\ActiveForm;
     <div class="col-md-2">
 		<?= $form->field($model, 'price')->textInput() ?>
     </div>
-    <div class="col-md-6">
+    <div class="col-md-1">
+        <?= $form->field($model, 'dirt')->input('number') ?>
+    </div>
+    <div class="col-md-5">
         <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-7">
 				<?= $form->field($model, 'amount_for_discount')->textInput() ?>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-5">
 				<?= $form->field($model, 'discount_price')->textInput() ?>
             </div>
         </div>

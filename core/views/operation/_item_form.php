@@ -45,7 +45,7 @@ $data = ($type == Operation::TYPE_BUY) ? [
     <form>
         <div class="product-form box-body">
             <div class="row">
-                <div class="col-md-7">
+                <div class="col-md-5">
                     <div class="row">
                         <div class="col-md-12">
                             <div class="form-group">
@@ -66,7 +66,7 @@ $data = ($type == Operation::TYPE_BUY) ? [
                         <div class="col-md-12">
                             <div class="form-group">
 	                            <?= Html::label('Засор %', 'dirt') ?>
-                                <?= Html::input('number', 'dirt', 0, ['class' => 'form-control dirt']) ?>
+                                <?= Html::input('number', 'dirt', $model->dirt, ['class' => 'form-control dirt']) ?>
                             </div>
                         </div>
                         <div class="col-md-12">
@@ -80,7 +80,7 @@ $data = ($type == Operation::TYPE_BUY) ? [
 
                     </div>
                 </div>
-                <div class="col-md-5">
+                <div class="col-md-7">
                     <div class="item-list"></div>
                     <div id="total"></div>
                 </div>

@@ -19,6 +19,7 @@ use yii\web\UploadedFile;
  * @property string $amount_for_discount         Цена
  * @property string $discount_price              Цена
  * @property string $sale_price                  Цена продажи
+ * @property int $dirt                        Засор
  * @property string $slug                        Слаг
  * @property string $image                       картинка
  * @property int    $status                      Публиковать
@@ -41,11 +42,11 @@ class Product extends BaseModel {
 	 */
 	public function rules(){
 		return [
-			[['title', 'price'], 'required'],
-			[['price', 'sale_price', 'amount_for_discount', 'discount_price'], 'number'],
-			[['status', 'sell_only'], 'integer'],
-			[['updated_at', 'created_at'], 'safe'],
-			[['title', 'slug', 'image'], 'string', 'max' => 255],
+            [['title', 'price'], 'required'],
+            [['price', 'sale_price', 'dirt', 'amount_for_discount', 'discount_price'], 'number'],
+            [['status', 'sell_only'], 'integer'],
+            [['updated_at', 'created_at'], 'safe'],
+            [['title', 'slug', 'image'], 'string', 'max' => 255],
 		];
 	}
 
@@ -54,22 +55,23 @@ class Product extends BaseModel {
 	 */
 	public function attributeLabels(){
 		return [
-			'id'                  => 'ID',
-			'title'               => 'Название',
-			'price'               => 'Цена за кг.',
-			'sale_price'          => 'Цена за кг.',
-			'amount_for_discount' => 'Кол-во для действия скидки',
-			'discount_price'      => 'Цена со скидкой',
-			'slug'                => 'Слаг',
-			'image'               => 'картинка',
-			'img'                 => 'картинка',
-			'imgUrl'              => 'картинка',
-			'file'                => 'Картинка',
-			'status'              => 'Публиковать',
-			'sell_only'           => 'Только продажа',
-			'statusName'          => 'Публиковать',
-			'updated_at'          => 'Дата обновления',
-			'created_at'          => 'Дата создания',
+            'id'                  => 'ID',
+            'title'               => 'Название',
+            'price'               => 'Цена за кг.',
+            'sale_price'          => 'Цена за кг.',
+            'amount_for_discount' => 'Кол-во для действия скидки',
+            'discount_price'      => 'Цена со скидкой',
+            'dirt'                => 'Засор%',
+            'slug'                => 'Слаг',
+            'image'               => 'картинка',
+            'img'                 => 'картинка',
+            'imgUrl'              => 'картинка',
+            'file'                => 'Картинка',
+            'status'              => 'Публиковать',
+            'sell_only'           => 'Только продажа',
+            'statusName'          => 'Публиковать',
+            'updated_at'          => 'Дата обновления',
+            'created_at'          => 'Дата создания',
 		];
 	}
 
