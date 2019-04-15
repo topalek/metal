@@ -113,7 +113,17 @@ var form = $('form');
 buildItemList(type);
 $('.process').on('click',(e)=>{
     let json = form.serializeArray();
+    let weight = $('.weight').val();
     let type = $(e.target).data('type');
+    if(!weight){
+        alert('Заполните Вес');
+        return;
+    }
+    weight = parseFloat(weight);
+    if (weight <=0){
+        alert('Вес меньше 0');
+        return;
+    }
     writeToStorage(json,type);
 
     var products = getFromStorage(type);

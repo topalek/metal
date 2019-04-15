@@ -57,14 +57,15 @@ rmrevin\yii\fontawesome\AssetBundle::register($this);
 			],
 			Yii::$app->user->isGuest ?
 				['label' => 'Login', 'url' => ['/site/login']] :
-				[
-					'label'       => 'Провести',
-					'url'         => [
-						'/operation/create',
-						'type' => ''
-					],
-					'linkOptions' => ['class' => 'hidden bg-danger operation']
-				], ['label' => 'ВЫХОД', 'url' => ['/site/logout']],
+//				[
+//					'label'       => 'Провести',
+//					'url'         => [
+//						'/operation/create',
+//						'type' => ''
+//					],
+//					'linkOptions' => ['class' => 'hidden bg-danger operation']
+//				],
+                ['label' => 'ВЫХОД', 'url' => ['/site/logout']],
             ['label' => '<i class="fa fa-user-secret"></i>', 'url' => ['/admin']],
 
 		],
