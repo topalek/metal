@@ -54,10 +54,7 @@ function removeItem(id, type) {
 }
 
 $(document).ready(function () {
-    let date = new Date();
-    $('.date').html((date.getDate() < 10 ? '0' + date.getDate() : date.getDate()) + '.' + (date.getMonth() + 1) + '.' + date.getFullYear());
     setInterval(getTime, 1000);
-
 });
 
 function getFromStorage(type) {
