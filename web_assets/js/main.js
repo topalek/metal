@@ -40,9 +40,11 @@ function writeToStorage(json, type) {
     });
     products[product.id] = product;
     localStorage.setItem(getStorageName(type), JSON.stringify(products));
-
-
     return true;
+}
+
+function isEmpty(obj) {
+    return Object.keys(obj).length === 0;
 }
 
 function removeItem(id, type) {

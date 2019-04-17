@@ -14,11 +14,28 @@ $form = ActiveForm::begin([
 	'options' => ['class' => 'form-horizontal'],
 ]) ?>
     <div class="col-md-6">
-		<?= $form->field($model, 'sum')->input('number')->label('Внесите сумму') ?>
+        <?= $form->field($model, 'sum')->input('number', ['min' => 0])->label('Внесите сумму') ?>
 
         <div class="form-group">
-			<?= Html::submitButton('Внести', ['class' => 'btn btn-primary']) ?>
+            <?= Html::submitButton('Внести', ['class' => 'btn btn-primary', 'id' => 'fill-cash']) ?>
         </div>
     </div>
 
 <?php ActiveForm::end() ?>
+
+<?php $this->registerJs(<<<JS
+$('#fill-cash').on('click',()=>{
+    let cash = $('#operation-sum').val();
+    if(!cash){
+        alert('Заполните поле');
+        return false;
+    }else {
+        if (parseInt(cash)<=0){
+            alert('Сумма меньше или равна 0');
+            return false;
+        } 
+    }
+})
+
+JS
+) ?>
