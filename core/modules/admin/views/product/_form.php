@@ -13,43 +13,59 @@ use yii\widgets\ActiveForm;
 	<?= $model->img ?>
 	<?php $form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data']]); ?>
 
-	<?= $form->field($model, 'title')->textInput(['maxlength' => true]) ?>
-    <div class="col-md-2">
-		<?= $form->field($model, 'price')->textInput() ?>
-    </div>
-    <div class="col-md-1">
-        <?= $form->field($model, 'dirt')->input('number') ?>
-    </div>
-    <div class="col-md-5">
-        <div class="row">
-            <div class="col-md-7">
-				<?= $form->field($model, 'amount_for_discount')->textInput() ?>
+    <div class="row">
+        <div class="col-md-4">
+            <?= $form->field($model, 'title')->textInput(['maxlength' => true]) ?>
+        </div>
+        <div class="col-md-8">
+            <div class="col-md-4">
+                <?= $form->field($model, 'price')->textInput() ?>
             </div>
-            <div class="col-md-5">
-				<?= $form->field($model, 'discount_price')->textInput() ?>
+            <div class="col-md-4">
+                <?= $form->field($model, 'discount_price')->textInput() ?>
+            </div>
+            <div class="col-md-4">
+                <?= $form->field($model, 'amount_for_discount')->textInput() ?>
             </div>
         </div>
     </div>
-    <div class="col-md-2">
-		<?= $form->field($model, 'status')->widget(SwitchInput::class, [
-			'pluginOptions' => [
-				'onText'   => 'Да',
-				'offText'  => 'Нет',
-				'offColor' => 'danger',
-			]
-		]) ?>
-    </div>
-    <div class="col-md-2">
-		<?= $form->field($model, 'sell_only')->widget(SwitchInput::class, [
-			'pluginOptions' => [
-				'onText'   => 'Да',
-				'offText'  => 'Нет',
-				'offColor' => 'danger',
-			],
-		]) ?>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="row">
+                <div class="col-md-2">
+                    <?= $form->field($model, 'dirt')->input('number') ?>
+                </div>
+                <div class="col-md-3">
+                    <?= $form->field($model, 'operation_sort')->input('number') ?>
+                </div>
+                <div class="col-md-3">
+                    <?= $form->field($model, 'report_sort')->input('number') ?>
+                </div>
+                <div class="col-md-2">
+                    <?= $form->field($model, 'status')->widget(SwitchInput::class, [
+                        'pluginOptions' => [
+                            'onText'   => 'Да',
+                            'offText'  => 'Нет',
+                            'offColor' => 'danger',
+                        ]
+                    ]) ?>
+                </div>
+                <div class="col-md-2">
+                    <?= $form->field($model, 'sell_only')->widget(SwitchInput::class, [
+                        'pluginOptions' => [
+                            'onText'   => 'Да',
+                            'offText'  => 'Нет',
+                            'offColor' => 'danger',
+                        ],
+                    ]) ?>
+                </div>
+            </div>
+
+        </div>
     </div>
 
-	<?= $form->field($model, 'file')->widget(\kartik\file\FileInput::class, [
+
+    <?= $form->field($model, 'file')->widget(\kartik\file\FileInput::class, [
 		'language'      => 'ru',
 		'pluginOptions' => [
 			'showCaption'    => false,

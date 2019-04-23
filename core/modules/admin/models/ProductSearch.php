@@ -56,6 +56,7 @@ class ProductSearch extends Product {
 		}
         if ($this->type == Operation::TYPE_BUY) {
             $query->andWhere(['sell_only' => Operation::TYPE_BUY]);
+            $query->orderBy('operation_sort');
         } else {
             $query->andWhere(['sell_only' => [Operation::TYPE_SELL, Operation::TYPE_BUY]]);
         }
