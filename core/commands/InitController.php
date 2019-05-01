@@ -8,6 +8,7 @@
 namespace app\commands;
 
 use app\common\Inflector;
+use app\modules\admin\models\Operation;
 use app\modules\admin\models\Product;
 use Yii;
 use yii\console\Controller;
@@ -187,4 +188,13 @@ class InitController extends Controller
 
 		echo "Roles & rule created";
 	}
+
+    public function actionUpdateTime(){
+        $operations = Operation::findAll(['status' => 0]);
+        foreach ($operations as $operation){
+            $operation->created_at = $operation->updated_at;
+            $operation->save(false);
+        }
+        print_r("Done \n");
+    }
 }

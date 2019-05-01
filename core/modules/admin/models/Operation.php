@@ -25,6 +25,7 @@ class Operation extends ActiveRecord {
     const TYPE_BUY = 0;
     const TYPE_SELL = 1;
     const TYPE_FILL_CASH = 2;
+    const TYPE_REST_CASH = 3;
 
     public static function tableName(){
         return 'operation';
@@ -86,7 +87,7 @@ class Operation extends ActiveRecord {
         return [
             [['type', 'status'], 'integer'],
             [['sum'], 'number'],
-            [['updated_at', 'created_at'], 'safe'],
+            [['updated_at', 'created_at', 'comment'], 'safe'],
         ];
     }
 
@@ -117,18 +118,12 @@ class Operation extends ActiveRecord {
         if ($this->products){
             $this->products = Json::encode($this->products);
         }
-        if ($insert){
-            $this->created_at = date('Y-m-d');
-        }
 
         return parent::beforeSave($insert);
     }
 
     public function afterSave($insert, $changedAttributes){
         parent::afterSave($insert, $changedAttributes);
-        if ($insert){
-            Cash::Create($this->id);
-        }
     }
 
     public function getTypeName(){
@@ -140,6 +135,12 @@ class Operation extends ActiveRecord {
             static::TYPE_BUY       => 'Покупка',
             static::TYPE_SELL      => 'Продажа',
             static::TYPE_FILL_CASH => 'Пополнение кассы',
+            static::TYPE_REST_CASH => 'Остаток денежных средств',
         ];
+    }
+
+    public function setComment($comment){
+        $this->comment = $comment;
+        $this->save();
     }
 }

@@ -1,3 +1,5 @@
+let isCalculated = false;
+
 $('.operation-item').click(function (e) {
     e.preventDefault();
     let cartLink = $(this).attr('href');

@@ -159,7 +159,7 @@ class Product extends BaseModel {
         $data = Yii::$app->cache->getOrSet('price_list', function (){
             return Product::find()->where(['status' => Product::STATUS_PUBLISHED])->select([
                 'title', 'price', 'id', 'discount_price'
-            ])->asArray()->all();
+            ])->indexBy('id')->asArray()->all();
         });
 
         return $data;
@@ -168,9 +168,19 @@ class Product extends BaseModel {
     public function afterSave($insert, $changedAttributes){
         Yii::$app->cache->set('price_list', Product::find()->where(['status' => Product::STATUS_PUBLISHED])->select([
             'title', 'price', 'id', 'discount_price'
-        ])->asArray()->all());
+        ])->indexBy('id')->asArray()->all());
         parent::afterSave($insert, $changedAttributes);
     }
 
+    public static function getEmptyArray(){
+        $arr      = [];
+        $keys     = ['weight', 'sale_price', 'dirt', 'total', 'title'];
+        $products = Product::getCachePrice();
+        foreach ($products as $product){
+            $arr[$product['id']] = array_combine($keys, array_merge(array_fill(0, 4, 0), [$product['title']]));
+        }
+
+        return $arr;
+    }
 
 }

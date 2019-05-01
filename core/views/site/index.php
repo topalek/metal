@@ -2,7 +2,6 @@
 
 /* @var $this yii\web\View */
 
-use app\modules\admin\models\Operation;
 use yii\helpers\Html;
 
 $this->title = 'Metal';
@@ -12,12 +11,12 @@ $this->title = 'Metal';
         <div class="col-md-6 col-md-offset-3">
             <div class="flex flex-center">
                 <?= Html::a(Html::img('/web_assets/images/buy.svg', ['class' => 'img-responsive']), [
-                    'operation/create', 'type' => Operation::TYPE_BUY,
+                    'operation/buy'
                 ], [
                     //'class' => 'btn btn-default'
                 ]) ?>
                 <?= Html::a(Html::img('/web_assets/images/sell.svg', ['class' => 'img-responsive']), [
-                    'operation/create', 'type' => Operation::TYPE_SELL,
+                    'operation/sell'
                 ], [
                     //'class' => 'btn btn-default'
                 ]) ?>

@@ -39,7 +39,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 return ['class' => 'danger'];
             },
             'afterRow'     => function ($model){
-                if ($model->type == Operation::TYPE_FILL_CASH){
+                if ($model->type == Operation::TYPE_FILL_CASH || $model->type == Operation::TYPE_REST_CASH){
                     return "";
                 }
                 $html = '<tr><th>название</th><th>вес</th><th>цена</th><th>засор</th><th>общаяя стоимость</th></tr> ';

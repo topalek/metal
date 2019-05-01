@@ -15,6 +15,7 @@ $form = ActiveForm::begin([
 ]) ?>
     <div class="col-md-6">
         <?= $form->field($model, 'sum')->input('number', ['min' => 0])->label('Внесите сумму') ?>
+        <?= $form->field($model, 'comment')->textarea() ?>
 
         <div class="form-group">
             <?= Html::submitButton('Внести', ['class' => 'btn btn-primary', 'id' => 'fill-cash']) ?>

@@ -22,8 +22,14 @@ class ReportController extends Controller {
     }
 
     public function actionDay(){
-        $date       = date('Y-m-d');
-        $operations = Operation::find()->where(['created_at' => $date])->asArray()->all();
+        $date       = date('Y-m-d 00:00:00');
+        $fromDate   = date('Y-m-d 00:00:00', strtotime($date));
+        $toDate     = date('Y-m-d 00:00:00', strtotime($date . "+1 day"));
+        $operations = Operation::find()
+                               ->where(['>=', 'created_at', $fromDate])
+                               ->andWhere(['<=', 'created_at', $toDate])
+                               ->asArray()
+                               ->all();
         $operations = Operation::getArrayForReport($operations);
         $file       = $this->generateReportFile($operations);
 
@@ -38,8 +44,8 @@ class ReportController extends Controller {
         if ( ! $fromDate or ! $toDate){
             throw new InvalidArgumentException('Неверно заполнена дата');
         }
-        $fromDate   = date('Y-m-d', strtotime($fromDate));
-        $toDate     = date('Y-m-d', strtotime($toDate));
+        $fromDate   = date('Y-m-d 00:00:00', strtotime($fromDate));
+        $toDate     = date('Y-m-d 00:00:00', strtotime($toDate));
         $operations = Operation::find()
                                ->where(['>=', 'created_at', $fromDate])
                                ->andWhere(['<=', 'created_at', $toDate])

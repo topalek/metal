@@ -5,7 +5,10 @@
 $this->title                   = 'About';
 $this->params['breadcrumbs'][] = $this->title;
 
-use yii\helpers\Html; ?>
+use app\modules\admin\models\Product;
+use yii\helpers\Html;
+
+?>
 <div class="site-about">
     <h1>Тест полей</h1>
     <div class="col-md-3">
@@ -15,8 +18,15 @@ use yii\helpers\Html; ?>
         <div class="form-group">
             <?= Html::input('number', '', '', ['placeholder' => 'number', 'class' => 'form-control']) ?>
         </div>
-
+        <pre>
+            <?php ?>
+        </pre>
 
     </div>
+    <pre>
+        <?php
+        print_r(Product::getEmptyArray());
+        ?>
+    </pre>
 
 </div>

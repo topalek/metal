@@ -35,7 +35,7 @@ $data = ($type == Operation::TYPE_BUY) ? [
         ]) . Html::button('Провести', [
             'class' => 'btn btn-danger process',
             'data'  => [
-                'url'  => Url::to(['operation/create', 'type' => $type]),
+                'url'  => Url::to(['operation/buy']),
                 'type' => $type
             ],
         ]) . '
@@ -92,6 +92,7 @@ $data = ($type == Operation::TYPE_BUY) ? [
 $this->registerJs(<<<JS
 var modal = $('#item-modal');
 var type = modal.data('type');
+
 $(modal).modal('show');
 $(modal).on('hidden.bs.modal', function (e) {
     var products = getFromStorage(type);
@@ -105,6 +106,7 @@ $(modal).on('hidden.bs.modal', function (e) {
             });
         });
     } 
+    isCalculated = false;
   $('.modals').remove();
   
 });
@@ -127,10 +129,24 @@ $('.process').on('click',(e)=>{
             alert('Вес 0');
             return false;
         }
-        writeToStorage(json,type);
-        localStorage.removeItem(getStorageName(type));
-    
-        $.post(url,{'products':products},(resp)=>{});
+        if (weight){
+            writeToStorage(json,type);
+        } 
+        if (isCalculated){
+            products = getFromStorage(type);
+            $.post(url,{'products':products},(resp)=>{
+                
+                if (resp.status){
+                    localStorage.removeItem(getStorageName(type));
+                    window.location = "/";
+                } else {
+                    alert(resp.message);
+                }
+            });
+        } else {
+            alert('Просчитайте товары');
+        }
+        
     }
    
 });
@@ -187,6 +203,7 @@ $('#calculate').on('click',()=>{
     let json = form.serializeArray(),
         weight = $('.weight').val();
     let total = 0;
+    isCalculated = true;
     if (weight){
         writeToStorage(json,type);
         buildItemList(type);
