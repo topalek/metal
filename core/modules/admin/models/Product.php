@@ -177,7 +177,7 @@ class Product extends BaseModel {
         $keys     = ['weight', 'sale_price', 'dirt', 'total', 'title'];
         $products = Product::getCachePrice();
         foreach ($products as $product){
-            $arr[$product['id']] = array_combine($keys, array_merge(array_fill(0, 4, 0), [$product['title']]));
+            $arr[$product['id']] = array_combine($keys, array_merge(array_fill(0, 4, null), [$product['title']]));
         }
 
         return $arr;

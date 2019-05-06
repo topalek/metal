@@ -83,30 +83,12 @@ class ReportController extends Controller {
                 ],
             ],
             'borders' => [
-                'top'    => [
+                'outline' => [
                     'borderStyle' => Border::BORDER_THIN,
                     'color'       => [
                         'rgb' => 'd0d7e5'
                     ]
-                ],
-                'bottom' => [
-                    'borderStyle' => Border::BORDER_THIN,
-                    'color'       => [
-                        'rgb' => 'd0d7e5'
-                    ]
-                ],
-                'left'   => [
-                    'borderStyle' => Border::BORDER_THIN,
-                    'color'       => [
-                        'rgb' => 'd0d7e5'
-                    ]
-                ],
-                'right'  => [
-                    'borderStyle' => Border::BORDER_THIN,
-                    'color'       => [
-                        'rgb' => 'd0d7e5'
-                    ]
-                ],
+                ]
             ],
         ];
         $totalStyle        = [
@@ -117,30 +99,12 @@ class ReportController extends Controller {
                 ],
             ],
             'borders' => [
-                'top'    => [
+                'outline' => [
                     'borderStyle' => Border::BORDER_THIN,
                     'color'       => [
                         'rgb' => 'd0d7e5'
                     ]
-                ],
-                'bottom' => [
-                    'borderStyle' => Border::BORDER_THIN,
-                    'color'       => [
-                        'rgb' => 'd0d7e5'
-                    ]
-                ],
-                'left'   => [
-                    'borderStyle' => Border::BORDER_THIN,
-                    'color'       => [
-                        'rgb' => 'd0d7e5'
-                    ]
-                ],
-                'right'  => [
-                    'borderStyle' => Border::BORDER_THIN,
-                    'color'       => [
-                        'rgb' => 'd0d7e5'
-                    ]
-                ],
+                ]
             ],
         ];
         $cash              = [
@@ -151,31 +115,31 @@ class ReportController extends Controller {
                 ],
             ],
             'borders' => [
-                'top'    => [
+                'outline' => [
                     'borderStyle' => Border::BORDER_THIN,
                     'color'       => [
                         'rgb' => 'd0d7e5'
                     ]
-                ],
-                'bottom' => [
-                    'borderStyle' => Border::BORDER_THIN,
-                    'color'       => [
-                        'rgb' => 'd0d7e5'
-                    ]
-                ],
-                'left'   => [
-                    'borderStyle' => Border::BORDER_THIN,
-                    'color'       => [
-                        'rgb' => 'd0d7e5'
-                    ]
-                ],
-                'right'  => [
-                    'borderStyle' => Border::BORDER_THIN,
-                    'color'       => [
-                        'rgb' => 'd0d7e5'
-                    ]
+                ]
+            ],
+            ''
+        ];
+        $negative          = [
+            'fill'    => [
+                'fillType' => Fill::FILL_SOLID,
+                'color'    => [
+                    'rgb' => '84ca84', // green
                 ],
             ],
+            'borders' => [
+                'outline' => [
+                    'borderStyle' => Border::BORDER_THIN,
+                    'color'       => [
+                        'rgb' => 'd0d7e5'
+                    ]
+                ]
+            ],
+            ''
         ];
         $alignStyle        = [
             'alignment' => [
@@ -218,11 +182,15 @@ class ReportController extends Controller {
         foreach ($operations as $i => $operation){
             $columnNumberIndex = 1;
             $columnIndex       = $startColumn = 'A';
-            $date              = date("d.m.Y", strtotime($operation['created_at']));
+            $date              = date("d.m.Y H:i:s", strtotime($operation['created_at']));
+
+            // продажа
             if ($operation['type'] == 1){
                 $sheet->getStyle($startColumn . $rowIndex . ":" . $lastColumn . $rowIndex)->applyFromArray($sellStyle);
                 $sheet->setCellValue("B" . $rowIndex, $operation['comment']);
             }
+
+            // пополнение кассы
             if ($operation['type'] == 2){
                 $sheet->getStyle($startColumn . $rowIndex . ":" . $lastColumn . $rowIndex)->applyFromArray($cash);
                 while ($columnNumberIndex < $columnsCount){
@@ -245,7 +213,7 @@ class ReportController extends Controller {
                 $rowIndex ++;
                 continue;
             }
-
+            //  покупка
             for ($columnNumberIndex = 1; $columnNumberIndex < $columnsCount; $columnNumberIndex ++){
                 if ($columnNumberIndex == 1){
                     $sheet->setCellValue($columnIndex . $rowIndex, $date);
@@ -269,6 +237,9 @@ class ReportController extends Controller {
                                 $sheet->getStyle($columnIndex . $rowIndex)->applyFromArray($totalStyle);
                             }
                             $sheet->setCellValue($columnIndex . $rowIndex, $item);
+                            if (strpos($item, "-") !== false){
+                                $sheet->getStyle($columnIndex . $rowIndex)->applyFromArray($negative);
+                            }
                             $columnIndex ++;
                             $columnNumberIndex ++;
 
@@ -278,7 +249,8 @@ class ReportController extends Controller {
             }
             $rowIndex ++;
         }
-
+        $sheet->getColumnDimension('A')->setAutoSize(true);
+        $sheet->getColumnDimension('B')->setAutoSize(true);
         $xls = new Xls($spreadsheet);
         $xls->save($fileName);
 

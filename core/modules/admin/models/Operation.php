@@ -46,24 +46,29 @@ class Operation extends ActiveRecord {
                 $operations[$i]['products'] = $prods;
                 foreach ($products as $id => $productTitle){
                     if (array_key_exists($id, $prods)){
+                        $weight = floatval($prods[$id]['weight']);
+                        $dirt   = intval($prods[$id]['dirt']);
+                        if ($dirt){
+                            $weight = $weight - ($weight / 100) * $dirt;
+                        }
                         $operations[$i]['products'][$id] = [
-                            $prods[$id]['weight'],
+                            $weight,
                             $prods[$id]['sale_price'],
                             $prods[$id]['total'],
                         ];
                         continue;
                     }
                     $operations[$i]['products'][$id] = [
-                        'weight'     => 0,
-                        'sale_price' => 0,
-                        'total'      => 0,
+                        'weight'     => null,
+                        'sale_price' => null,
+                        'total'      => null,
                     ];
                 }
             }
             ksort($operations[$i]['products']);
             $reportArray = [];
             foreach ($operations as $key => $operation){
-                $date              = date("d/m/Y", strtotime($operation['created_at']));
+                $date              = date("d/m/Y H:i:s", strtotime($operation['created_at']));
                 $type              = $operation['type'];
                 $total             = $operation['sum'];
                 $reportArray[$key] = ['Дата' => $date];
