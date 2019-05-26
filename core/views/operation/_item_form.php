@@ -61,6 +61,8 @@ $data = ($type == Operation::TYPE_BUY) ? [
                             <div class="form-group">
                                 <?= Html::label('Цена', 'sale_price') ?>
                                 <?= Html::input('number', 'sale_price', $model->price, ['class' => 'form-control price']) ?>
+                                <?= Html::hiddenInput('discount', null, ['class' => "discount"]) ?>
+                                <?= Html::hiddenInput('discount_price', null, ['class' => "discount_price"]) ?>
                             </div>
                         </div>
                         <div class="col-md-12">
@@ -182,16 +184,22 @@ $('input').on('input',(e)=>{
     weight = parseFloat($('.weight').val()),
     discount_price = parseFloat($('.weight').data('discount_price')),
     discount_weight = parseFloat($('.weight').data('discount_weight')),
+    discount = $('.discount'),
+    discountPrice = $('.discount_price'),
     _price = parseFloat($('.weight').data('price')),
     dirt = parseFloat($('.dirt').val()),
     total = $('.total');
     if (discount_price && discount_weight){
         if (weight>= discount_weight){
             price = discount_price;
+            discount.val(1);
+            discountPrice.val(price);
             $('.price').val(price);
             
         } else {
             price = _price;
+            discount.val(null);
+            discountPrice.val(null);
             $('.price').val(_price);
         }
     }
