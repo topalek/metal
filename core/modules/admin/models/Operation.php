@@ -173,4 +173,27 @@ class Operation extends ActiveRecord
         $this->comment = $comment;
         $this->save();
     }
+
+    public static function getHeadings(array $operations){
+        $list    = Product::getList();
+        $headers = [];
+        foreach ($operations as $k => $operation){
+            $products = ArrayHelper::getValue($operation, 'products');
+
+            foreach ($products as $id => $product){
+                $discount              = ArrayHelper::getValue($product, 'discount');
+                $headers[$id]['title'] = $list[$id];
+                if ($discount){
+                    $headers[$id]['count'] = 4;
+                }else{
+                    if (isset($headers[$id]['count']) && $headers[$id]['count'] == 4){
+                        continue;
+                    }
+                    $headers[$id]['count'] = 3;
+                }
+            }
+        }
+
+        return $headers;
+    }
 }

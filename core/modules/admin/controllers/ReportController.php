@@ -3,18 +3,120 @@
 namespace app\modules\admin\controllers;
 
 use app\modules\admin\models\Operation;
-use app\modules\admin\models\Product;
 use InvalidArgumentException;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
+use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xls;
 use Yii;
 use yii\helpers\ArrayHelper;
 use yii\web\Controller;
+use function array_merge;
 
 class ReportController extends Controller {
+
+    public $subHeaders = [
+        4 => ['масса', 'цена', 'цена с надбавкой', 'сумма'],
+        3 => ['масса', 'цена', 'сумма'],
+    ];
+
+    public $sellStyle = [
+        'fill'    => [
+            'fillType' => Fill::FILL_SOLID,
+            'color'    => [
+                'rgb' => 'ffc66d', // orange
+            ],
+        ],
+        'borders' => [
+            'outline' => [
+                'borderStyle' => Border::BORDER_THIN,
+                'color'       => [
+                    'rgb' => 'd0d7e5'
+                ]
+            ]
+        ],
+    ];
+    public $totalStyle = [
+        'fill'    => [
+            'fillType' => Fill::FILL_SOLID,
+            'color'    => [
+                'rgb' => 'fceabb', // yellow
+            ],
+        ],
+        'borders' => [
+            'outline' => [
+                'borderStyle' => Border::BORDER_THIN,
+                'color'       => [
+                    'rgb' => 'd0d7e5'
+                ]
+            ]
+        ],
+    ];
+    public $cash = [
+        'fill'    => [
+            'fillType' => Fill::FILL_SOLID,
+            'color'    => [
+                'rgb' => 'bff6ff', // blue
+            ],
+        ],
+        'borders' => [
+            'outline' => [
+                'borderStyle' => Border::BORDER_THIN,
+                'color'       => [
+                    'rgb' => 'd0d7e5'
+                ]
+            ]
+        ],
+        ''
+    ];
+    public $negative = [
+        'fill'    => [
+            'fillType' => Fill::FILL_SOLID,
+            'color'    => [
+                'rgb' => '84ca84', // green
+            ],
+        ],
+        'borders' => [
+            'outline' => [
+                'borderStyle' => Border::BORDER_THIN,
+                'color'       => [
+                    'rgb' => 'd0d7e5'
+                ]
+            ]
+        ],
+        ''
+    ];
+    public $alignStyle = [
+        'alignment' => [
+            'horizontal' => Alignment::HORIZONTAL_CENTER,
+            'vertical'   => Alignment::VERTICAL_CENTER,
+        ],
+        'borders'   => [
+            'outline' => [
+                'borderStyle' => Border::BORDER_THIN,
+                'color'       => [
+                    'rgb' => 'd0d7e5'
+                ]
+            ]
+        ],
+    ];
+    public $centerBold = [
+        'alignment' => [
+            'horizontal' => Alignment::HORIZONTAL_CENTER,
+            'vertical'   => Alignment::VERTICAL_CENTER,
+        ],
+        'borders'   => [
+            'outline' => [
+                'borderStyle' => Border::BORDER_MEDIUM,
+                'color'       => [
+                    'rgb' => '000000'
+                ]
+            ]
+        ],
+    ];
+
 
     public function actionIndex(){
 
@@ -39,8 +141,8 @@ class ReportController extends Controller {
         if ( ! $fromDate or ! $toDate){
             throw new InvalidArgumentException('Неверно заполнена дата');
         }
-        $fromDate   = date('Y-m-d 00:00:00', strtotime($fromDate));
-        $toDate     = date('Y-m-d 00:00:00', strtotime($toDate));
+        $fromDate = date('Y-m-d 00:00:00', strtotime($fromDate));
+        $toDate   = date('Y-m-d 00:00:00', strtotime($toDate));
 
         $operations = Operation::getArrayForReport(Operation::getOperationByPeriod($fromDate, $toDate));
         $file       = $this->generateReportFile($operations);
@@ -59,83 +161,13 @@ class ReportController extends Controller {
     }
 
     public function generateReportFile(array $operations){
-        $fileName          = Yii::$app->runtimePath . "/report.xls";
-        $spreadsheet       = new Spreadsheet();
-        $sheet             = $spreadsheet->getActiveSheet();
+        $fileName    = Yii::$app->runtimePath . "/report.xls";
+        $spreadsheet = new Spreadsheet();
+        $sheet       = $spreadsheet->getActiveSheet();
+        $sheet       = $this->buildHeaders($sheet, $operations);
+        /*
         $products          = Product::getList();
         $columnsCount      = (count($products) * 3) + 2;
-        $sellStyle         = [
-            'fill'    => [
-                'fillType' => Fill::FILL_SOLID,
-                'color'    => [
-                    'rgb' => 'ffc66d', // orange
-                ],
-            ],
-            'borders' => [
-                'outline' => [
-                    'borderStyle' => Border::BORDER_THIN,
-                    'color'       => [
-                        'rgb' => 'd0d7e5'
-                    ]
-                ]
-            ],
-        ];
-        $totalStyle        = [
-            'fill'    => [
-                'fillType' => Fill::FILL_SOLID,
-                'color'    => [
-                    'rgb' => 'fceabb', // yellow
-                ],
-            ],
-            'borders' => [
-                'outline' => [
-                    'borderStyle' => Border::BORDER_THIN,
-                    'color'       => [
-                        'rgb' => 'd0d7e5'
-                    ]
-                ]
-            ],
-        ];
-        $cash              = [
-            'fill'    => [
-                'fillType' => Fill::FILL_SOLID,
-                'color'    => [
-                    'rgb' => 'bff6ff', // blue
-                ],
-            ],
-            'borders' => [
-                'outline' => [
-                    'borderStyle' => Border::BORDER_THIN,
-                    'color'       => [
-                        'rgb' => 'd0d7e5'
-                    ]
-                ]
-            ],
-            ''
-        ];
-        $negative          = [
-            'fill'    => [
-                'fillType' => Fill::FILL_SOLID,
-                'color'    => [
-                    'rgb' => '84ca84', // green
-                ],
-            ],
-            'borders' => [
-                'outline' => [
-                    'borderStyle' => Border::BORDER_THIN,
-                    'color'       => [
-                        'rgb' => 'd0d7e5'
-                    ]
-                ]
-            ],
-            ''
-        ];
-        $alignStyle        = [
-            'alignment' => [
-                'horizontal' => Alignment::HORIZONTAL_CENTER,
-                'vertical'   => Alignment::VERTICAL_CENTER,
-            ]
-        ];
         $lastColumn        = $this->getLetterIdx($columnsCount);
         $rowIndex          = 1;
         $columnNumberIndex = 3;
@@ -238,6 +270,7 @@ class ReportController extends Controller {
             }
             $rowIndex ++;
         }
+        */
         $sheet->getColumnDimension('A')->setAutoSize(true);
         $sheet->getColumnDimension('B')->setAutoSize(true);
         $xls = new Xls($spreadsheet);
@@ -246,9 +279,49 @@ class ReportController extends Controller {
         return $fileName;
     }
 
-    public static function getHeadings(array $operations)
-    {
-        $list = Product::getList();
+    public function buildHeaders(Worksheet $sheet, array $operations){
 
+        $headers = Operation::getHeadings($operations);
+        $col     = "C";
+        $row     = 1;
+
+        // Заполняем название товаров
+        foreach ($headers as $header){
+            $startCol = $col;
+            $count    = ArrayHelper::getValue($header, "count");
+            $title    = ArrayHelper::getValue($header, "title");
+            $sheet->getCell($col . $row)->setValue($title);
+            while ($count > 1){
+                $col ++;
+                $count --;
+            }
+            $sheet->mergeCells($startCol . $row . ":" . $col . $row);
+            $sheet->getStyle($startCol . $row . ":" . $col . $row)->applyFromArray($this->centerBold);
+            $col ++;
+        }
+        $col = "C";
+        $row = 2;
+
+        // Заполняем название столбцов
+        foreach ($headers as $header){
+            $count = ArrayHelper::getValue($header, "count");
+            foreach ($this->subHeaders[$count] as $i => $subHeader){
+                $sheet->getCell($col . $row)->setValue($subHeader);
+                if (($count == 4 && $i == 2)){
+                    $sheet->getColumnDimension($col)->setAutoSize(true);
+                }
+                if (($count == 4 && $i == 3) || ($count == 3 && $i == 2)){
+                    $sheet->getCell($col . $row)->getStyle()->applyFromArray(array_merge($this->alignStyle, $this->totalStyle));
+
+                }else{
+                    $sheet->getCell($col . $row)->getStyle()->applyFromArray($this->alignStyle);
+                }
+
+                $col ++;
+            }
+
+        }
+
+        return $sheet;
     }
 }

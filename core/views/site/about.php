@@ -6,9 +6,21 @@ $this->title                   = 'About';
 $this->params['breadcrumbs'][] = $this->title;
 
 use app\modules\admin\models\Operation;
-use app\modules\admin\models\Product;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
+
+$date     = date('Y-m-d 00:00:00');
+$fromDate = date('Y-m-d 00:00:00', strtotime($date));
+$toDate   = date('Y-m-d 00:00:00', strtotime($date . "+1 day"));
+//        $operations = Operation::getOperationByPeriod($fromDate, $toDate);
+$operations = Operation::getArrayForReport(Operation::getOperationByPeriod($fromDate, $toDate));
+
+$subHeaders = [
+    4 => ['mass', 'price', 'disc', 'total'],
+    3 => ['mass', 'price', 'total'],
+];
+$headers    = Operation::getHeadings($operations);
+
 
 ?>
 <div class="site-about">
@@ -22,37 +34,44 @@ use yii\helpers\Html;
         </div>
         <pre>
             <?php
-
+            //print_r($operations)
+            $col = "C";
+            $row = 1;
+            foreach ($headers as $header){
+                $startCol = $col;
+                $count    = ArrayHelper::getValue($header, "count");
+                $title    = ArrayHelper::getValue($header, "title");
+                print_r([$col . $row]);
+                while ($count > 1){
+                    $col ++;
+                    $count --;
+                }
+                print_r([$startCol . $row . ":" . $col . $row]);
+            }
             ?>
         </pre>
 
     </div>
     <pre>
+        <table>
+            <tr>
+                <td></td>
+            </tr></table>
         <?php
-        $date = date('Y-m-d 00:00:00');
-        $fromDate = date('Y-m-d 00:00:00', strtotime($date));
-        $toDate = date('Y-m-d 00:00:00', strtotime($date . "+1 day"));
-        //        $operations = Operation::getOperationByPeriod($fromDate, $toDate);
-        $operations = Operation::getArrayForReport(Operation::getOperationByPeriod($fromDate, $toDate));
-        $list = Product::getList();
-        foreach ($operations as $k => $operation) {
-            $products = ArrayHelper::getValue($operation, 'products');
 
-            foreach ($products as $id => $product) {
-                $discount = ArrayHelper::getValue($product, 'discount');
-                $temp = [];
-                if ($discount) {
-                    $temp['title'] = $list[$id];
-                    $temp['count'] = 4;
-                } else {
-                    $temp['title'] = $list[$id];
-                    $temp['count'] = 3;
-                }
-                $list[$id] = $temp;
+        $html = "<table class='table table-bordered table-responsive'><tr>";
+        foreach ($headers as $header){
+            $html .= "<td colspan='{$header["count"]}'>" . $header['title'] . "</td>";
+        }
+        $html .= "</tr>";
+        foreach ($headers as $header){
+            $count = ArrayHelper::getValue($header, "count");
+            foreach ($subHeaders[$count] as $subHeader){
+                $html .= "<td>" . $subHeader . "</td>";
             }
         }
-        print_r($list);
+        $html .= "</tr></table>";
         ?>
     </pre>
-
+    <?= $html ?>
 </div>
