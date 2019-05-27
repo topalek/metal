@@ -25,12 +25,7 @@ class ReportController extends Controller {
         $date       = date('Y-m-d 00:00:00');
         $fromDate   = date('Y-m-d 00:00:00', strtotime($date));
         $toDate     = date('Y-m-d 00:00:00', strtotime($date . "+1 day"));
-        $operations = Operation::find()
-                               ->where(['>=', 'created_at', $fromDate])
-                               ->andWhere(['<=', 'created_at', $toDate])
-                               ->asArray()
-                               ->all();
-        $operations = Operation::getArrayForReport($operations);
+        $operations = Operation::getArrayForReport(Operation::getOperationByPeriod($fromDate, $toDate));
         $file       = $this->generateReportFile($operations);
 
         return Yii::$app->response->sendFile($file);
@@ -46,14 +41,8 @@ class ReportController extends Controller {
         }
         $fromDate   = date('Y-m-d 00:00:00', strtotime($fromDate));
         $toDate     = date('Y-m-d 00:00:00', strtotime($toDate));
-        $operations = Operation::find()
-                               ->where(['>=', 'created_at', $fromDate])
-                               ->andWhere(['<=', 'created_at', $toDate])
-                               ->asArray()
-                               ->all();
 
-
-        $operations = Operation::getArrayForReport($operations);
+        $operations = Operation::getArrayForReport(Operation::getOperationByPeriod($fromDate, $toDate));
         $file       = $this->generateReportFile($operations);
 
         return Yii::$app->response->sendFile($file);
@@ -255,5 +244,11 @@ class ReportController extends Controller {
         $xls->save($fileName);
 
         return $fileName;
+    }
+
+    public static function getHeadings(array $operations)
+    {
+        $list = Product::getList();
+
     }
 }
