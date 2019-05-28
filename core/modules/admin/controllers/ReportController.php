@@ -13,7 +13,6 @@ use PhpOffice\PhpSpreadsheet\Writer\Xls;
 use Yii;
 use yii\helpers\ArrayHelper;
 use yii\web\Controller;
-use function array_merge;
 
 class ReportController extends Controller {
 
@@ -71,6 +70,23 @@ class ReportController extends Controller {
         ],
         ''
     ];
+    public $rest = [
+        'fill'    => [
+            'fillType' => Fill::FILL_SOLID,
+            'color'    => [
+                'rgb' => 'ffc0f2', // pink
+            ],
+        ],
+        'borders' => [
+            'outline' => [
+                'borderStyle' => Border::BORDER_THIN,
+                'color'       => [
+                    'rgb' => 'd0d7e5'
+                ]
+            ]
+        ],
+        ''
+    ];
     public $negative = [
         'fill'    => [
             'fillType' => Fill::FILL_SOLID,
@@ -116,11 +132,19 @@ class ReportController extends Controller {
             ]
         ],
     ];
-
+    public $headers;
 
     public function actionIndex(){
 
         return $this->render('index');
+    }
+
+    public function getHeaders($operations){
+        if ( ! $this->headers){
+            $this->headers = Operation::getHeadings($operations);
+        }
+
+        return $this->headers;
     }
 
     public function actionDay(){
@@ -141,9 +165,8 @@ class ReportController extends Controller {
         if ( ! $fromDate or ! $toDate){
             throw new InvalidArgumentException('Неверно заполнена дата');
         }
-        $fromDate = date('Y-m-d 00:00:00', strtotime($fromDate));
-        $toDate   = date('Y-m-d 00:00:00', strtotime($toDate));
-
+        $fromDate   = date('Y-m-d 00:00:00', strtotime($fromDate));
+        $toDate     = date('Y-m-d 00:00:00', strtotime($toDate . "+1 day"));
         $operations = Operation::getArrayForReport(Operation::getOperationByPeriod($fromDate, $toDate));
         $file       = $this->generateReportFile($operations);
 
@@ -164,7 +187,40 @@ class ReportController extends Controller {
         $fileName    = Yii::$app->runtimePath . "/report.xls";
         $spreadsheet = new Spreadsheet();
         $sheet       = $spreadsheet->getActiveSheet();
-        $sheet       = $this->buildHeaders($sheet, $operations);
+        $headers     = $this->getHeaders($operations);
+        $colCount    = $this->getColumnCount($headers);
+        $lastColumn  = $this->getLetterIdx($colCount);
+        $sheet       = $this->buildHeaders($sheet, $headers);
+        $sheet->setCellValue("A1", "Дата")->mergeCells("A1:A2")->getStyle("A1:A2")->applyFromArray($this->centerBold);
+        $sheet->setCellValue("B1", "Касса")->mergeCells("B1:B2")->getStyle("B1:B2")->applyFromArray($this->centerBold);
+        $sheet->setCellValue("C1", "Коментарий")->mergeCells("C1:C2")->getStyle("C1:C2")->applyFromArray($this->centerBold);
+        $row = 3;
+        foreach ($operations as $operation){
+
+            $type    = ArrayHelper::getValue($operation, "type");
+            $date    = ArrayHelper::getValue($operation, "created_at");
+            $sum     = ArrayHelper::getValue($operation, "sum");
+            $comment = ArrayHelper::getValue($operation, "comment");
+
+            $sheet->setCellValue("A" . $row, $date);
+            $sheet->setCellValue("B" . $row, $sum);
+            $sheet->setCellValue("C" . $row, $comment);
+
+            switch ($type){
+                case Operation::TYPE_SELL:
+                    $sheet->getStyle("A" . $row . ":" . $lastColumn . $row)->applyFromArray($this->sellStyle);
+                    break;
+                case Operation::TYPE_FILL_CASH:
+                    $sheet->getStyle("A" . $row . ":" . $lastColumn . $row)->applyFromArray($this->cash);
+                    break;
+                case Operation::TYPE_REST_CASH:
+                    $sheet->getStyle("A" . $row . ":" . $lastColumn . $row)->applyFromArray(array_merge($this->rest, $this->alignStyle));
+                    break;
+                default:
+                    break;
+            }
+            $row ++;
+        }
         /*
         $products          = Product::getList();
         $columnsCount      = (count($products) * 3) + 2;
@@ -174,8 +230,7 @@ class ReportController extends Controller {
         $columnIndex       = $startColumn = 'C';
         $t                 = ['масса', 'цена', 'сумма'];
         $i                 = 1;
-        $sheet->setCellValue("A1", "Дата")->mergeCells("A1:A2")->getStyle("A1:A2")->applyFromArray($alignStyle);
-        $sheet->setCellValue("B1", "Касса")->mergeCells("B1:B2")->getStyle("B1:B2")->applyFromArray($alignStyle);
+
 
         foreach ($products as $i => $product){
             $endCol = $this->getLetterIdx(($i * 3) + 2);
@@ -273,17 +328,17 @@ class ReportController extends Controller {
         */
         $sheet->getColumnDimension('A')->setAutoSize(true);
         $sheet->getColumnDimension('B')->setAutoSize(true);
+        $sheet->getColumnDimension('C')->setAutoSize(true);
         $xls = new Xls($spreadsheet);
         $xls->save($fileName);
 
         return $fileName;
     }
 
-    public function buildHeaders(Worksheet $sheet, array $operations){
+    public function buildHeaders(Worksheet $sheet, array $headers){
 
-        $headers = Operation::getHeadings($operations);
-        $col     = "C";
-        $row     = 1;
+        $col = "D";
+        $row = 1;
 
         // Заполняем название товаров
         foreach ($headers as $header){
@@ -299,7 +354,7 @@ class ReportController extends Controller {
             $sheet->getStyle($startCol . $row . ":" . $col . $row)->applyFromArray($this->centerBold);
             $col ++;
         }
-        $col = "C";
+        $col = "D";
         $row = 2;
 
         // Заполняем название столбцов
@@ -323,5 +378,31 @@ class ReportController extends Controller {
         }
 
         return $sheet;
+    }
+
+    private function buildRow(Worksheet $sheet, array $operation, $row){
+        $headers = $this->getHeaders([]);
+        $type    = ArrayHelper::getValue($operation, "type");
+        switch ($type){
+            case Operation::TYPE_SELL:
+                break;
+            case Operation::TYPE_FILL_CASH:
+                break;
+            case Operation::TYPE_REST_CASH:
+                break;
+        }
+        foreach ($headers as $id => $header){
+            $count = ArrayHelper::getValue($header, "count");
+
+        }
+    }
+
+    private function getColumnCount(array $headers){
+        $colCount = 3;
+        foreach ($headers as $header){
+            $colCount += ArrayHelper::getValue($header, "count");
+        }
+
+        return $colCount;
     }
 }

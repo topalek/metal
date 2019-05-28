@@ -10,7 +10,7 @@ use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 
 $date     = date('Y-m-d 00:00:00');
-$fromDate = date('Y-m-d 00:00:00', strtotime($date));
+$fromDate = date('Y-m-d 00:00:00', strtotime($date . "-1 day"));
 $toDate   = date('Y-m-d 00:00:00', strtotime($date . "+1 day"));
 //        $operations = Operation::getOperationByPeriod($fromDate, $toDate);
 $operations = Operation::getArrayForReport(Operation::getOperationByPeriod($fromDate, $toDate));
@@ -35,19 +35,12 @@ $headers    = Operation::getHeadings($operations);
         <pre>
             <?php
             //print_r($operations)
-            $col = "C";
-            $row = 1;
+            $colCount = 2;
+            $row      = 1;
             foreach ($headers as $header){
-                $startCol = $col;
-                $count    = ArrayHelper::getValue($header, "count");
-                $title    = ArrayHelper::getValue($header, "title");
-                print_r([$col . $row]);
-                while ($count > 1){
-                    $col ++;
-                    $count --;
-                }
-                print_r([$startCol . $row . ":" . $col . $row]);
+                $colCount += ArrayHelper::getValue($header, "count");
             }
+            print_r($colCount);
             ?>
         </pre>
 
