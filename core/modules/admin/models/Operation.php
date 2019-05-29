@@ -50,11 +50,16 @@ class Operation extends ActiveRecord
                 $operations[$i]['products'] = $prods;
                 foreach ($products as $id => $productTitle) {
                     if (array_key_exists($id, $prods)) {
-                        $weight = floatval($prods[$id]['weight']);
-                        $dirt = intval($prods[$id]['dirt']);
+                        $weight = ArrayHelper::getValue($prods[$id], "weight");
+                        if ($weight) {
+                            $weight = floatval($weight);
+                        }
+                        $dirt = ArrayHelper::getValue($prods[$id], "dirt");
                         if ($dirt) {
+                            $dirt = floatval($dirt);
                             $weight = $weight - ($weight / 100) * $dirt;
                         }
+
                         $operations[$i]['products'][$id] = [
                             "weight"         => $weight,
                             "price"          => $prods[$id]['sale_price'],

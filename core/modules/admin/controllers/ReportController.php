@@ -32,9 +32,19 @@ class ReportController extends Controller {
             'outline' => [
                 'borderStyle' => Border::BORDER_THIN,
                 'color'       => [
-                    'rgb' => 'd0d7e5'
+                    'rgb' => '000000',
                 ]
             ]
+        ],
+    ];
+    public $borders = [
+        'borders' => [
+            'outline' => [
+                'borderStyle' => Border::BORDER_THIN,
+                'color'       => [
+                    'rgb' => '000000',
+                ],
+            ],
         ],
     ];
     public $totalStyle = [
@@ -48,7 +58,7 @@ class ReportController extends Controller {
             'outline' => [
                 'borderStyle' => Border::BORDER_THIN,
                 'color'       => [
-                    'rgb' => 'd0d7e5'
+                    'rgb' => '000000',
                 ]
             ]
         ],
@@ -64,7 +74,7 @@ class ReportController extends Controller {
             'outline' => [
                 'borderStyle' => Border::BORDER_THIN,
                 'color'       => [
-                    'rgb' => 'd0d7e5'
+                    'rgb' => '000000',
                 ]
             ]
         ],
@@ -81,7 +91,7 @@ class ReportController extends Controller {
             'outline' => [
                 'borderStyle' => Border::BORDER_THIN,
                 'color'       => [
-                    'rgb' => 'd0d7e5'
+                    'rgb' => "000000"//'d0d7e5'
                 ]
             ]
         ],
@@ -98,7 +108,7 @@ class ReportController extends Controller {
             'outline' => [
                 'borderStyle' => Border::BORDER_THIN,
                 'color'       => [
-                    'rgb' => 'd0d7e5'
+                    'rgb' => '000000',
                 ]
             ]
         ],
@@ -113,7 +123,7 @@ class ReportController extends Controller {
             'outline' => [
                 'borderStyle' => Border::BORDER_THIN,
                 'color'       => [
-                    'rgb' => 'd0d7e5'
+                    'rgb' => '000000',
                 ]
             ]
         ],
@@ -191,20 +201,26 @@ class ReportController extends Controller {
         $colCount    = $this->getColumnCount($headers);
         $lastColumn  = $this->getLetterIdx($colCount);
         $sheet       = $this->buildHeaders($sheet, $headers);
-        $sheet->setCellValue("A1", "Дата")->mergeCells("A1:A2")->getStyle("A1:A2")->applyFromArray($this->centerBold);
-        $sheet->setCellValue("B1", "Касса")->mergeCells("B1:B2")->getStyle("B1:B2")->applyFromArray($this->centerBold);
-        $sheet->setCellValue("C1", "Коментарий")->mergeCells("C1:C2")->getStyle("C1:C2")->applyFromArray($this->centerBold);
+        $sheet->setCellValue("A1", "Дата")->mergeCells("A1:A2")
+            ->getStyle("A1:A2")->applyFromArray(array_merge($this->centerBold, $this->borders));
+        $sheet->setCellValue("B1", "Касса")->mergeCells("B1:B2")
+            ->getStyle("B1:B2")->applyFromArray(array_merge($this->centerBold, $this->borders));
+        $sheet->setCellValue("C1", "Коментарий")->mergeCells("C1:C2")
+            ->getStyle("C1:C2")->applyFromArray(array_merge($this->centerBold, $this->borders));
         $row = 3;
-        foreach ($operations as $operation){
 
+        foreach ($operations as $operation){
+            $col = "A";
             $type    = ArrayHelper::getValue($operation, "type");
             $date    = ArrayHelper::getValue($operation, "created_at");
             $sum     = ArrayHelper::getValue($operation, "sum");
             $comment = ArrayHelper::getValue($operation, "comment");
-
-            $sheet->setCellValue("A" . $row, $date);
-            $sheet->setCellValue("B" . $row, $sum);
-            $sheet->setCellValue("C" . $row, $comment);
+            $sheet->setCellValue($col . $row, $date);
+            $sheet->getStyle($col++ . $row)->applyFromArray($this->borders);
+            $sheet->setCellValue($col . $row, $sum);
+            $sheet->getStyle($col++ . $row)->applyFromArray($this->borders);
+            $sheet->setCellValue($col . $row, $comment);
+            $sheet->getStyle($col++ . $row)->applyFromArray($this->borders);
 
             switch ($type){
                 case Operation::TYPE_SELL:
@@ -214,118 +230,52 @@ class ReportController extends Controller {
                     $sheet->getStyle("A" . $row . ":" . $lastColumn . $row)->applyFromArray($this->cash);
                     break;
                 case Operation::TYPE_REST_CASH:
-                    $sheet->getStyle("A" . $row . ":" . $lastColumn . $row)->applyFromArray(array_merge($this->rest, $this->alignStyle));
-                    break;
-                default:
+                    $sheet->getStyle("A" . $row . ":" . $lastColumn . $row)->applyFromArray($this->rest);
                     break;
             }
+            $products = ArrayHelper::getValue($operation, 'products');
+            foreach ($headers as $id => $header) {
+                $count = ArrayHelper::getValue($header, 'count');
+                if (array_key_exists($id, $products)) {
+                    $weight = ArrayHelper::getValue($products[$id], "weight");
+                    $price = ArrayHelper::getValue($products[$id], "price");
+                    $total = ArrayHelper::getValue($products[$id], "total");
+                    $discount_price = ArrayHelper::getValue($products[$id], "discount_price");
+                    $discount = ArrayHelper::getValue($products[$id], "discount");
+                    $sheet->setCellValue($col . $row, $weight);
+                    if (strpos($weight, "-") !== false) {
+                        $sheet->getStyle($col . $row)->applyFromArray($this->negative);
+                    }
+                    $sheet->getStyle($col++ . $row)->applyFromArray($this->borders);
+
+                    if (!$discount) {
+                        $sheet->setCellValue($col . $row, $price);
+                        $sheet->getStyle($col . $row)->applyFromArray($this->borders);
+                        $sheet->getStyle($col++ . $row)->applyFromArray($this->borders);
+                    } else {
+                        $sheet->getStyle($col++ . $row)->applyFromArray($this->borders);
+                        $sheet->setCellValue($col . $row, $discount_price);
+                        $sheet->getStyle($col++ . $row)->applyFromArray($this->borders);
+                    }
+
+                    $sheet->setCellValue($col . $row, $total);
+                    $sheet->getStyle($col . $row)->applyFromArray($this->totalStyle);
+                    if (strpos($total, "-") !== false) {
+                        $sheet->getStyle($col . $row)->applyFromArray($this->negative);
+                    }
+                    $col++;
+                } else {
+                    $col++;
+                    $col++;
+                    $col++;
+                    if ($count == 4) {
+                        $col++;
+                    }
+                }
+            }
+
             $row ++;
         }
-        /*
-        $products          = Product::getList();
-        $columnsCount      = (count($products) * 3) + 2;
-        $lastColumn        = $this->getLetterIdx($columnsCount);
-        $rowIndex          = 1;
-        $columnNumberIndex = 3;
-        $columnIndex       = $startColumn = 'C';
-        $t                 = ['масса', 'цена', 'сумма'];
-        $i                 = 1;
-
-
-        foreach ($products as $i => $product){
-            $endCol = $this->getLetterIdx(($i * 3) + 2);
-            $sheet->setCellValue($columnIndex . $rowIndex, $product)->mergeCells($columnIndex . $rowIndex . ":" . $endCol . $rowIndex)->getStyle($columnIndex . $rowIndex . ":" . $endCol . $rowIndex)->applyFromArray($alignStyle);
-            $columnIndex ++;
-            $columnIndex ++;
-            $columnIndex ++;
-        }
-        $rowIndex ++;
-        $columnNumberIndex = 3;
-        $columnIndex       = $startColumn = 'C';
-        while ($columnNumberIndex < $columnsCount){
-            $tIdx = 0;
-            foreach ($t as $item){
-                if ($tIdx == 2){
-                    $sheet->getStyle($columnIndex . ($rowIndex))->applyFromArray(array_merge($totalStyle, $alignStyle));
-                }
-                $sheet->setCellValue($columnIndex . ($rowIndex), $item)->getStyle($columnIndex . ($rowIndex))->applyFromArray($alignStyle);
-                $tIdx ++;
-                $columnIndex ++;
-                $columnNumberIndex ++;
-            }
-        }
-        $rowIndex ++;
-        foreach ($operations as $i => $operation){
-            $columnNumberIndex = 1;
-            $columnIndex       = $startColumn = 'A';
-            $date              = date("d.m.Y H:i:s", strtotime($operation['created_at']));
-
-            // продажа
-            if ($operation['type'] == 1){
-                $sheet->getStyle($startColumn . $rowIndex . ":" . $lastColumn . $rowIndex)->applyFromArray($sellStyle);
-                $sheet->setCellValue("B" . $rowIndex, $operation['comment']);
-            }
-
-            // пополнение кассы
-            if ($operation['type'] == 2){
-                $sheet->getStyle($startColumn . $rowIndex . ":" . $lastColumn . $rowIndex)->applyFromArray($cash);
-                while ($columnNumberIndex < $columnsCount){
-                    if ($columnNumberIndex == 1){
-                        $sheet->setCellValue($columnIndex . $rowIndex, $date);
-                        $columnIndex ++;
-                        $columnNumberIndex ++;
-                        continue;
-                    }
-                    if ($columnNumberIndex == 2){
-                        $sheet->setCellValue($columnIndex . $rowIndex, $operation['sum']);
-                        $columnIndex ++;
-                        $columnNumberIndex ++;
-                        continue;
-                    }
-                    $sheet->setCellValue($columnIndex . $rowIndex, 0);
-                    $columnIndex ++;
-                    $columnNumberIndex ++;
-                }
-                $rowIndex ++;
-                continue;
-            }
-            //  покупка
-            for ($columnNumberIndex = 1; $columnNumberIndex < $columnsCount; $columnNumberIndex ++){
-                if ($columnNumberIndex == 1){
-                    $sheet->setCellValue($columnIndex . $rowIndex, $date);
-                    $columnIndex ++;
-                    $columnNumberIndex ++;
-                    continue;
-                }
-                if ($columnNumberIndex == 2){
-                    $sheet->setCellValue($columnIndex . $rowIndex, 0);
-                    $columnIndex ++;
-                    $columnNumberIndex ++;
-                    continue;
-                }
-
-                if (isset($operation['products']) && $operation['products']){
-                    $columnIndex       = "C";
-                    $columnNumberIndex = 3;
-                    foreach ($operation['products'] as $id => $product){
-                        foreach ($product as $key => $item){
-                            if ($columnNumberIndex % 3 == 2){
-                                $sheet->getStyle($columnIndex . $rowIndex)->applyFromArray($totalStyle);
-                            }
-                            $sheet->setCellValue($columnIndex . $rowIndex, $item);
-                            if (strpos($item, "-") !== false){
-                                $sheet->getStyle($columnIndex . $rowIndex)->applyFromArray($negative);
-                            }
-                            $columnIndex ++;
-                            $columnNumberIndex ++;
-
-                        }
-                    }
-                }
-            }
-            $rowIndex ++;
-        }
-        */
         $sheet->getColumnDimension('A')->setAutoSize(true);
         $sheet->getColumnDimension('B')->setAutoSize(true);
         $sheet->getColumnDimension('C')->setAutoSize(true);

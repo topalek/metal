@@ -34,13 +34,12 @@ $headers    = Operation::getHeadings($operations);
         </div>
         <pre>
             <?php
-            //print_r($operations)
-            $colCount = 2;
-            $row      = 1;
-            foreach ($headers as $header){
-                $colCount += ArrayHelper::getValue($header, "count");
-            }
-            print_r($colCount);
+            $col = "A";
+            print_r($col);
+            print_r($col++);
+            print_r($col);
+            print_r(++$col);
+            print_r($col);
             ?>
         </pre>
 
