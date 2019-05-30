@@ -247,12 +247,20 @@ class ReportController extends Controller {
                         $sheet->getStyle($col . $row)->applyFromArray($this->negative);
                     }
                     $sheet->getStyle($col++ . $row)->applyFromArray($this->borders);
-
-                    if (!$discount) {
+                    if ($count != 4) {
                         $sheet->setCellValue($col . $row, $price);
                         $sheet->getStyle($col . $row)->applyFromArray($this->borders);
+                        if ($type == Operation::TYPE_SELL && $weight) {
+                            $sheet->setCellValue($col . $row, "???");
+                        }
                         $sheet->getStyle($col++ . $row)->applyFromArray($this->borders);
                     } else {
+                        if (!$discount) {
+                            $sheet->setCellValue($col . $row, $price);
+                        }
+                        if ($type == Operation::TYPE_SELL && $weight) {
+                            $sheet->setCellValue($col . $row, "???");
+                        }
                         $sheet->getStyle($col++ . $row)->applyFromArray($this->borders);
                         $sheet->setCellValue($col . $row, $discount_price);
                         $sheet->getStyle($col++ . $row)->applyFromArray($this->borders);
@@ -328,23 +336,6 @@ class ReportController extends Controller {
         }
 
         return $sheet;
-    }
-
-    private function buildRow(Worksheet $sheet, array $operation, $row){
-        $headers = $this->getHeaders([]);
-        $type    = ArrayHelper::getValue($operation, "type");
-        switch ($type){
-            case Operation::TYPE_SELL:
-                break;
-            case Operation::TYPE_FILL_CASH:
-                break;
-            case Operation::TYPE_REST_CASH:
-                break;
-        }
-        foreach ($headers as $id => $header){
-            $count = ArrayHelper::getValue($header, "count");
-
-        }
     }
 
     private function getColumnCount(array $headers){
