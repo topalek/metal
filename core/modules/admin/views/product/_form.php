@@ -32,14 +32,11 @@ use yii\widgets\ActiveForm;
     <div class="row">
         <div class="col-md-12">
             <div class="row">
-                <div class="col-md-2">
+                <div class="col-md-3">
                     <?= $form->field($model, 'dirt')->input('number') ?>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-4">
                     <?= $form->field($model, 'operation_sort')->input('number') ?>
-                </div>
-                <div class="col-md-3">
-                    <?= $form->field($model, 'report_sort')->input('number') ?>
                 </div>
                 <div class="col-md-2">
                     <?= $form->field($model, 'status')->widget(SwitchInput::class, [

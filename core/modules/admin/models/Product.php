@@ -166,11 +166,16 @@ class Product extends BaseModel {
     }
 
     public function afterSave($insert, $changedAttributes){
-        Yii::$app->cache->set('price_list', Product::find()->where(['status' => Product::STATUS_PUBLISHED])->select([
-            'title', 'price', 'id', 'discount_price'
-        ])->indexBy('id')->asArray()->all());
+        $this->refreshCash();
         parent::afterSave($insert, $changedAttributes);
     }
+
+    public function afterDelete()
+    {
+        parent::afterDelete();
+        $this->refreshCash();
+    }
+
 
     public static function getEmptyArray(){
         $arr      = [];
@@ -181,6 +186,13 @@ class Product extends BaseModel {
         }
 
         return $arr;
+    }
+
+    private function refreshCash()
+    {
+        Yii::$app->cache->set('price_list', Product::find()->where(['status' => Product::STATUS_PUBLISHED])->select([
+            'title', 'price', 'id', 'discount_price',
+        ])->indexBy('id')->asArray()->all());
     }
 
 }
