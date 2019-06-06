@@ -48,14 +48,15 @@ rmrevin\yii\fontawesome\AssetBundle::register($this);
 		'options'      => ['class' => 'navbar-nav navbar-right'],
 		'encodeLabels' => false,
 		'items'        => [
-			//			['label' => 'Home', 'url' => ['/site/index']],
-			//			['label' => 'About', 'url' => ['/site/about']],
-			[
+            //			['label' => 'Home', 'url' => ['/site/index']],
+            //			['label' => 'About', 'url' => ['/site/about']],
+            ['label' => 'Остаток', 'url' => ['/operation/rest-cash']],
+            [
 				'label'       => '<i class="fa fa-usd fa-4"></i>',
 				'url'         => ['/operation/fill-cash'],
 				'linkOptions' => ['title' => "Пополнить кассу"]
 			],
-			Yii::$app->user->isGuest ?
+            Yii::$app->user->isGuest ?
 				['label' => 'Login', 'url' => ['/site/login']] :
 //				[
 //					'label'       => 'Провести',

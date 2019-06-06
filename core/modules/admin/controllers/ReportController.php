@@ -142,6 +142,11 @@ class ReportController extends Controller {
             ]
         ],
     ];
+    public $boldText = [
+        'font' => [
+            'bold' => true,
+        ],
+    ];
     public $headers;
 
     public function actionIndex(){
@@ -217,7 +222,9 @@ class ReportController extends Controller {
             $comment = ArrayHelper::getValue($operation, "comment");
             $sheet->setCellValue($col . $row, $date);
             $sheet->getStyle($col++ . $row)->applyFromArray($this->borders);
-            $sheet->setCellValue($col . $row, $sum);
+            if ($type != Operation::TYPE_BUY){
+                $sheet->setCellValue($col . $row, $sum);
+            }
             $sheet->getStyle($col++ . $row)->applyFromArray($this->borders);
             $sheet->setCellValue($col . $row, $comment);
             $sheet->getStyle($col++ . $row)->applyFromArray($this->borders);
@@ -242,7 +249,14 @@ class ReportController extends Controller {
                     $total = ArrayHelper::getValue($products[$id], "total");
                     $discount_price = ArrayHelper::getValue($products[$id], "discount_price");
                     $discount = ArrayHelper::getValue($products[$id], "discount");
-                    $sheet->setCellValue($col . $row, $weight);
+                    if ($type == Operation::TYPE_SELL){
+                        if ($weight){
+                            $sheet->setCellValue($col . $row, "-" . $weight);
+                            $sheet->getStyle($col . $row)->applyFromArray($this->boldText);
+                        }
+                    }else{
+                        $sheet->setCellValue($col . $row, $weight);
+                    }
                     if (strpos($weight, "-") !== false) {
                         $sheet->getStyle($col . $row)->applyFromArray($this->negative);
                     }
@@ -252,6 +266,7 @@ class ReportController extends Controller {
                         $sheet->getStyle($col . $row)->applyFromArray($this->borders);
                         if ($type == Operation::TYPE_SELL && $weight) {
                             $sheet->setCellValue($col . $row, "???");
+                            $sheet->getStyle($col . $row)->applyFromArray($this->boldText);
                         }
                         $sheet->getStyle($col++ . $row)->applyFromArray($this->borders);
                     } else {
@@ -260,6 +275,7 @@ class ReportController extends Controller {
                         }
                         if ($type == Operation::TYPE_SELL && $weight) {
                             $sheet->setCellValue($col . $row, "???");
+                            $sheet->getStyle($col . $row)->applyFromArray($this->boldText);
                         }
                         $sheet->getStyle($col++ . $row)->applyFromArray($this->borders);
                         $sheet->setCellValue($col . $row, $discount_price);
