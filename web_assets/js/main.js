@@ -1,4 +1,5 @@
 let isCalculated = false;
+const storageName = 'buy';
 
 $('.operation-item').click(function (e) {
     e.preventDefault();
@@ -20,9 +21,9 @@ function getTime() {
 
 }
 
-function buildItemList(type) {
+function buildItemList() {
 
-    let products = getFromStorage(type);
+    let products = getFromStorage();
     if (products) {
         var html = '<ul class="list-group">';
         $.each(products, (i, item) => {
@@ -34,14 +35,14 @@ function buildItemList(type) {
 
 }
 
-function writeToStorage(json, type) {
-    let products = getFromStorage(type);
+function writeToStorage(json) {
+    let products = getFromStorage();
     var product = {};
     json.forEach((item) => {
         product[item.name] = item.value;
     });
     products[product.id] = product;
-    localStorage.setItem(getStorageName(type), JSON.stringify(products));
+    localStorage.setItem(storageName, JSON.stringify(products));
     return true;
 }
 
@@ -49,11 +50,11 @@ function isEmpty(obj) {
     return Object.keys(obj).length === 0;
 }
 
-function removeItem(id, type) {
+function removeItem(id) {
 
-    let products = getFromStorage(type);
+    let products = getFromStorage(storageName);
     delete products[id];
-    localStorage.setItem(getStorageName(type), JSON.stringify(products));
+    localStorage.setItem(storageName, JSON.stringify(products));
 
 }
 
@@ -61,10 +62,6 @@ $(document).ready(function () {
     setInterval(getTime, 1000);
 });
 
-function getFromStorage(type) {
-    return (localStorage.getItem(getStorageName(type))) ? JSON.parse(localStorage.getItem(getStorageName(type))) : {};
-}
-
-function getStorageName(type) {
-    return (type == 0) ? 'buy' : 'sale';
+function getFromStorage() {
+    return (localStorage.getItem(storageName)) ? JSON.parse(localStorage.getItem(storageName)) : {};
 }

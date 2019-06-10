@@ -97,13 +97,13 @@ var type = modal.data('type');
 
 $(modal).modal('show');
 $(modal).on('hidden.bs.modal', function (e) {
-    var products = getFromStorage(type);
+    var products = getFromStorage();
     if (products){
         $('.operation').removeClass('hidden');
         $('.operation').on('click',(e)=>{
             e.preventDefault();
             let url = $(e.target).attr('href');
-            localStorage.removeItem(getStorageName(type));
+            localStorage.removeItem(storageName);
             $.post(url,{'products':products},(resp)=>{
             });
         });
@@ -114,12 +114,11 @@ $(modal).on('hidden.bs.modal', function (e) {
 });
 var form = $('form');
 
-buildItemList(type);
+buildItemList();
 $('.process').on('click',(e)=>{
     let json = form.serializeArray(),
-        type = $(e.target).data('type'),
         weight = $('.weight').val(),
-        products = getFromStorage(type),
+        products = getFromStorage(),
         url = $(e.target).data('url');
     
     if(!weight && isEmpty(products)){
@@ -132,14 +131,14 @@ $('.process').on('click',(e)=>{
             return false;
         }
         if (weight){
-            writeToStorage(json,type);
+            writeToStorage(json);
         } 
         if (isCalculated){
-            products = getFromStorage(type);
+            products = getFromStorage();
             $.post(url,{'products':products},(resp)=>{
                 
                 if (resp.status){
-                    localStorage.removeItem(getStorageName(type));
+                    localStorage.removeItem(storageName);
                     window.location = "/";
                 } else {
                     alert(resp.message);
@@ -154,11 +153,8 @@ $('.process').on('click',(e)=>{
 });
 $('.add-item').on('click',(e)=>{
     let json = $('form').serializeArray(),
-        type = $(e.target).data('type'),
-        weight = $('.weight').val(),
-        products = getFromStorage(type);
-    
-     if(!weight && isEmpty(products)){
+        weight = $('.weight').val();
+     if(!weight){
         alert('Заполните Вес');
         return false;
     }else{
@@ -167,28 +163,26 @@ $('.add-item').on('click',(e)=>{
             alert('Вес 0');
             return false;
         }
-        writeToStorage(json,type);
+        writeToStorage(json);
     }
-    
+   
 });
 
 $('.remove-item').on('click',(e)=>{
     let el = $(e.target);
     let id = el.data('id');
     el.parents('li').remove();
-    removeItem(id,type);
+    removeItem(id);
 });
-$('input').on('input',(e)=>{
-    let el = $(e.target),
+
+$('.weight').on('input',(e)=>{
+    let weight = parseFloat($(e.target).val()),
     price = parseFloat($('.price').val()),
-    weight = parseFloat($('.weight').val()),
     discount_price = parseFloat($('.weight').data('discount_price')),
     discount_weight = parseFloat($('.weight').data('discount_weight')),
     discount = $('.discount'),
     discountPrice = $('.discount_price'),
-    _price = parseFloat($('.weight').data('price')),
-    dirt = parseFloat($('.dirt').val()),
-    total = $('.total');
+    _price = parseFloat($('.weight').data('price'));
     if (discount_price && discount_weight){
         if (weight>= discount_weight){
             price = discount_price;
@@ -203,26 +197,33 @@ $('input').on('input',(e)=>{
             $('.price').val(_price);
         }
     }
-   // el.val(el.val().replace(',','.'));
-   let totalPrice = Math.round((price*(weight - weight*dirt/100))*100)/100;
-   total.val(totalPrice);
+    calcTotal();
 });
+$('.price, .dirt').on('input',()=>{
+    calcTotal();
+});
+function calcTotal(){
+     let weight = parseFloat($('.weight').val()),
+    price = parseFloat($('.price').val()),
+    dirt = parseFloat($('.dirt').val()),
+    total = $('.total');
+     let totalPrice = Math.round((price*(weight - weight*dirt/100))*100)/100;
+   total.val(totalPrice);
+}
 $('#calculate').on('click',()=>{
     let json = form.serializeArray(),
         weight = $('.weight').val();
     let total = 0;
     isCalculated = true;
     if (weight){
-        writeToStorage(json,type);
-        buildItemList(type);
+        writeToStorage(json);
+        buildItemList();
         form[0].reset();
     } 
-    let products = getFromStorage(type); 
+    let products = getFromStorage(); 
     Object.keys(products).forEach((i)=>{
         total+= parseFloat(products[i].total);
     });
-    // let formTotal = $('.total').val();
-    // total += parseFloat(formTotal);
     total = Math.ceil(total*100)/100;
     $('#total').html("Всего: "+total+" грн." );
 });
