@@ -2,6 +2,7 @@
 
 use app\modules\admin\models\Product;
 use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
@@ -15,16 +16,12 @@ use yii\widgets\ActiveForm;
     <?php $form = ActiveForm::begin() ?>
     <div class="check">
         <?php foreach (Product::getList() as $id => $title) : ?>
-            <?= Html::checkbox('products[]', null, ['id' => 'p' . $id, 'value' => $id]) ?>
+            <?= Html::checkbox('marks[]', null, ['id' => 'p' . $id, 'value' => $id, 'class' => 'mark', 'data-url' => Url::to(['/operation/get-field', 'id' => $id])]) ?>
             <?= Html::label($title, 'p' . $id, ['class' => 'btn-label']) ?>
         <?php endforeach; ?>
-        <?= Html::hiddenInput('toRecord', $toRecord) ?>
     </div>
-    <?php if ($list): ?>
         <div class="list">
-            <?= $list ?>
         </div>
-    <?php endif; ?>
     <?= $form->field($model, 'comment')->textarea() ?>
     <div class="form-group">
         <div class="col-lg-12">
@@ -33,3 +30,15 @@ use yii\widgets\ActiveForm;
     </div>
     <?php ActiveForm::end() ?>
 </div>
+
+<?php
+$this->registerJs(<<<JS
+$('.mark').on('change',(e)=>{
+    let  el = $(e.target);
+    $.get(el.data('url'),(resp)=>{
+        $('.list').append(resp);
+    });
+});
+JS
+)
+?>
