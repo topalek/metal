@@ -33,11 +33,19 @@ use yii\widgets\ActiveForm;
 
 <?php
 $this->registerJs(<<<JS
+let marks = [];
 $('.mark').on('change',(e)=>{
     let  el = $(e.target);
-    $.get(el.data('url'),(resp)=>{
-        $('.list').append(resp);
-    });
+    if (marks.includes(el.val())){
+        marks.splice(marks.indexOf(el.val()), 1);
+        $('#product-'+el.val()).parents('.row').remove();
+    } else{
+        marks.push(el.val());
+        $.get(el.data('url'),(resp)=>{
+            $('.list').append(resp);
+        });
+    }
+    
 });
 JS
 )
