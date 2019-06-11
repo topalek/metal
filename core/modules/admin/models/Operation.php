@@ -184,19 +184,24 @@ class Operation extends ActiveRecord
         $headers = [];
         foreach ($operations as $k => $operation){
             $products = ArrayHelper::getValue($operation, 'products');
-
             foreach ($products as $id => $product){
-                $discount              = ArrayHelper::getValue($product, 'discount');
                 $headers[$id]['title'] = $list[$id];
-                if ($discount){
-                    $headers[$id]['count'] = 4;
-                }else{
-                    if (isset($headers[$id]['count']) && $headers[$id]['count'] == 4){
-                        continue;
+                $price                 = ArrayHelper::getValue($product, 'price');
+                if (isset($headers[$id]['prices'])){
+                    if ( ! in_array($price, $headers[$id]['prices'])){
+                        $headers[$id]['prices'][] = $price;
                     }
-                    $headers[$id]['count'] = 3;
+                }else{
+                    $headers[$id]['prices'][] = $price;
                 }
+
             }
+        }
+
+        foreach ($headers as $id => $header){
+            $arr = array_filter($headers[$id]['prices']);
+            sort($arr);
+            $headers[$id]['prices'] = $arr;
         }
 
         return $headers;
