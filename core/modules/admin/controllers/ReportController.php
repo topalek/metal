@@ -16,11 +16,6 @@ use yii\web\Controller;
 
 class ReportController extends Controller {
 
-    public $subHeaders = [
-        4 => ['масса', 'цена', 'цена с надбавкой', 'сумма'],
-        3 => ['масса', 'цена', 'сумма'],
-    ];
-
     public $sellStyle = [
         'fill'    => [
             'fillType' => Fill::FILL_SOLID,
@@ -322,6 +317,7 @@ class ReportController extends Controller {
 
             $row ++;
         }
+        $sheet = $this->setFormulas($sheet, $headers, $row);
         $sheet->getColumnDimension('A')->setAutoSize(true);
         $sheet->getColumnDimension('B')->setAutoSize(true);
         $sheet->getColumnDimension('C')->setAutoSize(true);
@@ -392,5 +388,42 @@ class ReportController extends Controller {
         }
 
         return $colCount;
+    }
+
+    private function setFormulas(Worksheet $sheet, array $headers, $row){
+        $col        = "A";
+        $startRow   = 3;
+        $formulaRow = $row - 1;
+        $sheet->setCellValue($col . $row, "Итого:");
+        $sheet->getStyle($col ++ . $row)->applyFromArray($this->borders);
+
+        $formula = "=SUM($col$startRow:$col$formulaRow)";
+        $sheet->setCellValue($col . $row, $formula);
+        $sheet->getStyle($col ++ . $row)->applyFromArray($this->borders);
+        $col ++;
+        foreach ($headers as $id => $header){
+            $count = count(ArrayHelper::getValue($header, "prices"));
+            if ($count){
+                // формула для каждого веса
+                while ($count >= 1){
+                    $formula = "=SUM($col$startRow:$col$formulaRow)";
+                    $sheet->setCellValue($col . $row, $formula);
+                    $sheet->getStyle($col ++ . $row)->applyFromArray($this->borders);
+                    $count --;
+                }
+                // формула для цены ?
+                $col ++;
+                // формула для сумм
+                $formula = "=SUM($col$startRow:$col$formulaRow)";
+                $sheet->setCellValue($col . $row, $formula);
+                $sheet->getStyle($col ++ . $row)->applyFromArray($this->borders);
+            }else{
+                $col ++;
+                $col ++;
+                $col ++;
+            }
+        }
+
+        return $sheet;
     }
 }
