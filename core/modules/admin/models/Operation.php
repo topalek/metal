@@ -47,18 +47,22 @@ class Operation extends ActiveRecord
                 if (!$prods) {
                     $prods = [];
                 }
+                $type                       = ArrayHelper::getValue($item, "type");
                 $operations[$i]['products'] = $prods;
                 foreach ($products as $id => $productTitle) {
                     if (array_key_exists($id, $prods)) {
                         $weight = ArrayHelper::getValue($prods[$id], "weight");
-                        if ($weight) {
-                            $weight = floatval($weight);
+                        if ($type != Operation::TYPE_SELL){
+                            if ($weight){
+                                $weight = floatval($weight);
+                            }
+                            $dirt = ArrayHelper::getValue($prods[$id], "dirt");
+                            if ($dirt){
+                                $dirt   = floatval($dirt);
+                                $weight = $weight - ($weight / 100) * $dirt;
+                            }
                         }
-                        $dirt = ArrayHelper::getValue($prods[$id], "dirt");
-                        if ($dirt) {
-                            $dirt = floatval($dirt);
-                            $weight = $weight - ($weight / 100) * $dirt;
-                        }
+
 
                         $operations[$i]['products'][$id] = [
                             "weight"         => $weight,

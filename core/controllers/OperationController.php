@@ -95,9 +95,11 @@ class OperationController extends Controller
             foreach ($products as $id => $weight) {
                 $arr[$id] = $emptyArr[$id];
                 if ($weight) {
-                    $arr[$id]['weight'] = $weight;
+                    $arr[$id]['weight']     = $weight;
+                    $arr[$id]['sale_price'] = '?';
                 } else {
-                    $arr[$id]['weight'] = "?";
+                    $arr[$id]['weight']     = "?";
+                    $arr[$id]['sale_price'] = "?";
                 }
 
             }
