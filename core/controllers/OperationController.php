@@ -16,6 +16,7 @@ use yii\web\Response;
  */
 class OperationController extends Controller
 {
+    public $bodyClass;
     /**
      * {@inheritdoc}
      */
@@ -33,11 +34,11 @@ class OperationController extends Controller
 
     public function actionBuy()
     {
-        $model = new Operation();
-        $model->type = Operation::TYPE_BUY;
-        $searchModel = new ProductSearch();
-
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $model           = new Operation();
+        $model->type     = Operation::TYPE_BUY;
+        $searchModel     = new ProductSearch();
+        $this->bodyClass = 'operation-buy';
+        $dataProvider    = $searchModel->search(Yii::$app->request->queryParams);
 
         $priceList = $this->renderPartial('price_list', ['products' => Product::getCachePrice()]);
         if (Yii::$app->request->isPost) {
@@ -75,8 +76,9 @@ class OperationController extends Controller
 
     public function actionSell()
     {
-        $model = new Operation();
-        $model->type = Operation::TYPE_SELL;
+        $model           = new Operation();
+        $model->type     = Operation::TYPE_SELL;
+        $this->bodyClass = 'operation-sell';
 
         if (Yii::$app->request->isPost) {
 
@@ -117,8 +119,9 @@ class OperationController extends Controller
 
     public function actionRestCash()
     {
-        $model = new Operation();
-        $model->type = Operation::TYPE_REST_CASH;
+        $this->bodyClass = 'cash';
+        $model           = new Operation();
+        $model->type     = Operation::TYPE_REST_CASH;
         $model->products = Product::getEmptyArray();
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->goHome();
@@ -138,8 +141,9 @@ class OperationController extends Controller
 
     public function actionFillCash()
     {
-        $model = new Operation();
-        $model->type = Operation::TYPE_FILL_CASH;
+        $this->bodyClass = 'cash';
+        $model           = new Operation();
+        $model->type     = Operation::TYPE_FILL_CASH;
         $model->products = Product::getEmptyArray();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {

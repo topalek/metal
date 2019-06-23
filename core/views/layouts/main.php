@@ -5,7 +5,6 @@
 /* @var $content string */
 
 use app\assets\AppAsset;
-use app\modules\admin\models\Cash;
 use app\widgets\Alert;
 use yii\bootstrap\Nav;
 use yii\bootstrap\NavBar;
@@ -26,7 +25,7 @@ rmrevin\yii\fontawesome\AssetBundle::register($this);
     <title><?= Html::encode($this->title) ?></title>
 	<?php $this->head() ?>
 </head>
-<body>
+<body class="<?= $this->context->bodyClass; ?>">
 <?php $this->beginBody() ?>
 
 <div class="wrap">
@@ -35,19 +34,17 @@ rmrevin\yii\fontawesome\AssetBundle::register($this);
         'brandLabel' => "<span class='date'>" . date('d.m.Y') . "</span> | <span class='time'></span>",
         'brandUrl'   => Yii::$app->homeUrl,
         'options'    => [
-			'class' => 'navbar navbar-fixed-top navbar-default',
+            'class' => 'navbar navbar-fixed-top navbar-default',
+            'id'    => 'main-nav'
 		],
 	]);
-	$cas = Cash::find()->orderBy('id DESC')->one();
-	if ($cas){
-		$cas = $cas->sum;
-	}else{
-		$cas = 0;
-	}
 	echo Nav::widget([
-		'options'      => ['class' => 'navbar-nav navbar-right'],
-		'encodeLabels' => false,
-		'items'        => [
+        'options'      => [
+            'class' => 'navbar-nav navbar-right',
+            'id'    => 'user-nav'
+        ],
+        'encodeLabels' => false,
+        'items'        => [
             //			['label' => 'Home', 'url' => ['/site/index']],
             //			['label' => 'About', 'url' => ['/site/about']],
             ['label' => 'Остаток', 'url' => ['/operation/rest-cash']],
@@ -67,7 +64,10 @@ rmrevin\yii\fontawesome\AssetBundle::register($this);
 //					'linkOptions' => ['class' => 'hidden bg-danger operation']
 //				],
                 ['label' => 'ВЫХОД', 'url' => ['/site/logout']],
-            ['label' => '<i class="fa fa-user-secret"></i>', 'url' => ['/admin']],
+            Yii::$app->user->can('canAdmin') ?
+                ['label' => '<i class="fa fa-user-secret"></i>', 'url' => ['/admin']] :
+                ''
+
 
 		],
 	]);

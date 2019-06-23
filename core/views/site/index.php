@@ -7,22 +7,22 @@ use yii\helpers\Html;
 $this->title = 'Metal';
 ?>
 <div class="site-index">
-    <div class="row">
-        <div class="col-md-6 col-md-offset-3">
-            <div class="flex flex-center">
-                <?= Html::a(Html::img('/web_assets/images/buy.svg', ['class' => 'img-responsive']), [
+    <!--    <div class="row">-->
+    <!--        <div class="col-md-8 col-md-offset-2">-->
+    <div class="flex flex-center flex-column">
+        <?= Html::a('купить', [
                     'operation/buy'
                 ], [
-                    //'class' => 'btn btn-default'
+            'class' => 'operation-btn'
                 ]) ?>
-                <?= Html::a(Html::img('/web_assets/images/sell.svg', ['class' => 'img-responsive']), [
+        <?= Html::a("сдать&nbsp;&nbsp;", [
                     'operation/sell'
                 ], [
-                    //'class' => 'btn btn-default'
+            'class' => 'operation-btn'
                 ]) ?>
             </div>
-        </div>
-    </div>
+    <!--        </div>-->
+    <!--    </div>-->
 
 
 </div>

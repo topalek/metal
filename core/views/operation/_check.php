@@ -12,7 +12,7 @@ use yii\widgets\ActiveForm;
 /* @var $list string */
 
 ?>
-<div class="operation-sell">
+<div class="sell">
     <?php $form = ActiveForm::begin() ?>
     <div class="check">
         <?php foreach (Product::getList() as $id => $title) : ?>

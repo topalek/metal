@@ -12,7 +12,7 @@ class m190211_201632_modify_product_table extends Migration {
 	 */
 	public function safeUp(){
 		$this->addColumn(Product::tableName(), 'amount_for_discount', $this->integer()->comment('Кол-во для действия скидки')->after('sale_price'));
-		$this->addColumn(Product::tableName(), 'discount_price', $this->money(10, 2)->comment('Цена со скидкой'));
+        $this->addColumn(Product::tableName(), 'discount_price', $this->money(10, 2)->comment('Цена со скидкой')->after('sale_price'));
 	}
 
 	/**

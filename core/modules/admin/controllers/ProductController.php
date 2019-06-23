@@ -8,6 +8,7 @@ use Yii;
 use yii\filters\VerbFilter;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
+use yii\web\Response;
 
 /**
  * ProductController implements the CRUD actions for Product model.
@@ -79,15 +80,13 @@ class ProductController extends Controller {
 	 * @return mixed
 	 */
 	public function actionCreate(){
-		$model = new Product();
+		$model                 = new Product();
+        $model->dirt           = 0;
+        $model->operation_sort = 1;
 		if ($model->load(Yii::$app->request->post())){
-			if ( ! $model->save()){
-				print_r("not saved <br>");
-				print_r($model->attributes);
-				die;
-			}
-
-			return $this->render('update', ['model' => $model]);
+            if ($model->save()){
+                return $this->redirect(['update', 'id' => $model->id]);
+            }
 		}
 
 		return $this->render('create', [
@@ -112,7 +111,7 @@ class ProductController extends Controller {
 				dd($model->getErrors());
 			}
 
-			return $this->render('update', ['model' => $model]);
+            return $this->redirect(['update', 'id' => $model->id]);
 		}
 
 		return $this->render('update', [
@@ -135,12 +134,12 @@ class ProductController extends Controller {
 		return $this->redirect(['index']);
 	}
 
-	public function actionTest(){
-		$product        = Product::findOne(1);
-		$product->price = "152.30";
-		if ( ! $product->save()){
-			dd($product->getErrors());
-		}
-		print_r("saved");
-	}
+    public function actionDeleteImage($id){
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $model                      = $this->findModel($id);
+
+        return $model->removeImg();
+    }
+
+
 }

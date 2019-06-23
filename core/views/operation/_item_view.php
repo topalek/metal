@@ -2,6 +2,7 @@
 
 use app\modules\admin\models\Operation;
 use app\modules\admin\models\Product;
+use yii\helpers\Html;
 
 /**
  * Created by topalek
@@ -11,13 +12,13 @@ use app\modules\admin\models\Product;
 /*  @var $this yii\web\View */
 /* @var $model Product */
 /* @var $operation Operation */
-$attr = ['title' => $model->title, 'class' => 'btn btn-default flex-item'];
+$attr = ['title' => $model->title, 'class' => 'product-btn flex-item'];
 if ($model->image){
 	$attr['title'] = $model->getImg();
 	$attr['class'] = 'flex-item';
 }
 ?>
-<?= \yii\helpers\Html::a(
+<?= Html::a(
 	$attr['title'], [
 	'operation/get-item',
 	'id'   => $model->id,

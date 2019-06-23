@@ -9,6 +9,11 @@ use yii\helpers\ArrayHelper;
 use yii\helpers\FileHelper;
 use yii\helpers\Html;
 use yii\web\UploadedFile;
+use function file_exists;
+use function getBaseUploadsPath;
+use function strtolower;
+use function unlink;
+use const DIRECTORY_SEPARATOR;
 
 /**
  * This is the model class for table "product".
@@ -19,13 +24,13 @@ use yii\web\UploadedFile;
  * @property string $amount_for_discount         Цена
  * @property string $discount_price              Цена
  * @property string $sale_price                  Цена продажи
- * @property int $dirt                        Засор
+ * @property int $dirt                           Засор
  * @property string $slug                        Слаг
  * @property string $image                       картинка
- * @property int $status                      Публиковать
- * @property int $report_sort                      Сортировка для отчета
- * @property int $operation_sort                      Сортировка для вывода
- * @property int $sell_only                   Только продажа
+ * @property int $status                         Публиковать
+ * @property int $report_sort                    Сортировка для отчета
+ * @property int $operation_sort                 Сортировка для вывода
+ * @property int $sell_only                      Только продажа
  * @property string $updated_at                  Дата обновления
  * @property string $imgUrl
  * @property string $created_at                  Дата создания
@@ -91,6 +96,9 @@ class Product extends BaseModel {
 
 
     public function beforeSave($insert){
+        if ($insert){
+            $this->sale_price = $this->price;
+        }
         if ( ! parent::beforeSave($insert)){
             return false;
         }
@@ -193,6 +201,20 @@ class Product extends BaseModel {
         Yii::$app->cache->set('price_list', Product::find()->where(['status' => Product::STATUS_PUBLISHED])->select([
             'title', 'price', 'id', 'discount_price',
         ])->indexBy('id')->asArray()->all());
+    }
+
+    public function removeImg(){
+        $file = getBaseUploadsPath() . DIRECTORY_SEPARATOR . strtolower($this::getModelName()) . DIRECTORY_SEPARATOR . $this->image;
+
+        if (file_exists($file) && $this->image){
+            unlink($file);
+            $this->image = null;
+            $this->save();
+
+            return true;
+        }
+
+        return false;
     }
 
 }

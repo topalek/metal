@@ -17,27 +17,24 @@ use yii\widgets\ListView;
 
 $this->title = "Метал : " . $model->getTypeName();
 ?>
+<div id="buy">
     <div class="row">
         <div class="col-md-8">
-        <?= ListView::widget([
-            'dataProvider' => $dataProvider,
-            'itemView'     => '_item_view',
-            'itemOptions'  => ['class' => 'col-md-3 col-sm-3 col-xs-4'],
-            'options'      => ['class' => 'flex flex-w'],
-            'summary'      => '',
-            'viewParams'   => ['operation' => $model],
-        ]); ?>
-    </div>
+            <?= ListView::widget([
+                'dataProvider' => $dataProvider,
+                'itemView'     => '_item_view',
+                'itemOptions'  => ['class' => 'col-md-3 col-sm-3 col-xs-4'],
+                'options'      => ['class' => 'flex flex-w'],
+                'summary'      => '',
+                'viewParams'   => ['operation' => $model],
+            ]); ?>
+        </div>
         <div class="col-md-4">
+            <h2 class="pricelist-title">Стоимость</h2>
             <?= $priceList ?>
         </div>
     </div>
+</div>
 
 
-
-<?php
-$this->registerJs(<<<JS
-$('.operation').attr('href',$('.operation').attr('href')+{$model->type})
-JS
-);
 

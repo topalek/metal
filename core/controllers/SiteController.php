@@ -11,6 +11,8 @@ use yii\web\Controller;
 use yii\web\Response;
 
 class SiteController extends Controller {
+
+    public $bodyClass;
 	/**
 	 * {@inheritdoc}
 	 */
@@ -62,6 +64,7 @@ class SiteController extends Controller {
 	 * @return string
 	 */
 	public function actionIndex(){
+        $this->bodyClass = "index";
 		return $this->render('index');
 	}
 

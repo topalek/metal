@@ -2,6 +2,7 @@
 
 use kartik\switchinput\SwitchInput;
 use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
@@ -65,13 +66,14 @@ use yii\widgets\ActiveForm;
     <?= $form->field($model, 'file')->widget(\kartik\file\FileInput::class, [
 		'language'      => 'ru',
 		'pluginOptions' => [
-			'showCaption'    => false,
-			'showRemove'     => false,
-			'showUpload'     => false,
-			'browseClass'    => 'btn btn-primary btn-block',
-			'browseIcon'     => '<i class="glyphicon glyphicon-camera"></i> ',
-			'browseLabel'    => 'Выберите картинку',
-			'initialPreview' => $model->image ? [$model->getImg()] : [],
+            'deleteUrl'      => Url::toRoute(['product/delete-image', 'id' => $model->id]),
+            'showCaption'    => false,
+            'showRemove'     => false,
+            'showUpload'     => false,
+            'browseClass'    => 'btn btn-primary btn-block',
+            'browseIcon'     => '<i class="glyphicon glyphicon-camera"></i> ',
+            'browseLabel'    => 'Выберите картинку',
+            'initialPreview' => $model->image ? [$model->getImg()] : [],
 		],
 		'options'       => ['accept' => 'image/*']
 
