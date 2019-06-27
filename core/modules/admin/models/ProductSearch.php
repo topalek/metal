@@ -57,9 +57,14 @@ class ProductSearch extends Product {
         if ($this->type == Operation::TYPE_BUY) {
             $query->andWhere(['sell_only' => Operation::TYPE_BUY, 'status' => Product::STATUS_PUBLISHED]);
             $query->orderBy('operation_sort');
-        } else {
+        }
+        if ($this->type == Operation::TYPE_SELL) {
+            $query->andWhere(['sell_only' => [Operation::TYPE_SELL, Operation::TYPE_BUY]]);
+            $query->andWhere(['status' => Product::STATUS_PUBLISHED]);
+        }
+        if ($this->type == 2) {
             $query->andWhere([
-                'sell_only' => [Operation::TYPE_SELL, Operation::TYPE_BUY], 'status' => Product::STATUS_PUBLISHED
+                'sell_only' => [Operation::TYPE_SELL, Operation::TYPE_BUY],
             ]);
         }
 		// grid filtering conditions

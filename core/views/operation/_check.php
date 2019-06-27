@@ -15,9 +15,9 @@ use yii\widgets\ActiveForm;
 <div class="sell">
     <?php $form = ActiveForm::begin() ?>
     <div class="check">
-        <?php foreach (Product::getList() as $id => $title) : ?>
+        <?php foreach (Product::getCachePrice() as $id => $prod) : ?>
             <?= Html::checkbox('marks[]', null, ['id' => 'p' . $id, 'value' => $id, 'class' => 'mark', 'data-url' => Url::to(['/operation/get-field', 'id' => $id])]) ?>
-            <?= Html::label($title, 'p' . $id, ['class' => 'btn-label']) ?>
+            <?= Html::label($prod['title'], 'p' . $id, ['class' => 'btn-label']) ?>
         <?php endforeach; ?>
     </div>
         <div class="list">
