@@ -285,13 +285,13 @@ body.operation-sell .wrap {
 
 .operation-btn {
     display: block;
-    padding: 60px 140px 60px 40px;
+    padding: 50px 120px 50px 40px;
     background-color: #fff;
     border-radius: 160px;
     color: #000000;
     text-transform: uppercase;
     font-weight: 900;
-    font-size: 12rem;
+    font-size: 8rem;
     margin: 20px;
     position: relative;
     flex: 1 1 0;
@@ -309,10 +309,10 @@ body.operation-sell .wrap {
     content: '';
     position: absolute;
     top: 50%;
-    right: 40px;
+    right: 20px;
     transform: translateY(-50%);
-    width: 100px;
-    height: 100px;
+    width: 80px;
+    height: 80px;
     background: url('/web_assets/images/arrow-down.svg') no-repeat 50% 50%;
     background-size: contain;
 }
@@ -360,7 +360,6 @@ form#fill-cash-form, form#rest-cash-form {
 
 @media (max-width: 1440px) {
     .operation-btn {
-        font-size: 10rem;
         padding: 30px 100px 30px 30px;
     }
 

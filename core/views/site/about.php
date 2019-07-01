@@ -5,18 +5,13 @@
 $this->title                   = 'About';
 $this->params['breadcrumbs'][] = $this->title;
 
-use app\modules\admin\models\Operation;
 use yii\helpers\Html;
 
 $date     = '2019-04-02 00:00:00';
 $date     = date('Y-m-d 00:00:00');
 $fromDate = date('Y-m-d 00:00:00', strtotime($date . "-1 day"));
 $toDate   = date('Y-m-d 00:00:00', strtotime($date . "+1 day"));
-//print_r([$fromDate,$toDate]); die;
-//        $operations = Operation::getOperationByPeriod($fromDate, $toDate);
-$operations = Operation::getArrayForReport(Operation::getOperationByPeriod($fromDate, $toDate));
 
-$headers = Operation::getHeadings($operations);
 
 ?>
 <div class="site-about">
