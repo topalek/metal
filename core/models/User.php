@@ -110,6 +110,7 @@ class User extends ActiveRecord implements IdentityInterface
             'updated_at'   => 'Дата оновлення',
             'created_at'   => 'Дата створення',
             'role'         => 'Роль',
+            'value'        => 'Роль',
         ];
     }
 
@@ -222,10 +223,10 @@ class User extends ActiveRecord implements IdentityInterface
 
     public function getAssignment()
     {
-        return $this->hasOne(AuthAssignment::class, ['item_name' => 'id']);
+        return AuthAssignment::findOne(['user_id' => $this->id]);
     }
 
-    public function getRole()
+    public function getValue()
     {
         return $this->assignment->item_name;
     }

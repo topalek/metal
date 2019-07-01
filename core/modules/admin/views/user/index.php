@@ -16,7 +16,6 @@ $this->params['breadcrumbs'][] = $this->title;
     <div class="box-body">
         <p>
             <?= Html::a('Создать', ['create'], ['class' => 'btn btn-success']) ?>
-            <?php print_r(Yii::$app->user->identity->role) ?>
 
         </p>
 
@@ -29,9 +28,9 @@ $this->params['breadcrumbs'][] = $this->title;
                 'id',
                 'email:email',
                 'username',
-//                'password',
+                //                'password',
                 'statusName',
-                'role',
+                'value',
                 //'access_token',
                 //'updated_at',
                 //'created_at',
