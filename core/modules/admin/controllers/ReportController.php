@@ -321,6 +321,7 @@ class ReportController extends Controller {
         $sheet->getColumnDimension('A')->setAutoSize(true);
         $sheet->getColumnDimension('B')->setAutoSize(true);
         $sheet->getColumnDimension('C')->setAutoSize(true);
+        $sheet->freezePane('A3');
         $xls = new Xls($spreadsheet);
         $xls->save($fileName);
 
