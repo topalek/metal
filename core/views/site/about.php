@@ -12,10 +12,10 @@ $date     = date('Y-m-d 00:00:00');
 $fromDate = date('Y-m-d 00:00:00', strtotime($date . "-1 day"));
 $toDate   = date('Y-m-d 00:00:00', strtotime($date . "+1 day"));
 
-$operations = Operation::find()
-    ->where(['id' => 29])
-    ->asArray()
-    ->all();
+$operations = Operation::getOperationByPeriod($fromDate, $toDate);
+//->where(['id' => 29])
+//->asArray()
+//->all();
 $operations = Operation::getArrayForReport($operations);
 ?>
 <div class="site-about" style="margin-top: 60px">

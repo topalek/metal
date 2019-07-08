@@ -76,6 +76,12 @@ class Operation extends ActiveRecord
                         "discount_price" => $discount_price,
                     ];
                 }
+                $max = 0;
+                foreach ($out as $oItem){
+                    if (count($oItem) > $max){
+                        $max = count($oItem);
+                    }
+                }
                 return $out;
                 foreach ($productList as $id => $productTitle) {
 
