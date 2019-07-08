@@ -168,11 +168,13 @@ $('.add-item').on('click',(e)=>{
    
 });
 
-$('.remove-item').on('click',(e)=>{
+$(document).on('click','.remove-item',(e)=>{
     let el = $(e.target);
     let id = el.data('id');
     el.parents('li').remove();
     removeItem(id);
+   $('#total').html("");
+   isCalculated = false;
 });
 
 $('.weight').on('input',(e)=>{

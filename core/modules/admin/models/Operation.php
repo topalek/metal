@@ -36,7 +36,7 @@ class Operation extends ActiveRecord
 
     public static function getArrayForReport(array $operations)
     {
-        $products = Product::getList();
+        $productList = Product::getList();
         foreach ($operations as $i => $item) {
             if (array_key_exists('products', $item)) {
                 try {
@@ -49,7 +49,36 @@ class Operation extends ActiveRecord
                 }
                 $type                       = ArrayHelper::getValue($item, "type");
                 $operations[$i]['products'] = $prods;
-                foreach ($products as $id => $productTitle) {
+
+                $out = [];
+                foreach ($prods as $prod) {
+                    $prodId = ArrayHelper::getValue($prod, "id");
+                    $weight = ArrayHelper::getValue($prod, "weight");
+                    $price = ArrayHelper::getValue($prod, "sale_price");
+                    $total = ArrayHelper::getValue($prod, "total");
+                    $discount = ArrayHelper::getValue($prod, "discount");
+                    $discount_price = ArrayHelper::getValue($prod, "discount_price");
+                    if ($type != Operation::TYPE_SELL) {
+                        if ($weight) {
+                            $weight = floatval($weight);
+                        }
+                        $dirt = ArrayHelper::getValue($prod, "dirt");
+                        if ($dirt) {
+                            $dirt = floatval($dirt);
+                            $weight = $weight - ($weight / 100) * $dirt;
+                        }
+                    }
+                    $out[$prodId][] = [
+                        "weight"         => $weight,
+                        "price"          => $price,
+                        "total"          => $total,
+                        "discount"       => $discount,
+                        "discount_price" => $discount_price,
+                    ];
+                }
+                return $out;
+                foreach ($productList as $id => $productTitle) {
+
                     if (array_key_exists($id, $prods)) {
                         $weight = ArrayHelper::getValue($prods[$id], "weight");
                         if ($type != Operation::TYPE_SELL){
