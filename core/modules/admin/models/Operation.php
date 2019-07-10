@@ -82,40 +82,26 @@ class Operation extends ActiveRecord
                         $max = count($oItem);
                     }
                 }
-                return $out;
                 foreach ($productList as $id => $productTitle) {
-
-                    if (array_key_exists($id, $prods)) {
-                        $weight = ArrayHelper::getValue($prods[$id], "weight");
-                        if ($type != Operation::TYPE_SELL){
-                            if ($weight){
-                                $weight = floatval($weight);
-                            }
-                            $dirt = ArrayHelper::getValue($prods[$id], "dirt");
-                            if ($dirt){
-                                $dirt   = floatval($dirt);
-                                $weight = $weight - ($weight / 100) * $dirt;
-                            }
+                    if (array_key_exists($id, $out)) {
+                        $products = ArrayHelper::getValue($out, $id);
+                        $count = count($products);
+                        while ($count < $max) {
+                            $products[] = static::setEmptyProduct();
+                            $count++;
                         }
-
-
-                        $operations[$i]['products'][$id] = [
-                            "weight"         => $weight,
-                            "price"          => $prods[$id]['sale_price'],
-                            "total"          => $prods[$id]['total'],
-                            "discount"       => ArrayHelper::getValue($prods[$id], "discount"),
-                            "discount_price" => ArrayHelper::getValue($prods[$id], "discount_price"),
-                        ];
-                        continue;
+                    } else {
+                        $products = [];
+                        $count = 0;
+                        while ($count < $max) {
+                            $products[] = static::setEmptyProduct();
+                            $count++;
+                        }
                     }
-                    $operations[$i]['products'][$id] = [
-                        'weight'         => null,
-                        'price'          => null,
-                        'total'          => null,
-                        "discount"       => null,
-                        "discount_price" => null,
-                    ];
+                    $out[$id] = $products;
                 }
+                ksort($out);
+                $operations[$i]['products'] = $out;
             }
             ksort($operations[$i]['products']);
             $reportArray = [];
@@ -244,5 +230,16 @@ class Operation extends ActiveRecord
         }
 
         return $headers;
+    }
+
+    private static function setEmptyProduct()
+    {
+        return [
+            'weight'         => null,
+            'price'          => null,
+            'total'          => null,
+            "discount"       => null,
+            "discount_price" => null,
+        ];
     }
 }

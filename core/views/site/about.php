@@ -21,10 +21,7 @@ $operations = Operation::getArrayForReport($operations);
 <div class="site-about" style="margin-top: 60px">
     <div class="col-md-12">
         <pre>
-            <?php
-
-            print_r($operations);
-            ?>
+            <?php print_r($operations); ?>
         </pre>
 
     </div>
