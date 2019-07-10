@@ -211,15 +211,16 @@ class Operation extends ActiveRecord
             $products = ArrayHelper::getValue($operation, 'products');
             foreach ($products as $id => $product){
                 $headers[$id]['title'] = $list[$id];
-                $price                 = ArrayHelper::getValue($product, 'price');
-                if (isset($headers[$id]['prices'])){
-                    if ( ! in_array($price, $headers[$id]['prices'])){
+                foreach ($product as $item){
+                    $price = ArrayHelper::getValue($item, 'price');
+                    if (isset($headers[$id]['prices'])){
+                        if ( ! in_array($price, $headers[$id]['prices'])){
+                            $headers[$id]['prices'][] = $price;
+                        }
+                    }else{
                         $headers[$id]['prices'][] = $price;
                     }
-                }else{
-                    $headers[$id]['prices'][] = $price;
                 }
-
             }
         }
 

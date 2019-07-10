@@ -17,6 +17,7 @@ $operations = Operation::getOperationByPeriod($fromDate, $toDate);
 //->asArray()
 //->all();
 $operations = Operation::getArrayForReport($operations);
+$headers    = Operation::getHeadings($operations);
 ?>
 <div class="site-about" style="margin-top: 60px">
     <div class="col-md-12">
@@ -26,6 +27,6 @@ $operations = Operation::getArrayForReport($operations);
 
     </div>
     <pre>
-<?php //print_r($headers) ?>
+<?php print_r($headers) ?>
     </pre>
 </div>

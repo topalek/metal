@@ -194,13 +194,14 @@ class ReportController extends Controller {
     }
 
     public function generateReportFile(array $operations){
-        $fileName    = Yii::$app->runtimePath . "/report.xls";
-        $spreadsheet = new Spreadsheet();
-        $sheet       = $spreadsheet->getActiveSheet();
-        $headers     = $this->getHeaders($operations);
-        $colCount    = $this->getColumnCount($headers);
-        $lastColumn  = $this->getLetterIdx($colCount);
-        $sheet       = $this->buildHeaders($sheet, $headers);
+        $fileName        = Yii::$app->runtimePath . "/report.xls";
+        $spreadsheet     = new Spreadsheet();
+        $sheet           = $spreadsheet->getActiveSheet();
+        $headers         = $this->getHeaders($operations);
+        $colCount        = $this->getColumnCount($headers);
+        $lastColumn      = $this->getLetterIdx($colCount);
+        $sheet           = $this->buildHeaders($sheet, $headers);
+        $productStartCol = "D";
         $sheet->setCellValue("A1", "Дата")->mergeCells("A1:A2")
             ->getStyle("A1:A2")->applyFromArray(array_merge($this->centerBold, $this->borders));
         $sheet->setCellValue("B1", "Касса")->mergeCells("B1:B2")
@@ -235,87 +236,91 @@ class ReportController extends Controller {
                     $sheet->getStyle("A" . $row . ":" . $lastColumn . $row)->applyFromArray($this->rest);
                     break;
             }
-            $products = ArrayHelper::getValue($operation, 'products');
-            foreach ($products as $id => $product){
-                $weight = ArrayHelper::getValue($products[$id], "weight");
-                $price  = ArrayHelper::getValue($products[$id], "price");
-                $total  = ArrayHelper::getValue($products[$id], "total");
-                $prices = ArrayHelper::getValue($headers[$id], 'prices');
-                $count  = count($prices);
-                if ($count == 0){
-                    $count = 1;
-                }
-                // SELL
-                if ($type == Operation::TYPE_SELL){
-                    //заполняем вес
-                    if ($weight){
-                        if ($weight != "?"){
-                            $sheet->setCellValue($col . $row, "-" . $weight);
-                        }else{
-                            $sheet->setCellValue($col . $row, "???");
+            $productsArray      = ArrayHelper::getValue($operation, 'products');
+            $operationRowsCount = count(ArrayHelper::getValue($productsArray, 1));
+            $k                  = 0;
+            while ($k < $operationRowsCount){
+                $col = $productStartCol;
+                foreach ($productsArray as $id => $products){
+                    $weight = ArrayHelper::getValue($productsArray[$id][$k], "weight");
+                    $price  = ArrayHelper::getValue($productsArray[$id][$k], "price");
+                    $total  = ArrayHelper::getValue($productsArray[$id][$k], "total");
+                    $prices = ArrayHelper::getValue($headers[$id], 'prices');
+                    $count  = count($prices);
+                    if ($count == 0){
+                        $count = 1;
+                    }
+                    // SELL
+                    if ($type == Operation::TYPE_SELL){
+                        //заполняем вес
+                        if ($weight){
+                            if ($weight != "?"){
+                                $sheet->setCellValue($col . $row, "-" . $weight);
+                            }else{
+                                $sheet->setCellValue($col . $row, "???");
+                            }
                         }
-                    }
-                    $sheet->getStyle($col . $row)->applyFromArray($this->boldText);
-                    $sheet->getStyle($col ++ . $row)->applyFromArray($this->borders);
-
-                    while ($count > 1){
+                        $sheet->getStyle($col . $row)->applyFromArray($this->boldText);
                         $sheet->getStyle($col ++ . $row)->applyFromArray($this->borders);
-                        $count --;
-                    }
 
-                    //заполняем цену
-                    if ($weight){
-                        $sheet->setCellValue($col . $row, "???");
-                        $sheet->getStyle($col . $row)->applyFromArray($this->boldText);
-                    }
-                    $sheet->getStyle($col ++ . $row)->applyFromArray($this->borders);
+                        while ($count > 1){
+                            $sheet->getStyle($col ++ . $row)->applyFromArray($this->borders);
+                            $count --;
+                        }
 
-                    //заполняем сумму
-                    if ($weight){
-                        $sheet->setCellValue($col . $row, "???");
-                        $sheet->getStyle($col . $row)->applyFromArray($this->totalStyle);
-                        $sheet->getStyle($col . $row)->applyFromArray($this->boldText);
-                    }
-                    $sheet->getStyle($col ++ . $row)->applyFromArray($this->borders);
+                        //заполняем цену
+                        if ($weight){
+                            $sheet->setCellValue($col . $row, "???");
+                            $sheet->getStyle($col . $row)->applyFromArray($this->boldText);
+                        }
+                        $sheet->getStyle($col ++ . $row)->applyFromArray($this->borders);
 
-                }else{
+                        //заполняем сумму
+                        if ($weight){
+                            $sheet->setCellValue($col . $row, "???");
+                            $sheet->getStyle($col . $row)->applyFromArray($this->totalStyle);
+                            $sheet->getStyle($col . $row)->applyFromArray($this->boldText);
+                        }
+                        $sheet->getStyle($col ++ . $row)->applyFromArray($this->borders);
 
-                    //заполняем вес
-                    while ($count >= 1){
-                        $idx = $count - 1;
-                        if (isset($prices[$idx])){
-                            if ($price == $prices[$idx]){
-                                $sheet->setCellValue($col . $row, $weight);
-                                if (strpos($weight, "-") !== false){
-                                    $sheet->getStyle($col . $row)->applyFromArray($this->negative);
+                    }else{
+
+                        //заполняем вес
+                        while ($count >= 1){
+                            $idx = $count - 1;
+                            if (isset($prices[$idx])){
+                                if ($price == $prices[$idx]){
+                                    $sheet->setCellValue($col . $row, $weight);
+                                    if (strpos($weight, "-") !== false){
+                                        $sheet->getStyle($col . $row)->applyFromArray($this->negative);
+                                    }
+                                    $sheet->getStyle($col ++ . $row)->applyFromArray($this->borders);
+                                }else{
+                                    $sheet->getStyle($col ++ . $row)->applyFromArray($this->borders);
                                 }
-                                $sheet->getStyle($col ++ . $row)->applyFromArray($this->borders);
                             }else{
                                 $sheet->getStyle($col ++ . $row)->applyFromArray($this->borders);
                             }
-                        }else{
-                            $sheet->getStyle($col ++ . $row)->applyFromArray($this->borders);
+                            $count --;
                         }
-                        $count --;
-                    }
-                    //заполняем цену
-                    $sheet->setCellValue($col . $row, $price);
-                    $sheet->getStyle($col ++ . $row)->applyFromArray($this->borders);
+                        //заполняем цену
+                        $sheet->setCellValue($col . $row, $price);
+                        $sheet->getStyle($col ++ . $row)->applyFromArray($this->borders);
 
-                    //заполняем сумму
-                    $sheet->setCellValue($col . $row, $total);
-                    if (strpos($total, "-") !== false) {
-                        $sheet->getStyle($col . $row)->applyFromArray($this->negative);
-                    }else{
-                        $sheet->getStyle($col . $row)->applyFromArray($this->totalStyle);
+                        //заполняем сумму
+                        $sheet->setCellValue($col . $row, $total);
+                        if (strpos($total, "-") !== false){
+                            $sheet->getStyle($col . $row)->applyFromArray($this->negative);
+                        }else{
+                            $sheet->getStyle($col . $row)->applyFromArray($this->totalStyle);
+                        }
+                        $sheet->getStyle($col ++ . $row)->applyFromArray($this->borders);
                     }
-                    $sheet->getStyle($col ++ . $row)->applyFromArray($this->borders);
+
                 }
-
+                $row ++;
+                $k ++;
             }
-
-
-            $row ++;
         }
         $sheet = $this->setFormulas($sheet, $headers, $row);
         $sheet->getColumnDimension('A')->setAutoSize(true);
