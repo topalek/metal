@@ -18,8 +18,8 @@ use yii\widgets\ActiveForm;
             'id'      => 'rest-cash-form',
             'options' => ['class' => 'form-horizontal'],
         ]) ?>
-        <h2>Внесите остаток средств</h2>
-        <?= $form->field($model, 'sum')->input('number', ['min' => 0])->label('Внесите сумму') ?>
+        <h2>Остаток средств</h2>
+        <?= $form->field($model, 'sum')->input('number', ['min' => 0])->label('Введите сумму') ?>
         <?= $form->field($model, 'comment')->textarea() ?>
 
         <div class="form-group">

@@ -6,6 +6,7 @@ $this->title                   = 'About';
 $this->params['breadcrumbs'][] = $this->title;
 
 use app\modules\admin\models\Operation;
+use app\modules\admin\models\Product;
 
 $date     = '2019-04-02 00:00:00';
 $date     = date('Y-m-d 00:00:00');
@@ -22,7 +23,7 @@ $headers    = Operation::getHeadings($operations);
 <div class="site-about" style="margin-top: 60px">
     <div class="col-md-12">
         <pre>
-            <?php print_r($operations); ?>
+            <?php print_r(Product::getEmptyArray()); ?>
         </pre>
 
     </div>

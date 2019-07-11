@@ -187,10 +187,10 @@ class Product extends BaseModel {
 
     public static function getEmptyArray(){
         $arr      = [];
-        $keys     = ['weight', 'sale_price', 'dirt', 'total', 'title'];
+        $keys     = ['weight', 'sale_price', 'dirt', 'total', 'title', 'id'];
         $products = Product::getCachePrice();
         foreach ($products as $product){
-            $arr[$product['id']] = array_combine($keys, array_merge(array_fill(0, 4, null), [$product['title']]));
+            $arr[] = array_combine($keys, array_merge(array_fill(0, 4, null), [$product['title'], $product['id'],]));
         }
 
         return $arr;

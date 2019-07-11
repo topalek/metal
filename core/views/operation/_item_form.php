@@ -94,8 +94,11 @@ $data = ($type == Operation::TYPE_BUY) ? [
 $this->registerJs(<<<JS
 var modal = $('#item-modal');
 var type = modal.data('type');
-
+$(modal).on('shown.bs.modal', function () {
+    $('.weight').focus();
+}); 
 $(modal).modal('show');
+// $('.weight').focus();
 $(modal).on('hidden.bs.modal', function (e) {
     var products = getFromStorage();
     if (products){
