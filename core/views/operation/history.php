@@ -1,29 +1,28 @@
 <?php
+/**
+ * Created by topalek
+ * Date: 14.07.2019
+ * Time: 20:49
+ */
 
 use app\modules\admin\models\Operation;
-use kartik\date\DatePicker;
 use yii\grid\GridView;
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\modules\admin\models\OperationSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Операции';
+$this->title                   = 'История операций';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="operation-index box">
+<div class="operation-history box">
 
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
     <div class="box-body">
-        <p>
-            <? //= Html::a('Создать Операцию', ['create'], ['class' => 'btn btn-success']) ?>
-        </p>
+        <h2><?= $this->title ?></h2>
         <?= GridView::widget([
             'dataProvider' => $dataProvider,
-            'filterModel'  => $searchModel,
             'emptyText'    => 'Операций не найдено',
-            'summary'      => 'Операций не найдено',
-            'rowOptions'   => function ($model) {
+            'rowOptions'   => function ($model){
                 if ($model->type == Operation::TYPE_BUY){
                     return ['class' => 'info'];
                 }
@@ -49,29 +48,15 @@ $this->params['breadcrumbs'][] = $this->title;
                 'id',
                 [
                     'attribute' => 'type',
-                    'filter'    => ["Покупка", 'Продажа'],
                     "value"     => "typeName",
                 ],
                 'sum',
-                //				'products',
-                //'updated_at',
-                [
-                    'attribute' => 'created_at',
-                    'filter'    => DatePicker::widget([
-                        'model'         => $searchModel,
-                        'attribute'     => 'created_at',
-                        'type'          => DatePicker::TYPE_INPUT,
-                        'removeButton'  => false,
-                        'value'         => '',
-                        'language'      => 'ru',
-                        'pluginOptions' => [
-                            'format'    => 'yyyy-m-dd',
-                            'autoclose' => true,
-                        ],
-                    ]),
-                ],
-
-                ['class' => 'yii\grid\ActionColumn'],
+                //[
+                //    'attribute' => 'comment',
+                //    "value"     => "typeName",
+                //],
+                'comment',
+                'created_at',
             ],
         ]); ?>
     </div>

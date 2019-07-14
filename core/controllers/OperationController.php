@@ -6,6 +6,7 @@ use app\modules\admin\models\Operation;
 use app\modules\admin\models\Product;
 use app\modules\admin\models\ProductSearch;
 use Yii;
+use yii\data\ActiveDataProvider;
 use yii\filters\VerbFilter;
 use yii\helpers\ArrayHelper;
 use yii\web\Controller;
@@ -159,5 +160,29 @@ class OperationController extends Controller
     {
         $product = Product::findOne($id);
         return $this->renderAjax('_field', ['model' => $product]);
+    }
+
+    public function actionHistory(){
+        $this->bodyClass = 'history';
+        $date            = date('Y-m-d 00:00:00');
+        $fromDate        = date('Y-m-d 00:00:00', strtotime($date . "-1 day"));
+        $toDate          = date('Y-m-d 00:00:00', strtotime($date . "+1 day"));
+        $query           = Operation::find()
+                                    ->where(['>=', 'created_at', $fromDate])
+                                    ->andWhere(['<=', 'created_at', $toDate])
+                                    ->orderBy('id DESC');
+
+        // add conditions that should always apply here
+
+        $dataProvider = new ActiveDataProvider([
+            'query'      => $query,
+            'pagination' => [
+                'pageSize' => 10,
+            ]
+        ]);
+
+        return $this->render('history', [
+            'dataProvider' => $dataProvider,
+        ]);
     }
 }

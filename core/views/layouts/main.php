@@ -47,11 +47,15 @@ rmrevin\yii\fontawesome\AssetBundle::register($this);
         'items'        => [
             //			['label' => 'Home', 'url' => ['/site/index']],
             //			['label' => 'About', 'url' => ['/site/about']],
-            ['label' => 'Остаток', 'url' => ['/operation/rest-cash']],
             [
-				'label'       => '<i class="fa fa-usd fa-4"></i>',
-				'url'         => ['/operation/fill-cash'],
-				'linkOptions' => ['title' => "Пополнить кассу"]
+                'label'       => '<i class="fa fa-history" aria-hidden="true"></i>',
+                'url'         => ['/operation/history'],
+                'linkOptions' => ['title' => "История операций"]
+            ], ['label' => 'Остаток', 'url' => ['/operation/rest-cash']],
+            [
+                'label'       => '<i class="fa fa-usd"></i>',
+                'url'         => ['/operation/fill-cash'],
+                'linkOptions' => ['title' => "Пополнить кассу"]
 			],
             Yii::$app->user->isGuest ?
 				['label' => 'Login', 'url' => ['/site/login']] :

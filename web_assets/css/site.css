@@ -358,6 +358,10 @@ form#fill-cash-form, form#rest-cash-form {
     border-radius: 5px;
 }
 
+.operation-history {
+    margin-top: 80px;
+}
+
 @media (max-width: 1440px) {
     .operation-btn {
         padding: 30px 100px 30px 30px;
