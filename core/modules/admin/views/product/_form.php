@@ -36,7 +36,7 @@ use yii\widgets\ActiveForm;
                 <div class="col-md-3">
                     <?= $form->field($model, 'dirt')->input('number') ?>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <?= $form->field($model, 'operation_sort')->input('number') ?>
                 </div>
                 <div class="col-md-2">
@@ -47,6 +47,15 @@ use yii\widgets\ActiveForm;
                             'offColor' => 'danger',
                         ]
                     ]) ?>
+                </div>
+                <div class="col-md-2">
+                    <?= $form->field($model, 'use_form')->widget(SwitchInput::class, [
+                        'pluginOptions' => [
+                            'onText'   => 'Да',
+                            'offText'  => 'Нет',
+                            'offColor' => 'danger',
+                        ],
+                    ])->label('Как покупка') ?>
                 </div>
                 <div class="col-md-2">
                     <?= $form->field($model, 'sell_only')->widget(SwitchInput::class, [

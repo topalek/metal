@@ -1,7 +1,7 @@
 let isCalculated = false;
 const storageName = 'buy';
 
-$('.operation-item').click(function (e) {
+$('.operation-item,.sell-item').click(function (e) {
     e.preventDefault();
     let cartLink = $(this).attr('href');
     $.get(cartLink, function (result) {

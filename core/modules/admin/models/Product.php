@@ -24,17 +24,17 @@ use const DIRECTORY_SEPARATOR;
  * @property string $amount_for_discount         Цена
  * @property string $discount_price              Цена
  * @property string $sale_price                  Цена продажи
- * @property int $dirt                           Засор
+ * @property int    $dirt                           Засор
  * @property string $slug                        Слаг
  * @property string $image                       картинка
- * @property int $status                         Публиковать
- * @property int $report_sort                    Сортировка для отчета
- * @property int $operation_sort                 Сортировка для вывода
- * @property int $sell_only                      Только продажа
+ * @property int    $status                         Публиковать
+ * @property int    $use_form                       Использовалать форму для продажи
+ * @property int    $operation_sort                 Сортировка для вывода
+ * @property int    $sell_only                      Только продажа
  * @property string $updated_at                  Дата обновления
  * @property string $imgUrl
  * @property string $created_at                  Дата создания
- * @property mixed error
+ * @property mixed  error
  */
 class Product extends BaseModel {
 
@@ -51,7 +51,7 @@ class Product extends BaseModel {
         return [
             [['title', 'price'], 'required'],
             [['price', 'sale_price', 'dirt', 'amount_for_discount', 'discount_price'], 'number'],
-            [['status', 'sell_only', 'report_sort', 'operation_sort'], 'integer'],
+            [['status', 'sell_only', 'use_form', 'operation_sort'], 'integer'],
             [['updated_at', 'created_at'], 'safe'],
             [['title', 'slug', 'image'], 'string', 'max' => 255],
         ];
@@ -75,7 +75,7 @@ class Product extends BaseModel {
             'imgUrl'              => 'картинка',
             'file'                => 'Картинка',
             'status'              => 'Публиковать',
-            'report_sort'         => 'Сортировка для отчета',
+            'use_form'            => 'Использовалать форму для продажи',
             'operation_sort'      => 'Сортировка для вывода',
             'sell_only'           => 'Только продажа',
             'statusName'          => 'Публиковать',
@@ -166,7 +166,7 @@ class Product extends BaseModel {
     public static function getCachePrice(){
         $data = Yii::$app->cache->getOrSet('price_list', function (){
             return Product::find()->where(['status' => Product::STATUS_PUBLISHED])->select([
-                'title', 'price', 'id', 'discount_price'
+                'title', 'price', 'id', 'discount_price', 'use_form',
             ])->indexBy('id')->asArray()->all();
         });
 

@@ -185,4 +185,11 @@ class OperationController extends Controller
             'dataProvider' => $dataProvider,
         ]);
     }
+
+    public function actionSellItem($id)
+    {
+        $model = Product::findOne($id);
+
+        return $this->renderAjax('_sell_form', ['model' => $model]);
+    }
 }

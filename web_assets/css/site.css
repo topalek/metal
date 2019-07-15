@@ -365,6 +365,13 @@ form#fill-cash-form, form#rest-cash-form {
     margin-top: 80px;
 }
 
+.content-header > .breadcrumb {
+    float: none;
+    position: relative;
+    margin-bottom: 10px;
+    top: auto;
+    right: auto;
+}
 @media (max-width: 1440px) {
     .operation-btn {
         padding: 30px 100px 30px 30px;

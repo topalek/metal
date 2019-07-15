@@ -1,6 +1,5 @@
 <?php
 
-use app\modules\admin\models\Operation;
 use yii\bootstrap\Modal;
 use yii\helpers\Html;
 use yii\helpers\Url;
@@ -10,48 +9,23 @@ use yii\helpers\Url;
 /* @var $form yii\widgets\ActiveForm */
 /* @var $type integer */
 
-$data = ($type == Operation::TYPE_BUY) ? [
-    'discount_weight' => $model->amount_for_discount,
-    'discount_price'  => $model->discount_price,
-    'price'           => $model->price
-] : ['price' => $model->price];
 ?>
 <?php Modal::begin([
     'id'      => 'item-modal',
-    'options' => [
-        'data-type' => $type
-    ],
+    'options' => [],
     'header'  => '<h3 class="modal-title">' . $model->title . '</h3>',
     'size'    => Modal::SIZE_DEFAULT,
     'footer'  => '<div class="col-md-12">
                             <div class="form-group">'
-        . Html::button('Добавить клиента', [
-            'class' => 'btn btn-info add-item',
-            'data'  => [
-                'dismiss' => "modal",
-                'type'    => $type,
-            ],
-        ])
-        . Html::button('Просчитать', [
-            'class' => 'btn btn-success', 'id' => 'calculate'
-        ])
-        . Html::button('Добавить товар', [
-            'class' => 'btn btn-primary add-item',
-            'data'  => [
-                'dismiss' => "modal",
-                'type'    => $type
-            ],
-        ])
-        . Html::button('Провести', [
+        . Html::button('Добавить', [
             'class' => 'btn btn-danger process',
             'data'  => [
-                'url'  => Url::to(['operation/buy']),
-                'type' => $type
+                'url' => Url::to(['operation/buy']),
             ],
         ])
         . '
                             </div>
-                        </div>'
+                        </div>',
 ]); ?>
     <form>
         <div class="product-form box-body">
@@ -63,7 +37,6 @@ $data = ($type == Operation::TYPE_BUY) ? [
                                 <?= Html::label('Вес', 'weight') ?>
                                 <?= Html::input('number', 'weight', null, [
                                         'class' => 'form-control weight',
-                                        'data'  => $data
                                     ]
                                 ) ?>
                             </div>
@@ -104,92 +77,12 @@ $data = ($type == Operation::TYPE_BUY) ? [
 
 $this->registerJs(<<<JS
 var modal = $('#item-modal');
-var type = modal.data('type');
 $(modal).on('shown.bs.modal', function () {
     $('.weight').focus();
 }); 
 $(modal).modal('show');
-// $('.weight').focus();
-$(modal).on('hidden.bs.modal', function (e) {
-    var products = getFromStorage();
-    if (products){
-        $('.operation').removeClass('hidden');
-        $('.operation').on('click',(e)=>{
-            e.preventDefault();
-            let url = $(e.target).attr('href');
-            localStorage.removeItem(storageName);
-            $.post(url,{'products':products},(resp)=>{
-            });
-        });
-    } 
-    isCalculated = false;
-  $('.modals').remove();
-  
-});
+
 var form = $('form');
-
-buildItemList();
-$('.process').on('click',(e)=>{
-    let json = form.serializeArray(),
-        weight = $('.weight').val(),
-        products = getFromStorage(),
-        url = $(e.target).data('url');
-    
-    if(!weight && isEmpty(products)){
-        alert('Заполните Вес');
-        return false;
-    }else{
-         weight = parseFloat(weight);
-        if (weight == 0){
-            alert('Вес 0');
-            return false;
-        }
-        if (weight){
-            writeToStorage(json);
-        } 
-        if (isCalculated){
-            products = getFromStorage();
-            $.post(url,{'products':products},(resp)=>{
-                
-                if (resp.status){
-                    localStorage.removeItem(storageName);
-                    window.location = "/";
-                } else {
-                    alert(resp.message);
-                }
-            });
-        } else {
-            alert('Просчитайте товары');
-        }
-        
-    }
-   
-});
-$('.add-item').on('click',(e)=>{
-    let json = $('form').serializeArray(),
-        weight = $('.weight').val();
-     if(!weight){
-        alert('Заполните Вес');
-        return false;
-    }else{
-         weight = parseFloat(weight);
-        if (weight == 0){
-            alert('Вес 0');
-            return false;
-        }
-        writeToStorage(json);
-    }
-   
-});
-
-$(document).on('click','.remove-item',(e)=>{
-    let el = $(e.target);
-    let id = el.data('id');
-    el.parents('li').remove();
-    removeItem(id);
-   $('#total').html("");
-   isCalculated = false;
-});
 
 $('.weight').on('input',(e)=>{
     let weight = parseFloat($(e.target).val()),
@@ -226,22 +119,6 @@ function calcTotal(){
      let totalPrice = Math.round((price*(weight - weight*dirt/100))*100)/100;
    total.val(totalPrice);
 }
-$('#calculate').on('click',()=>{
-    let json = form.serializeArray(),
-        weight = $('.weight').val();
-    let total = 0;
-    isCalculated = true;
-    if (weight){
-        writeToStorage(json);
-        buildItemList();
-        form[0].reset();
-    } 
-    let products = getFromStorage(); 
-    Object.keys(products).forEach((i)=>{
-        total+= parseFloat(products[i].total);
-    });
-    total = Math.ceil(total*100)/100;
-    $('#total').html("Всего: "+total+" грн." );
-});
+
 JS
 );
