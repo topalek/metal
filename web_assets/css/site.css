@@ -358,6 +358,9 @@ form#fill-cash-form, form#rest-cash-form {
     border-radius: 5px;
 }
 
+.history .wrap {
+    display: block;
+}
 .operation-history {
     margin-top: 80px;
 }
