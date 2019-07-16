@@ -11,16 +11,17 @@ use yii\helpers\Url;
 
 ?>
 <?php Modal::begin([
-    'id'      => 'item-modal',
+    'id'      => 'sell-modal',
     'options' => [],
     'header'  => '<h3 class="modal-title">' . $model->title . '</h3>',
     'size'    => Modal::SIZE_DEFAULT,
     'footer'  => '<div class="col-md-12">
                             <div class="form-group">'
         . Html::button('Добавить', [
-            'class' => 'btn btn-danger process',
+            'class' => 'btn btn-danger add-sell',
             'data'  => [
-                'url' => Url::to(['operation/buy']),
+                'dismiss' => "modal",
+                'url'     => Url::to(['operation/buy']),
             ],
         ])
         . '
@@ -76,9 +77,18 @@ use yii\helpers\Url;
 <?php Modal::end();
 
 $this->registerJs(<<<JS
-var modal = $('#item-modal');
+try {
+    modal = $('#sell-modal');
+} catch(e) {
+    let modal = $('#sell-modal');
+}
+
 $(modal).on('shown.bs.modal', function () {
     $('.weight').focus();
+}); 
+$(modal).on('hide.bs.modal', function () {
+    modal.remove();
+    delete(modal);
 }); 
 $(modal).modal('show');
 
@@ -120,5 +130,18 @@ function calcTotal(){
    total.val(totalPrice);
 }
 
+$('.add-sell').on('click',()=>{
+    let weight = $('.weight').val(),
+    sale_price = $('.sale_price').val(),
+    dirt = $('.dirt').val(),
+    id = $('[name=id]').val(),
+    total = $('.total').val();
+    let data = JSON.stringify({"weight":weight,"sale_price":sale_price,"dirt":dirt,"id":id,"total":total});
+    
+    $.get('/operation/get-field?id='+id+'&data='+data,(resp)=>{
+       $('.list').append(resp);
+    });
+    
+});
 JS
 );

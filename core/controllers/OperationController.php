@@ -9,6 +9,7 @@ use Yii;
 use yii\data\ActiveDataProvider;
 use yii\filters\VerbFilter;
 use yii\helpers\ArrayHelper;
+use yii\helpers\Json;
 use yii\web\Controller;
 use yii\web\Response;
 
@@ -95,15 +96,36 @@ class OperationController extends Controller
             }
             $emptyArr = Product::getEmptyArray();
             $arr = [];
-            foreach ($products as $id => $weight) {
-                $arr[$id] = $emptyArr[$id];
-                if ($weight) {
-                    $arr[$id]['weight']     = $weight;
-                    $arr[$id]['sale_price'] = '?';
-                } else {
-                    $arr[$id]['weight']     = "?";
-                    $arr[$id]['sale_price'] = "?";
+
+            foreach ($emptyArr as $i => $item) {
+                $id = ArrayHelper::getValue($item, 'id');
+                if (array_key_exists($id, $products)) {
+                    $arr[$id] = $emptyArr[$i];
+                    $weight = ArrayHelper::getValue($products[$id], 'weight');
+                    $sale_price = ArrayHelper::getValue($products[$id], 'sale_price');
+                    $total = ArrayHelper::getValue($products[$id], 'total');
+                    $dirt = ArrayHelper::getValue($products[$id], 'dirt');
+
+                    $arr[$id]['weight'] = $weight ? $weight : '?';
+                    $arr[$id]['sale_price'] = $sale_price ? $sale_price : '?';
+                    $arr[$id]['total'] = $total ? $total : '?';
+                    $arr[$id]['id'] = $id ? $id : '?';
+                    $arr[$id]['dirt'] = $dirt ? $dirt : '?';
                 }
+//            }
+//            foreach ($products as  $product) {
+//                $id = ArrayHelper::getValue($product, 'id');
+//                $arr[$id] = $emptyArr[$id];
+//                $weight = ArrayHelper::getValue($product, 'weight');
+//                $sale_price = ArrayHelper::getValue($product, 'sale_price');
+//                $total = ArrayHelper::getValue($product, 'total');
+//                $dirt = ArrayHelper::getValue($product, 'dirt');
+//
+//                $arr[$id]['weight'] = $weight ? $weight : '?';
+//                $arr[$id]['sale_price'] = $sale_price ? $sale_price : '?';
+//                $arr[$id]['total'] = $total ? $total : '?';
+//                $arr[$id]['id'] = $id ? $id : '?';
+//                $arr[$id]['dirt'] = $dirt ? $dirt : '?';
 
             }
             $model->products = $arr;
@@ -156,10 +178,18 @@ class OperationController extends Controller
         ]);
     }
 
-    public function actionGetField($id)
+    public function actionGetField($id, $data = null)
     {
+        if ($data) {
+            try {
+                $data = Json::decode($data);
+            } catch (\Exception $e) {
+                $data = [];
+            }
+        }
+
         $product = Product::findOne($id);
-        return $this->renderAjax('_field', ['model' => $product]);
+        return $this->renderAjax('_field', ['model' => $product, 'data' => $data]);
     }
 
     public function actionHistory(){
@@ -191,5 +221,15 @@ class OperationController extends Controller
         $model = Product::findOne($id);
 
         return $this->renderAjax('_sell_form', ['model' => $model]);
+    }
+
+    public function actionTest($data)
+    {
+        try {
+            $data = Json::decode($data);
+        } catch (\Exception $e) {
+            $data = [];
+        }
+        print_r($data);
     }
 }

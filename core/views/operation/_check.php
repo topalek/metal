@@ -16,16 +16,21 @@ use yii\widgets\ActiveForm;
     <?php $form = ActiveForm::begin() ?>
     <div class="check">
         <?php foreach (Product::getCachePrice() as $id => $prod) : ?>
-            <?php if (!$prod['use_form']): ?>
-                <?= Html::checkbox('marks[]', null, ['id' => 'p' . $id, 'value' => $id, 'class' => 'mark', 'data-url' => Url::to(['/operation/get-field', 'id' => $id])]) ?>
-                <?= Html::label($prod['title'], 'p' . $id, ['class' => 'btn-label']) ?>
-            <?php else: ?>
-                <?= Html::a($prod['title'], ['operation/sell-item', 'id' => $id], ['class' => 'btn btn-primary sell-item',]) ?>
-            <?php endif; ?>
+
+            <?= Html::checkbox('marks[]', null, [
+                'id'       => 'p' . $id,
+                'value'    => $id,
+                'class'    => 'mark',
+                'data-url' => (!$prod['use_form']) ?
+                    Url::to(['/operation/get-field', 'id' => $id]) :
+                    Url::to(['/operation/sell-item', 'id' => $id]),
+            ]) ?>
+            <?= Html::label($prod['title'], 'p' . $id, ['class' => 'btn-label']) ?>
+
         <?php endforeach; ?>
     </div>
-        <div class="list">
-        </div>
+    <div class="list">
+    </div>
     <?= $form->field($model, 'comment')->textarea() ?>
     <div class="form-group">
         <div class="col-lg-12">
