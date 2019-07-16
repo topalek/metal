@@ -22,6 +22,7 @@ $this->params['breadcrumbs'][] = $this->title;
         <?= GridView::widget([
             'dataProvider' => $dataProvider,
             'emptyText'    => 'Операций не найдено',
+            'showHeader'   => false,
             'rowOptions'   => function ($model){
                 if ($model->type == Operation::TYPE_BUY){
                     return ['class' => 'info'];

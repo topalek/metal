@@ -132,7 +132,7 @@ function calcTotal(){
 
 $('.add-sell').on('click',()=>{
     let weight = $('.weight').val(),
-    sale_price = $('.sale_price').val(),
+    sale_price = $('.price').val(),
     dirt = $('.dirt').val(),
     id = $('[name=id]').val(),
     total = $('.total').val();

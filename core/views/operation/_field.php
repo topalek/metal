@@ -15,6 +15,7 @@ use yii\helpers\Html;
 $fields = [
     'weight',
     'sale_price',
+    'price',
     'dirt',
     'total',
     'title',

@@ -244,7 +244,13 @@ class ReportController extends Controller {
                 foreach ($productsArray as $id => $products){
                     $weight = ArrayHelper::getValue($productsArray[$id][$k], "weight");
                     $price  = ArrayHelper::getValue($productsArray[$id][$k], "price");
+                    if ($price == "?"){
+                        $price = null;
+                    }
                     $total  = ArrayHelper::getValue($productsArray[$id][$k], "total");
+                    if ($total == "?"){
+                        $total = null;
+                    }
                     $prices = ArrayHelper::getValue($headers[$id], 'prices');
                     $count  = count($prices);
                     if ($count == 0){
@@ -270,14 +276,22 @@ class ReportController extends Controller {
 
                         //заполняем цену
                         if ($weight){
-                            $sheet->setCellValue($col . $row, "???");
+                            if ($price){
+                                $sheet->setCellValue($col . $row, $price);
+                            }else{
+                                $sheet->setCellValue($col . $row, "???");
+                            }
                             $sheet->getStyle($col . $row)->applyFromArray($this->boldText);
                         }
                         $sheet->getStyle($col ++ . $row)->applyFromArray($this->borders);
 
                         //заполняем сумму
                         if ($weight){
-                            $sheet->setCellValue($col . $row, "???");
+                            if ($total){
+                                $sheet->setCellValue($col . $row, "-" . $total);
+                            }else{
+                                $sheet->setCellValue($col . $row, "???");
+                            }
                             $sheet->getStyle($col . $row)->applyFromArray($this->totalStyle);
                             $sheet->getStyle($col . $row)->applyFromArray($this->boldText);
                         }
