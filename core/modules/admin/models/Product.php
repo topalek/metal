@@ -9,11 +9,6 @@ use yii\helpers\ArrayHelper;
 use yii\helpers\FileHelper;
 use yii\helpers\Html;
 use yii\web\UploadedFile;
-use function file_exists;
-use function getBaseUploadsPath;
-use function strtolower;
-use function unlink;
-use const DIRECTORY_SEPARATOR;
 
 /**
  * This is the model class for table "product".
@@ -199,7 +194,7 @@ class Product extends BaseModel {
     private function refreshCash()
     {
         Yii::$app->cache->set('price_list', Product::find()->where(['status' => Product::STATUS_PUBLISHED])->select([
-            'title', 'price', 'id', 'discount_price',
+            'title', 'price', 'id', 'discount_price', 'use_form',
         ])->indexBy('id')->asArray()->all());
     }
 

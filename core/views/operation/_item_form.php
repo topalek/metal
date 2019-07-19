@@ -22,11 +22,11 @@ $data = ($type == Operation::TYPE_BUY) ? [
         'data-type' => $type
     ],
     'header'  => '<h3 class="modal-title">' . $model->title . '</h3>',
-    'size'    => Modal::SIZE_DEFAULT,
+    'size'    => Modal::SIZE_LARGE,
     'footer'  => '<div class="col-md-12">
                             <div class="form-group">'
         . Html::button('Добавить клиента', [
-            'class' => 'btn btn-info add-item',
+            'class' => 'btn btn-info add-client',
             'data'  => [
                 'dismiss' => "modal",
                 'type'    => $type,
@@ -147,13 +147,16 @@ $('.process').on('click',(e)=>{
         if (weight){
             writeToStorage(json);
         } 
-        if (isCalculated){
+        if (isCalculated ){
             products = getFromStorage();
             $.post(url,{'products':products},(resp)=>{
                 
                 if (resp.status){
                     localStorage.removeItem(storageName);
-                    window.location = "/";
+                    $(modal).modal('hide');
+                    if (!clients){
+                         window.location = "/";
+                    } 
                 } else {
                     alert(resp.message);
                 }
@@ -243,5 +246,36 @@ $('#calculate').on('click',()=>{
     total = Math.ceil(total*100)/100;
     $('#total').html("Всего: "+total+" грн." );
 });
+
+$('.add-client').on('click',()=>{
+    let products = getFromStorage(),
+    weight = $('.weight').val(),
+    json = form.serializeArray();
+    
+    if (!isEmpty(products)){
+        clients = true;
+        $('#clients').append(getClientBnt(clientNumber,products));
+        clientNumber++;
+        localStorage.setItem(storageName, JSON.stringify({}));
+    }else{
+        if(!weight){
+           return  false;
+        }else{
+             weight = parseFloat(weight);
+            if (weight == 0){
+               return  false;
+            }
+            writeToStorage(json);
+            products = getFromStorage();
+             clients = true;
+            $('#clients').append(getClientBnt(clientNumber,products));
+            clientNumber++;
+            localStorage.setItem(storageName, JSON.stringify({}));
+        }
+    }
+   
+});
+
+
 JS
 );

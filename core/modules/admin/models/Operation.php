@@ -214,7 +214,7 @@ class Operation extends ActiveRecord
                 foreach ($product as $item){
                     $price = ArrayHelper::getValue($item, 'price');
                     if (isset($headers[$id]['prices'])){
-                        if ( ! in_array($price, $headers[$id]['prices'])){
+                        if (!in_array($price, $headers[$id]['prices']) && $price != "?") {
                             $headers[$id]['prices'][] = $price;
                         }
                     }else{

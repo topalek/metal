@@ -112,20 +112,6 @@ class OperationController extends Controller
                     $arr[$id]['id'] = $id ? $id : '?';
                     $arr[$id]['dirt'] = $dirt ? $dirt : '?';
                 }
-//            }
-//            foreach ($products as  $product) {
-//                $id = ArrayHelper::getValue($product, 'id');
-//                $arr[$id] = $emptyArr[$id];
-//                $weight = ArrayHelper::getValue($product, 'weight');
-//                $sale_price = ArrayHelper::getValue($product, 'sale_price');
-//                $total = ArrayHelper::getValue($product, 'total');
-//                $dirt = ArrayHelper::getValue($product, 'dirt');
-//
-//                $arr[$id]['weight'] = $weight ? $weight : '?';
-//                $arr[$id]['sale_price'] = $sale_price ? $sale_price : '?';
-//                $arr[$id]['total'] = $total ? $total : '?';
-//                $arr[$id]['id'] = $id ? $id : '?';
-//                $arr[$id]['dirt'] = $dirt ? $dirt : '?';
 
             }
             $model->products = $arr;

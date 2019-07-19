@@ -1,4 +1,6 @@
 let isCalculated = false;
+let clients = false;
+let clientNumber = 1;
 const storageName = 'buy';
 
 $('.operation-item,.sell-item').click(function (e) {
@@ -61,8 +63,24 @@ function removeItem(id) {
 
 $(document).ready(function () {
     setInterval(getTime, 1000);
+    $('body').on('click', '.client', (e) => {
+        let btn = $(e.target),
+            products = btn.data('json');
+        localStorage.setItem(storageName, JSON.stringify(products));
+        btn.remove();
+        if ($('.client').length == 0) {
+            clients = false;
+        }
+        $('.operation-item').eq(0).trigger('click');
+    });
 });
 
 function getFromStorage() {
     return (localStorage.getItem(storageName)) ? JSON.parse(localStorage.getItem(storageName)) : {};
+}
+
+function getClientBnt(id, json) {
+
+    json = JSON.stringify(json);
+    return `<button id="id-${id}" type="button" class="btn btn-default client" data-json='${json}'>Клиент ${id}</button>`;
 }

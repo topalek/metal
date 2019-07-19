@@ -12,7 +12,6 @@
  */
 
 use yii\data\ActiveDataProvider;
-use yii\helpers\Html;
 use yii\widgets\ListView;
 
 
@@ -36,22 +35,7 @@ $this->title = "Метал : " . $model->getTypeName();
         </div>
     </div>
 </div>
-<div id="clients">
-    <?= Html::button('Добавить товар', [
-        'class' => 'btn btn-primary add-item',
-        'data'  => [
-            'dismiss' => "modal",
-        ],
-    ]) ?>
-</div>
-
-<?php
-$this->registerJs(<<<JS
-let products = getFromStorage();
-console.log(products);
-JS
-);
-?>
+<div id="clients" class="btn-group container" role="group"></div>
 
 
 

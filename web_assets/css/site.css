@@ -372,6 +372,14 @@ form#fill-cash-form, form#rest-cash-form {
     top: auto;
     right: auto;
 }
+
+#clients {
+    position: fixed;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    margin: 0 auto;
+}
 @media (max-width: 1440px) {
     .operation-btn {
         padding: 30px 100px 30px 30px;
