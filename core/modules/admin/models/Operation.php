@@ -164,7 +164,11 @@ class Operation extends ActiveRecord
     public function afterFind()
     {
         if ($this->products) {
-            $this->products = Json::decode($this->products);
+            try {
+                $this->products = Json::decode($this->products);
+            } catch (\Exception $e) {
+                $this->products = [];
+            }
         }
         parent::afterFind();
     }
