@@ -143,6 +143,7 @@ class ReportController extends Controller {
         ],
     ];
     public $headers;
+    public $productStartCol = "E";
 
     public function actionIndex(){
 
@@ -158,13 +159,14 @@ class ReportController extends Controller {
     }
 
     public function actionDay(){
-        $date       = date('Y-m-d 00:00:00');
-        $fromDate   = date('Y-m-d 00:00:00', strtotime($date));
-        $toDate     = date('Y-m-d 00:00:00', strtotime($date . "+1 day"));
-        $operations = Operation::getArrayForReport(Operation::getOperationByPeriod($fromDate, $toDate));
-        $file       = $this->generateReportFile($operations);
+        $date           = date('Y-m-d 00:00:00');
+        $fromDate       = date('Y-m-d 00:00:00', strtotime($date));
+        $toDate         = date('Y-m-d 00:00:00', strtotime($date . "+1 day"));
+        $operations     = Operation::getArrayForReport(Operation::getOperationByPeriod($fromDate, $toDate));
+        $file           = $this->generateReportFile($operations);
+        $reportFileName = "Отчет " . date("d.m.Y");
 
-        return Yii::$app->response->sendFile($file);
+        return Yii::$app->response->sendFile($file, $reportFileName);
 
     }
 
@@ -175,12 +177,13 @@ class ReportController extends Controller {
         if ( ! $fromDate or ! $toDate){
             throw new InvalidArgumentException('Неверно заполнена дата');
         }
-        $fromDate   = date('Y-m-d 00:00:00', strtotime($fromDate));
-        $toDate     = date('Y-m-d 00:00:00', strtotime($toDate . "+1 day"));
-        $operations = Operation::getArrayForReport(Operation::getOperationByPeriod($fromDate, $toDate));
-        $file       = $this->generateReportFile($operations);
+        $fromDate       = date('Y-m-d 00:00:00', strtotime($fromDate));
+        $toDate         = date('Y-m-d 00:00:00', strtotime($toDate . "+1 day"));
+        $operations     = Operation::getArrayForReport(Operation::getOperationByPeriod($fromDate, $toDate));
+        $file           = $this->generateReportFile($operations);
+        $reportFileName = "Отчет " . date('d.m.Y', strtotime($fromDate)) . "-" . date('d.m.Y', strtotime($toDate . "-1 day"));
 
-        return Yii::$app->response->sendFile($file);
+        return Yii::$app->response->sendFile($file, $reportFileName);
 
     }
 
@@ -201,13 +204,14 @@ class ReportController extends Controller {
         $colCount        = $this->getColumnCount($headers);
         $lastColumn      = $this->getLetterIdx($colCount);
         $sheet           = $this->buildHeaders($sheet, $headers);
-        $productStartCol = "D";
         $sheet->setCellValue("A1", "Дата")->mergeCells("A1:A2")
             ->getStyle("A1:A2")->applyFromArray(array_merge($this->centerBold, $this->borders));
         $sheet->setCellValue("B1", "Касса")->mergeCells("B1:B2")
             ->getStyle("B1:B2")->applyFromArray(array_merge($this->centerBold, $this->borders));
-        $sheet->setCellValue("C1", "Коментарий")->mergeCells("C1:C2")
-            ->getStyle("C1:C2")->applyFromArray(array_merge($this->centerBold, $this->borders));
+        $sheet->setCellValue("C1", "Остаток")->mergeCells("C1:C2")
+              ->getStyle("C1:C2")->applyFromArray(array_merge($this->centerBold, $this->borders));
+        $sheet->setCellValue("D1", "Коментарий")->mergeCells("D1:D2")
+              ->getStyle("D1:D2")->applyFromArray(array_merge($this->centerBold, $this->borders));
         $row = 3;
 
         foreach ($operations as $operation){
@@ -219,10 +223,18 @@ class ReportController extends Controller {
             $sheet->setCellValue($col . $row, $date);
             $sheet->getStyle($col++ . $row)->applyFromArray($this->borders);
             if ($type != Operation::TYPE_BUY){
-                $sheet->setCellValue($col . $row, $sum);
+                if ($type == Operation::TYPE_FILL_CASH){
+                    $sheet->setCellValue($col . $row, $sum);
+                    $sheet->getStyle($col ++ . $row)->applyFromArray($this->borders);
+                }else{
+                    $sheet->getStyle($col ++ . $row)->applyFromArray($this->borders);
+                    $sheet->setCellValue($col . $row, $sum);
+                }
+
             }
-            $sheet->getStyle($col++ . $row)->applyFromArray($this->borders);
+            $sheet->getStyle($col ++ . $row)->applyFromArray($this->borders);
             $sheet->setCellValue($col . $row, $comment);
+            $sheet->getStyle($col++ . $row)->applyFromArray($this->borders);
             $sheet->getStyle($col++ . $row)->applyFromArray($this->borders);
 
             switch ($type){
@@ -240,7 +252,7 @@ class ReportController extends Controller {
             $operationRowsCount = count(ArrayHelper::getValue($productsArray, 1));
             $k                  = 0;
             while ($k < $operationRowsCount){
-                $col = $productStartCol;
+                $col = $this->productStartCol;
                 foreach ($productsArray as $id => $products){
                     $weight = ArrayHelper::getValue($productsArray[$id][$k], "weight");
                     $price  = ArrayHelper::getValue($productsArray[$id][$k], "price");
@@ -340,6 +352,7 @@ class ReportController extends Controller {
         $sheet->getColumnDimension('A')->setAutoSize(true);
         $sheet->getColumnDimension('B')->setAutoSize(true);
         $sheet->getColumnDimension('C')->setAutoSize(true);
+        $sheet->getColumnDimension('D')->setAutoSize(true);
         $sheet->freezePane('A3');
         $xls = new Xls($spreadsheet);
         $xls->save($fileName);
@@ -349,7 +362,7 @@ class ReportController extends Controller {
 
     public function buildHeaders(Worksheet $sheet, array $headers){
 
-        $col = "D";
+        $col = $this->productStartCol;
         $row = 1;
 
         // Заполняем название товаров
@@ -370,7 +383,7 @@ class ReportController extends Controller {
             $sheet->getStyle($startCol . $row . ":" . $col . $row)->applyFromArray($this->centerBold);
             $col ++;
         }
-        $col = "D";
+        $col = $this->productStartCol;
         $row = 2;
 
         // Заполняем название столбцов
@@ -415,6 +428,10 @@ class ReportController extends Controller {
         $startRow   = 3;
         $formulaRow = $row - 1;
         $sheet->setCellValue($col . $row, "Итого:");
+        $sheet->getStyle($col ++ . $row)->applyFromArray($this->borders);
+
+        $formula = "=SUM($col$startRow:$col$formulaRow)";
+        $sheet->setCellValue($col . $row, $formula);
         $sheet->getStyle($col ++ . $row)->applyFromArray($this->borders);
 
         $formula = "=SUM($col$startRow:$col$formulaRow)";

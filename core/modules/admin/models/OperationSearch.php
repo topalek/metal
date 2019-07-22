@@ -40,7 +40,7 @@ class OperationSearch extends Operation
      */
     public function search($params)
     {
-        $query = Operation::find();
+        $query = Operation::find()->orderBy('id DESC');
 
 // add conditions that should always apply here
 

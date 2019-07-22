@@ -28,6 +28,8 @@ class Operation extends ActiveRecord
     const TYPE_SELL = 1;
     const TYPE_FILL_CASH = 2;
     const TYPE_REST_CASH = 3;
+    const REST_CASH_COMMENT = "Остаток денежных средств ";
+    const FILL_CASH_COMMENT = "Пополнение кассы ";
 
     public static function tableName()
     {
@@ -197,8 +199,8 @@ class Operation extends ActiveRecord
         return [
             static::TYPE_BUY       => 'Покупка',
             static::TYPE_SELL      => 'Продажа',
-            static::TYPE_FILL_CASH => 'Пополнение кассы',
-            static::TYPE_REST_CASH => 'Остаток денежных средств',
+            static::TYPE_FILL_CASH => 'Пополнение кассы.',
+            static::TYPE_REST_CASH => 'Остаток денежных средств.',
         ];
     }
 

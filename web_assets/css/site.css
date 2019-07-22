@@ -145,6 +145,15 @@ a.desc:after {
     flex-direction: column;
 }
 
+div#item-modal {
+    font-weight: bold;
+    font-size: 16px;
+}
+
+div#item-modal .form-control {
+    font-size: 16px;
+}
+
 .check {
     display: flex;
     flex-wrap: wrap;

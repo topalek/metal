@@ -132,8 +132,11 @@ class OperationController extends Controller
         $model           = new Operation();
         $model->type     = Operation::TYPE_REST_CASH;
         $model->products = Product::getEmptyArray();
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->goHome();
+        if ($model->load(Yii::$app->request->post())){
+            $model->comment = Operation::REST_CASH_COMMENT . $model->comment;
+            if ($model->save()){
+                return $this->goHome();
+            }
         }
 
         return $this->render('rest-cash', [
@@ -155,8 +158,11 @@ class OperationController extends Controller
         $model->type     = Operation::TYPE_FILL_CASH;
         $model->products = Product::getEmptyArray();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->goHome();
+        if ($model->load(Yii::$app->request->post())){
+            $model->comment = Operation::FILL_CASH_COMMENT . $model->comment;
+            if ($model->save()){
+                return $this->goHome();
+            }
         }
 
         return $this->render('fill-cash', [
