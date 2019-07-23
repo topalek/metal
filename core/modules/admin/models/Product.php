@@ -60,7 +60,7 @@ class Product extends BaseModel {
             'id'                  => 'ID',
             'title'               => 'Название',
             'price'               => 'Цена за кг.',
-            'sale_price'          => 'Цена за кг.',
+            'sale_price'          => 'Цена продажи',
             'amount_for_discount' => 'Кол-во для надбавки',
             'discount_price'      => 'Цена с надбавкой',
             'dirt'                => 'Засор%',
@@ -92,7 +92,9 @@ class Product extends BaseModel {
 
     public function beforeSave($insert){
         if ($insert){
-            $this->sale_price = $this->price;
+            if (!$this->sale_price) {
+                $this->sale_price = $this->price;
+            }
         }
         if ( ! parent::beforeSave($insert)){
             return false;

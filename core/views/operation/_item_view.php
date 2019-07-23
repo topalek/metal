@@ -21,8 +21,9 @@ if ($model->image){
 <?= Html::a(
 	$attr['title'], [
 	'operation/get-item',
-	'id'   => $model->id,
-	'type' => $operation->type,
+    'id'     => $model->id,
+    'type'   => $operation->type,
+    'client' => $client,
 ], [
 	'class' => $attr['class'] . ' operation-item',
 ]) ?>

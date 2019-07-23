@@ -383,8 +383,6 @@ form#fill-cash-form, form#rest-cash-form {
 }
 
 #clients {
-    position: fixed;
-    bottom: 40px;
     left: 50%;
     transform: translateX(-50%);
     margin: 0 auto;

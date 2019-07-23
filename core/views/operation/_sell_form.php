@@ -45,7 +45,7 @@ use yii\helpers\Url;
                         <div class="col-md-12">
                             <div class="form-group">
                                 <?= Html::label('Цена', 'sale_price') ?>
-                                <?= Html::input('number', 'sale_price', $model->price, ['class' => 'form-control price']) ?>
+                                <?= Html::input('number', 'sale_price', $model->sale_price, ['class' => 'form-control price']) ?>
                                 <?= Html::hiddenInput('discount', null, ['class' => "discount"]) ?>
                                 <?= Html::hiddenInput('discount_price', null, ['class' => "discount_price"]) ?>
                             </div>

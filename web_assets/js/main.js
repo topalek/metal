@@ -65,8 +65,10 @@ $(document).ready(function () {
     setInterval(getTime, 1000);
     $('body').on('click', '.client', (e) => {
         let btn = $(e.target),
-            products = btn.data('json');
+            products = btn.data('json'),
+            clientId = btn.data('client');
         localStorage.setItem(storageName, JSON.stringify(products));
+        setClientUrl(clientId);
         btn.remove();
         if ($('.client').length == 0) {
             clients = false;
@@ -82,5 +84,13 @@ function getFromStorage() {
 function getClientBnt(id, json) {
 
     json = JSON.stringify(json);
-    return `<button id="id-${id}" type="button" class="btn btn-default client" data-json='${json}'>Клиент ${id}</button>`;
+    return `<button id="id-${id}" type="button" class="btn btn-danger client" data-json='${json}' data-client='${id}'>Клиент ${id}</button>`;
+}
+
+function setClientUrl(clientId) {
+    let items = $('.operation-item');
+    items.each((i, el) => {
+        $(el).attr('href', $(el).attr('href').replace(/client=\d/, "client=" + clientId));
+    })
+
 }

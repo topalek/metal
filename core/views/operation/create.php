@@ -8,6 +8,7 @@
  * @var $model        app\modules\admin\models\Operation
  * @var $dataProvider ActiveDataProvider
  * @var $priceList    string
+ * @var $client       integer
  *
  */
 
@@ -20,13 +21,14 @@ $this->title = "Метал : " . $model->getTypeName();
 <div id="buy">
     <div class="row">
         <div class="col-md-8">
+            <div id="clients" class="btn-group container" role="group"></div>
             <?= ListView::widget([
                 'dataProvider' => $dataProvider,
                 'itemView'     => '_item_view',
                 'itemOptions'  => ['class' => 'col-md-3 col-sm-3 col-xs-4'],
                 'options'      => ['class' => 'flex flex-w'],
                 'summary'      => '',
-                'viewParams'   => ['operation' => $model],
+                'viewParams'   => ['operation' => $model, 'client' => $client],
             ]); ?>
         </div>
         <div class="col-md-4">
@@ -35,7 +37,5 @@ $this->title = "Метал : " . $model->getTypeName();
         </div>
     </div>
 </div>
-<div id="clients" class="btn-group container" role="group"></div>
-
 
 

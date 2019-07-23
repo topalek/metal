@@ -9,6 +9,7 @@ use yii\helpers\Url;
 /* @var $model app\modules\admin\models\Product */
 /* @var $form yii\widgets\ActiveForm */
 /* @var $type integer */
+/* @var $client integer */
 
 $data = ($type == Operation::TYPE_BUY) ? [
     'discount_weight' => $model->amount_for_discount,
@@ -21,15 +22,15 @@ $data = ($type == Operation::TYPE_BUY) ? [
     'options' => [
         'data-type' => $type
     ],
-    'header'  => '<h3 class="modal-title">' . $model->title . '</h3>',
+    'header'  => '<h3 class="modal-title">' . $model->title . " : Клиент " . $client . '</h3>',
     'size'    => Modal::SIZE_LARGE,
     'footer'  => '<div class="col-md-12">
                             <div class="form-group">'
-        . Html::button('Добавить клиента', [
+        . Html::button('Свернуть', [
             'class' => 'btn btn-info add-client',
             'data'  => [
                 'dismiss' => "modal",
-                'type'    => $type,
+                'client'  => $client,
             ],
         ])
         . Html::button('Просчитать', [
@@ -109,7 +110,6 @@ $(modal).on('shown.bs.modal', function () {
     $('.weight').focus();
 }); 
 $(modal).modal('show');
-// $('.weight').focus();
 $(modal).on('hidden.bs.modal', function (e) {
     var products = getFromStorage();
     if (products){
@@ -230,14 +230,9 @@ function calcTotal(){
    total.val(totalPrice);
 }
 $('#calculate').on('click',()=>{
-    let json = form.serializeArray(),
-        weight = $('.weight').val();
     let total = 0;
-    isCalculated = true;
-    if (weight){
-        writeToStorage(json);
-        buildItemList();
-        form[0].reset();
+    if (setToStorage()){
+      isCalculated = true;
     } 
     let products = getFromStorage(); 
     Object.keys(products).forEach((i)=>{
@@ -247,35 +242,25 @@ $('#calculate').on('click',()=>{
     $('#total').html("Всего: "+total+" грн." );
 });
 
-$('.add-client').on('click',()=>{
-    let products = getFromStorage(),
-    weight = $('.weight').val(),
-    json = form.serializeArray();
-    
-    if (!isEmpty(products)){
-        clients = true;
-        $('#clients').append(getClientBnt(clientNumber,products));
-        clientNumber++;
-        localStorage.setItem(storageName, JSON.stringify({}));
-    }else{
-        if(!weight){
-           return  false;
-        }else{
-             weight = parseFloat(weight);
-            if (weight == 0){
-               return  false;
-            }
-            writeToStorage(json);
-            products = getFromStorage();
-             clients = true;
-            $('#clients').append(getClientBnt(clientNumber,products));
-            clientNumber++;
-            localStorage.setItem(storageName, JSON.stringify({}));
-        }
-    }
-   
+$('.add-client').on('click',(e)=>{
+    let clientNumber = $(e.target).data('client');
+    setToStorage();
+    let products = getFromStorage();
+    $('#clients').append(getClientBnt(clientNumber,products));
+    clients = true;
+    setClientUrl(++clientNumber);
+    localStorage.setItem(storageName, JSON.stringify({}));
 });
 
-
+function setToStorage(){
+    let json = form.serializeArray(),
+        weight = $('.weight').val();
+    if (weight){
+        writeToStorage(json);
+        buildItemList();
+        form[0].reset();
+    }
+    return true;
+}
 JS
 );

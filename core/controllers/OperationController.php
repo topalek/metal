@@ -72,6 +72,7 @@ class OperationController extends Controller
             'model'        => $model,
             'dataProvider' => $dataProvider,
             'priceList'    => $priceList,
+            'client'       => 1,
         ]);
 
     }
@@ -144,11 +145,11 @@ class OperationController extends Controller
         ]);
     }
 
-    public function actionGetItem($id, $type = null)
+    public function actionGetItem($id, $type = null, $client = 0)
     {
         $model = Product::findOne($id);
 
-        return $this->renderAjax('_item_form', ['model' => $model, 'type' => $type]);
+        return $this->renderAjax('_item_form', ['model' => $model, 'type' => $type, "client" => $client]);
     }
 
     public function actionFillCash()
