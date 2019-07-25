@@ -152,6 +152,13 @@ class OperationController extends Controller
         return $this->renderAjax('_item_form', ['model' => $model, 'type' => $type, "client" => $client]);
     }
 
+    public function actionGetMoveModal($client = 0)
+    {
+        $id = 1;
+        $model = Product::findOne($id);
+        return $this->renderAjax('_move_to_business_form', ['model' => $model, "client" => $client]);
+    }
+
     public function actionFillCash()
     {
         $this->bodyClass = 'cash';
@@ -216,13 +223,9 @@ class OperationController extends Controller
         return $this->renderAjax('_sell_form', ['model' => $model]);
     }
 
-    public function actionTest($data)
+    public function actionMoveBusiness()
     {
-        try {
-            $data = Json::decode($data);
-        } catch (\Exception $e) {
-            $data = [];
-        }
-        print_r($data);
+        $post = Yii::$app->request->post();
+        dd($post);
     }
 }

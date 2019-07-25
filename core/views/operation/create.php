@@ -13,6 +13,7 @@
  */
 
 use yii\data\ActiveDataProvider;
+use yii\helpers\Html;
 use yii\widgets\ListView;
 
 
@@ -30,6 +31,13 @@ $this->title = "Метал : " . $model->getTypeName();
                 'summary'      => '',
                 'viewParams'   => ['operation' => $model, 'client' => $client],
             ]); ?>
+            <div class="">
+                <?= Html::a(
+                    "Отложить в деловой", ['operation/get-move-modal', 'client' => $client], [
+                    'class' => 'btn btn-danger flex-item operation-item',
+                ]) ?>
+            </div>
+
         </div>
         <div class="col-md-4">
             <h2 class="pricelist-title">Стоимость</h2>
