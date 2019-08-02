@@ -132,8 +132,10 @@ buildItemList();
 $('.process').on('click',(e)=>{
     let json = form.serializeArray(),
         weight = $('.weight').val(),
+        btn = $(e.target),
         products = getFromStorage(),
-        url = $(e.target).data('url');
+        url = btn.data('url');
+        btn.prop('disabled', true);
     
     if(!weight && isEmpty(products)){
         alert('Заполните Вес');
@@ -143,11 +145,11 @@ $('.process').on('click',(e)=>{
         if (weight == 0){
             alert('Вес 0');
             return false;
-        }
-        if (weight){
-            writeToStorage(json);
         } 
         if (isCalculated ){
+            if (weight){
+                writeToStorage(json);
+            }
             products = getFromStorage();
             $.post(url,{'products':products},(resp)=>{
                 

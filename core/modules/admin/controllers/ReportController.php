@@ -164,7 +164,7 @@ class ReportController extends Controller {
         $toDate         = date('Y-m-d 00:00:00', strtotime($date . "+1 day"));
         $operations     = Operation::getArrayForReport(Operation::getOperationByPeriod($fromDate, $toDate));
         $file           = $this->generateReportFile($operations);
-        $reportFileName = "Отчет " . date("d.m.Y");
+        $reportFileName = "Отчет " . date("d.m.Y") . ".xls";
 
         return Yii::$app->response->sendFile($file, $reportFileName);
 
@@ -181,7 +181,7 @@ class ReportController extends Controller {
         $toDate         = date('Y-m-d 00:00:00', strtotime($toDate . "+1 day"));
         $operations     = Operation::getArrayForReport(Operation::getOperationByPeriod($fromDate, $toDate));
         $file           = $this->generateReportFile($operations);
-        $reportFileName = "Отчет " . date('d.m.Y', strtotime($fromDate)) . "-" . date('d.m.Y', strtotime($toDate . "-1 day"));
+        $reportFileName = "Отчет " . date('d.m.Y', strtotime($fromDate)) . "-" . date('d.m.Y', strtotime($toDate . "-1 day")) . ".xls";
 
         return Yii::$app->response->sendFile($file, $reportFileName);
 

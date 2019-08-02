@@ -226,6 +226,36 @@ class OperationController extends Controller
     public function actionMoveBusiness()
     {
         $post = Yii::$app->request->post();
-        dd($post);
+        $data = $post['data'];
+        $data = explode("&", $data);
+        $metal = [];
+        $bMetal = [
+//            'sale_price' => 0,
+            'dirt'  => 0,
+            'total' => 0,
+            'title' => 'Деловой металл',
+            'id'    => 25,
+        ];
+        foreach ($data as $item) {
+            list($key, $value) = explode("=", $item);
+            $metal[$key] = $value;
+        }
+        $bMetal = array_merge($metal, $bMetal);
+        $weight = ArrayHelper::getValue($metal, 'weight');
+        $total = ArrayHelper::getValue($metal, 'total');
+        $metal['weight'] = -$weight;
+        $metal['total'] = -$total;
+        $model = new Operation();
+        $model->type = Operation::TYPE_BUY;
+        $model->products = [$metal, $bMetal];
+
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        if ($model->save()) {
+            $response = ['status' => true, 'message' => "OK"];
+        } else {
+            $response = ['status' => false, 'message' => $model->errors];
+        }
+
+        return $response;
     }
 }

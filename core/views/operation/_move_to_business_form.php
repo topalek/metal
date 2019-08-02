@@ -131,18 +131,21 @@ function calcTotal(){
    total.val(totalPrice);
 }
 
-// $('.add-sell').on('click',()=>{
-//     let weight = $('.weight').val(),
-//     sale_price = $('.price').val(),
-//     dirt = $('.dirt').val(),
-//     id = $('[name=id]').val(),
-//     total = $('.total').val();
-//     let data = JSON.stringify({"weight":weight,"sale_price":sale_price,"dirt":dirt,"id":id,"total":total});
-//    
-//     $.get('/operation/get-field?id='+id+'&data='+data,(resp)=>{
-//        $('.list').append(resp);
-//     });
-//    
-// });
+$('.move').on('click',()=>{
+    let url = $('.move').data('url');
+    let data = form.serialize();
+    data = decodeURI(data);
+   
+    $.post(url,{data:data},(resp)=>{
+        if (resp.status){
+            if (!clients){
+                 window.location = "/";
+            } 
+        } else {
+            alert(resp.message);
+        }
+    });
+   
+});
 JS
 );
