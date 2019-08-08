@@ -13,23 +13,25 @@ use yii\web\UploadedFile;
 /**
  * This is the model class for table "product".
  *
- * @property int $id
- * @property string $title                       Название
- * @property string $price                       Цена
- * @property string $amount_for_discount         Цена
- * @property string $discount_price              Цена
- * @property string $sale_price                  Цена продажи
- * @property int    $dirt                           Засор
- * @property string $slug                        Слаг
- * @property string $image                       картинка
- * @property int    $status                         Публиковать
- * @property int    $use_form                       Использовалать форму для продажи
- * @property int    $operation_sort                 Сортировка для вывода
- * @property int    $sell_only                      Только продажа
- * @property string $updated_at                  Дата обновления
- * @property string $imgUrl
- * @property string $created_at                  Дата создания
- * @property mixed  error
+ * @property int     $id
+ * @property int     $origin_id
+ * @property string  $title                       Название
+ * @property string  $price                       Цена
+ * @property string  $amount_for_discount         Цена
+ * @property string  $discount_price              Цена
+ * @property string  $sale_price                  Цена продажи
+ * @property int     $dirt                           Засор
+ * @property string  $slug                        Слаг
+ * @property string  $image                       картинка
+ * @property int     $status                         Публиковать
+ * @property int     $use_form                       Использовалать форму для продажи
+ * @property int     $operation_sort                 Сортировка для вывода
+ * @property int     $sell_only                      Только продажа
+ * @property string  $updated_at                  Дата обновления
+ * @property string  $imgUrl
+ * @property string  $created_at                  Дата создания
+ * @property mixed   error
+ * @property Product origin
  */
 class Product extends BaseModel {
 
@@ -46,7 +48,7 @@ class Product extends BaseModel {
         return [
             [['title', 'price'], 'required'],
             [['price', 'sale_price', 'dirt', 'amount_for_discount', 'discount_price'], 'number'],
-            [['status', 'sell_only', 'use_form', 'operation_sort'], 'integer'],
+            [['status', 'origin_id', 'sell_only', 'use_form', 'operation_sort'], 'integer'],
             [['updated_at', 'created_at'], 'safe'],
             [['title', 'slug', 'image'], 'string', 'max' => 255],
         ];
@@ -70,6 +72,7 @@ class Product extends BaseModel {
             'imgUrl'              => 'картинка',
             'file'                => 'Картинка',
             'status'              => 'Публиковать',
+            'origin_id'           => 'Исходный товар',
             'use_form'            => 'Использовалать форму для продажи',
             'operation_sort'      => 'Сортировка для вывода',
             'sell_only'           => 'Только продажа',
@@ -212,6 +215,11 @@ class Product extends BaseModel {
         }
 
         return false;
+    }
+
+    public function getOrigin()
+    {
+        return $this->hasOne(Product::class, ['id' => 'origin_id']);
     }
 
 }

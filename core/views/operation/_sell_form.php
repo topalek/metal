@@ -17,11 +17,11 @@ use yii\helpers\Url;
     'size'    => Modal::SIZE_DEFAULT,
     'footer'  => '<div class="col-md-12">
                             <div class="form-group">'
-        . Html::button('Добавить', [
+        . Html::button('Продать', [
             'class' => 'btn btn-danger add-sell',
             'data'  => [
                 'dismiss' => "modal",
-                'url'     => Url::to(['operation/buy']),
+                'url'     => Url::to(['operation/sell-item']),
             ],
         ])
         . '
@@ -130,16 +130,20 @@ function calcTotal(){
    total.val(totalPrice);
 }
 
-$('.add-sell').on('click',()=>{
-    let weight = $('.weight').val(),
-    sale_price = $('.price').val(),
-    dirt = $('.dirt').val(),
-    id = $('[name=id]').val(),
-    total = $('.total').val();
-    let data = JSON.stringify({"weight":weight,"sale_price":sale_price,"dirt":dirt,"id":id,"total":total});
+$('.add-sell').on('click',(e)=>{
+    let url = $(e.target).data('url');
+    let data = form.serializeArray();
+    console.log(data);
     
-    $.get('/operation/get-field?id='+id+'&data='+data,(resp)=>{
-       $('.list').append(resp);
+    $.post(url,{data:data},(resp)=>{
+// console.log(resp);return false;
+        if (resp.status){
+            if (!clients){
+                 window.location = "/";
+            } 
+        } else {
+            alert(resp.message);
+        }
     });
     
 });

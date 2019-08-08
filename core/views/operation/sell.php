@@ -23,7 +23,7 @@ use yii\widgets\ActiveForm;
                 'class'    => 'mark',
                 'data-url' => (!$prod['use_form']) ?
                     Url::to(['/operation/get-field', 'id' => $id]) :
-                    Url::to(['/operation/sell-item', 'id' => $id]),
+                    Url::to(['/operation/sell-item-form', 'id' => $id]),
             ]) ?>
             <?= Html::label($prod['title'], 'p' . $id, ['class' => 'btn-label']) ?>
 

@@ -1,5 +1,6 @@
 <?php
 
+use app\modules\admin\models\Product;
 use kartik\switchinput\SwitchInput;
 use yii\helpers\Html;
 use yii\helpers\Url;
@@ -74,7 +75,11 @@ use yii\widgets\ActiveForm;
         </div>
     </div>
 
-
+    <div class="row">
+        <div class="col-md-8">
+            <?= $form->field($model, 'origin_id')->dropDownList(Product::getList(), ["prompt" => '-Выберите исходный товар-']) ?>
+        </div>
+    </div>
     <?= $form->field($model, 'file')->widget(\kartik\file\FileInput::class, [
 		'language'      => 'ru',
 		'pluginOptions' => [

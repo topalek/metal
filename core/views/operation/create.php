@@ -31,10 +31,14 @@ $this->title = "Метал : " . $model->getTypeName();
                 'summary'      => '',
                 'viewParams'   => ['operation' => $model, 'client' => $client],
             ]); ?>
-            <div class="">
+            <div class="flex flex-stretch">
                 <?= Html::a(
-                    "Отложить в деловой", ['operation/get-move-modal', 'client' => $client], [
-                    'class' => 'btn btn-danger flex-item operation-item',
+                    "Отложить в деловой", ['operation/get-move-modal', "id" => 25, 'client' => $client], [
+                    'class' => 'btn btn-primary flex-item operation-item',
+                ]) ?>
+                <?= Html::a(
+                    "Отложить в продажу", ['operation/get-move-modal', "id" => 28, 'client' => $client], [
+                    'class' => 'btn btn-success flex-item operation-item',
                 ]) ?>
             </div>
 

@@ -11,14 +11,14 @@ $date     = '2019-04-02 00:00:00';
 $date     = date('Y-m-d 00:00:00');
 $fromDate = date('Y-m-d 00:00:00', strtotime($date . "-1 day"));
 $toDate   = date('Y-m-d 00:00:00', strtotime($date . "+1 day"));
-$id       = 1;
+$id = 25;
 $model    = Product::findOne($id);
 
 $headers = Product::getCachePrice();
 ?>
 <div class="site-about" style="margin-top: 60px">
     <pre>
-        <?php print_r($model); ?>
+        <?php print_r($model->origin); ?>
     </pre>
 
     <pre>

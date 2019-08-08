@@ -13,7 +13,7 @@ use yii\helpers\Url;
 <?php Modal::begin([
     'id'      => 'move-to-business-modal',
     'options' => [],
-    'header'  => '<h3 class="modal-title">Отложить в деловой</h3>',
+    'header'  => '<h3 class="modal-title">Отложить в ' . $model->title . '</h3>',
     'size'    => Modal::SIZE_DEFAULT,
     'footer'  => '<div class="col-md-12">
                             <div class="form-group">'
@@ -21,14 +21,14 @@ use yii\helpers\Url;
             'class' => 'btn btn-danger move',
             'data'  => [
                 'dismiss' => "modal",
-                'url'     => Url::to(['operation/move-business']),
+                'url'     => Url::to(['operation/move']),
             ],
         ])
         . '
                             </div>
                         </div>',
 ]); ?>
-    <form action="<?= Url::to(['operation/move-business']) ?>">
+    <form action="<?= Url::to(['operation/move']) ?>">
         <div class="product-form box-body">
             <div class="row">
                 <div class="col-md-5">
@@ -45,7 +45,7 @@ use yii\helpers\Url;
                         <div class="col-md-12">
                             <div class="form-group">
                                 <?= Html::label('Цена', 'sale_price') ?>
-                                <?= Html::input('number', 'sale_price', $model->price, ['class' => 'form-control price']) ?>
+                                <?= Html::input('number', 'sale_price', $model->origin->price, ['class' => 'form-control price']) ?>
                                 <?= Html::hiddenInput('discount', null, ['class' => "discount"]) ?>
                                 <?= Html::hiddenInput('discount_price', null, ['class' => "discount_price"]) ?>
                             </div>
@@ -53,7 +53,7 @@ use yii\helpers\Url;
                         <div class="col-md-12">
                             <div class="form-group">
                                 <?= Html::label('Засор %', 'dirt') ?>
-                                <?= Html::input('number', 'dirt', $model->dirt, ['class' => 'form-control dirt']) ?>
+                                <?= Html::input('number', 'dirt', $model->origin->dirt, ['class' => 'form-control dirt']) ?>
                             </div>
                         </div>
                         <div class="col-md-12">
@@ -133,10 +133,13 @@ function calcTotal(){
 
 $('.move').on('click',()=>{
     let url = $('.move').data('url');
-    let data = form.serialize();
-    data = decodeURI(data);
+    let data = form.serializeArray();
+    console.log(data);
+    // data = decodeURI(data);
+    // console.log(data);
    
     $.post(url,{data:data},(resp)=>{
+
         if (resp.status){
             if (!clients){
                  window.location = "/";

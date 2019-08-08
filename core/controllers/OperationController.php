@@ -123,9 +123,50 @@ class OperationController extends Controller
         }
 
 
-        return $this->render('_check', ['model' => $model]);
+        return $this->render('sell', ['model' => $model]);
     }
 
+    public function actionSellItem()
+    {
+        if (Yii::$app->request->isPost) {
+            $post = Yii::$app->request->post();
+            $data = ArrayHelper::getValue($post, 'data');
+            $product = [
+                'weight'         => null,
+                'sale_price'     => null,
+                'discount'       => null,
+                'discount_price' => null,
+                'dirt'           => null,
+                'total'          => null,
+                'title'          => null,
+                'id'             => null,
+            ];
+            if ($data && is_array($data)) {
+                foreach ($data as $datum) {
+                    if (array_key_exists($datum['name'], $product)) {
+                        $product[$datum['name']] = $datum['value'];
+                    }
+                }
+            }
+            $weight = ArrayHelper::getValue($product, 'weight');
+            $total = ArrayHelper::getValue($product, 'total');
+            $product['weight'] = -$weight;
+            $product['total'] = -$total;
+            $model = new Operation();
+            $model->type = Operation::TYPE_BUY;
+            $model->products = [$product];
+            $model->sum = -$total;
+
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            if ($model->save()) {
+                $response = ['status' => true, 'message' => "OK"];
+            } else {
+                $response = ['status' => false, 'message' => $model->errors];
+            }
+
+            return $response;
+        }
+    }
 
     public function actionRestCash()
     {
@@ -152,9 +193,8 @@ class OperationController extends Controller
         return $this->renderAjax('_item_form', ['model' => $model, 'type' => $type, "client" => $client]);
     }
 
-    public function actionGetMoveModal($client = 0)
+    public function actionGetMoveModal($id, $client = 0)
     {
-        $id = 1;
         $model = Product::findOne($id);
         return $this->renderAjax('_move_to_business_form', ['model' => $model, "client" => $client]);
     }
@@ -216,35 +256,40 @@ class OperationController extends Controller
         ]);
     }
 
-    public function actionSellItem($id)
+    public function actionSellItemForm($id)
     {
         $model = Product::findOne($id);
 
         return $this->renderAjax('_sell_form', ['model' => $model]);
     }
 
-    public function actionMoveBusiness()
+    public function actionMove()
     {
         $post = Yii::$app->request->post();
-        $data = $post['data'];
-        $data = explode("&", $data);
+        $data = ArrayHelper::getValue($post, 'data');
         $metal = [];
+        if ($data && is_array($data)) {
+            foreach ($data as $datum) {
+                $metal[$datum['name']] = $datum['value'];
+            }
+        }
+        $id = ArrayHelper::getValue($metal, 'id');
+        $mModel = Product::findOne($id);
         $bMetal = [
-//            'sale_price' => 0,
             'dirt'  => 0,
             'total' => 0,
-            'title' => 'Деловой металл',
-            'id'    => 25,
+            'title' => $mModel->title,
+            'id'    => $mModel->id,
         ];
-        foreach ($data as $item) {
-            list($key, $value) = explode("=", $item);
-            $metal[$key] = $value;
-        }
+
         $bMetal = array_merge($metal, $bMetal);
         $weight = ArrayHelper::getValue($metal, 'weight');
         $total = ArrayHelper::getValue($metal, 'total');
         $metal['weight'] = -$weight;
         $metal['total'] = -$total;
+        $metal['title'] = $mModel->origin->title;
+        $metal['id'] = $mModel->origin->id;
+
         $model = new Operation();
         $model->type = Operation::TYPE_BUY;
         $model->products = [$metal, $bMetal];

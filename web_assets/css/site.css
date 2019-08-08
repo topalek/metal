@@ -136,9 +136,14 @@ a.desc:after {
     justify-content: center;
 }
 
+.flex-stretch {
+    justify-content: stretch;
+}
+
 .flex-item {
     margin: 10px 5px;
     display: block;
+    flex: 1 1;
 }
 
 .flex-column {
