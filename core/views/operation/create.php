@@ -37,7 +37,7 @@ $this->title = "Метал : " . $model->getTypeName();
                     'class' => 'btn btn-primary flex-item operation-item',
                 ]) ?>
                 <?= Html::a(
-                    "Отложить в продажу", ['operation/get-move-modal', "id" => 28, 'client' => $client], [
+                    "Отложить в продажу", ['operation/get-move-modal', "id" => 35, 'client' => $client], [
                     'class' => 'btn btn-success flex-item operation-item',
                 ]) ?>
             </div>
