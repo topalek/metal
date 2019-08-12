@@ -46,8 +46,9 @@ $data = ($type == Operation::TYPE_BUY) ? [
         . Html::button('Провести', [
             'class' => 'btn btn-danger process',
             'data'  => [
-                'url'  => Url::to(['operation/buy']),
-                'type' => $type
+                'url'    => Url::to(['operation/buy']),
+                'type'   => $type,
+                'client' => $client
             ],
         ])
         . '
@@ -134,7 +135,8 @@ $('.process').on('click',(e)=>{
         weight = $('.weight').val(),
         btn = $(e.target),
         products = getFromStorage(),
-        url = btn.data('url');
+        url = btn.data('url'),
+        clientId = btn.data('client');
         btn.prop('disabled', true);
     
     if(!weight && isEmpty(products)){
@@ -156,7 +158,8 @@ $('.process').on('click',(e)=>{
                 if (resp.status){
                     localStorage.removeItem(storageName);
                     $(modal).modal('hide');
-                    if (!clients){
+                    $('#id-'+clientId).remove();
+                    if (!checkClients()){
                          window.location = "/";
                     } 
                 } else {
@@ -245,13 +248,13 @@ $('#calculate').on('click',()=>{
 });
 
 $('.add-client').on('click',(e)=>{
-    let clientNumber = $(e.target).data('client');
+    let currentClient = $(e.target).data('client');
     setToStorage();
     let products = getFromStorage();
-    $('#clients').append(getClientBnt(clientNumber,products));
+    setActiveBtn(currentClient,products);
     clients = true;
-    setClientUrl(++clientNumber);
     localStorage.setItem(storageName, JSON.stringify({}));
+    resetBtns();
 });
 
 function setToStorage(){
