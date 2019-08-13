@@ -27,7 +27,7 @@ $data = ($type == Operation::TYPE_BUY) ? [
     'footer'  => '<div class="col-md-12">
                             <div class="form-group">'
         . Html::button('Свернуть', [
-            'class' => 'btn btn-info add-client',
+            'class' => 'btn btn-info fold',
             'data'  => [
                 'dismiss' => "modal",
                 'client'  => $client,
@@ -159,6 +159,7 @@ $('.process').on('click',(e)=>{
                     localStorage.removeItem(storageName);
                     $(modal).modal('hide');
                     $('#id-'+clientId).remove();
+                    delete(clients[clients.indexOf(clientId)]);
                     if (!checkClients()){
                          window.location = "/";
                     } 
@@ -247,12 +248,18 @@ $('#calculate').on('click',()=>{
     $('#total').html("Всего: "+total+" грн." );
 });
 
-$('.add-client').on('click',(e)=>{
+$('.fold').on('click',(e)=>{
     let currentClient = $(e.target).data('client');
     setToStorage();
     let products = getFromStorage();
-    setActiveBtn(currentClient,products);
-    clients = true;
+    if (clients.includes(currentClient)){
+        setActiveBtn(currentClient,products);
+        setClientUrl(0)
+    } else{
+        clients.push(++currentClient);
+        setClientUrl(currentClient);
+    }
+    
     localStorage.setItem(storageName, JSON.stringify({}));
     resetBtns();
 });

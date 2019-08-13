@@ -22,7 +22,16 @@ $this->title = "Метал : " . $model->getTypeName();
 <div id="buy">
     <div class="row">
         <div class="col-md-8">
-            <div id="clients" class="btn-group container" role="group"></div>
+            <div class="row">
+                <div class="col-sm-11">
+                    <div id="clients" class="btn-group container" role="group"></div>
+                </div>
+                <div class="col-sm-1">
+                    <button class="fnew-client btn btn-default">Новый клиент</button>
+                </div>
+            </div>
+
+
             <?= ListView::widget([
                 'dataProvider' => $dataProvider,
                 'itemView'     => '_item_view',

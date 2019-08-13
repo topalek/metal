@@ -25,6 +25,7 @@ if ($model->image){
     'type'   => $operation->type,
     'client' => $client,
 ], [
-	'class' => $attr['class'] . ' operation-item',
+	'class'       => $attr['class'] . ' operation-item',
+	'data-client' => $client,
 ]) ?>
 

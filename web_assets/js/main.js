@@ -1,15 +1,20 @@
 let isCalculated = false,
-    clients = false,
+    clients = [1],
     maxClient = 1,
     clientNumber = 1;
 const storageName = 'buy';
 
 $('.operation-item,.sell-item').click(function (e) {
     e.preventDefault();
-    let cartLink = $(this).attr('href');
-    $.get(cartLink, function (result) {
-        $('body').append('<div class="modals">' + result + '</div>');
-    });
+    let cartLink = $(this).attr('href'),
+        clientId = $(this).data('client');
+    console.log(clientId);
+    if (clientId) {
+        $.get(cartLink, function (result) {
+            $('body').append('<div class="modals">' + result + '</div>');
+        });
+    }
+
 });
 
 
@@ -83,16 +88,15 @@ function resetBtns() {
 
 function setActiveBtn(id, products) {
     let btn = $("#id-" + id);
-    maxClient++;
-    clients = true;
-    setClientUrl(maxClient);
     resetBtns();
     if (btn.length === 0) {
         $('#clients').append(getClientBnt(id, products));
+        setClientUrl(0);
     } else {
         btn.removeClass('btn-danger');
         btn.addClass('btn-info');
         btn.data('json', products);
+        setClientUrl(id);
     }
 }
 function getFromStorage() {
@@ -109,6 +113,7 @@ function setClientUrl(clientId) {
     let items = $('.operation-item');
     items.each((i, el) => {
         $(el).attr('href', $(el).attr('href').replace(/client=\d/, "client=" + clientId));
+        $(el).data('client', clientId);
     })
 }
 
