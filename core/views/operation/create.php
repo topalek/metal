@@ -23,10 +23,10 @@ $this->title = "Метал : " . $model->getTypeName();
     <div class="row">
         <div class="col-md-8">
             <div class="row">
-                <div class="col-sm-11">
+                <div class="col-sm-11 col-xs-11">
                     <div id="clients" class="btn-group container" role="group"></div>
                 </div>
-                <div class="col-sm-1">
+                <div class="col-sm-1 col-xs-1">
                     <button class="new-client btn btn-default">+</button>
                 </div>
             </div>
