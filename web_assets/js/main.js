@@ -75,9 +75,14 @@ $(document).ready(function () {
             clientId = btn.data('client');
         localStorage.setItem(storageName, JSON.stringify(products));
         setActiveBtn(clientId, products);
-
-        // $('.operation-item').eq(0).trigger('click');
     });
+    $('.new-client').on('click', e => {
+        let btn = $(e.target);
+        maxClient++;
+        clients.push(maxClient);
+        addBtn(maxClient, {});
+        setActiveBtn(maxClient, {});
+    })
 });
 
 function resetBtns() {
@@ -86,19 +91,18 @@ function resetBtns() {
     clientBtns.addClass('btn-danger');
 }
 
+function addBtn(id, products) {
+    $('#clients').append(getClientBnt(id, products));
+}
 function setActiveBtn(id, products) {
     let btn = $("#id-" + id);
     resetBtns();
-    if (btn.length === 0) {
-        $('#clients').append(getClientBnt(id, products));
-        setClientUrl(0);
-    } else {
-        btn.removeClass('btn-danger');
-        btn.addClass('btn-info');
-        btn.data('json', products);
-        setClientUrl(id);
-    }
+    btn.removeClass('btn-danger');
+    btn.addClass('btn-info');
+    btn.data('json', products);
+    setClientUrl(id);
 }
+
 function getFromStorage() {
     return (localStorage.getItem(storageName)) ? JSON.parse(localStorage.getItem(storageName)) : {};
 }
@@ -118,7 +122,5 @@ function setClientUrl(clientId) {
 }
 
 function checkClients() {
-    let clientBtns = $('.client');
-    clients = clientBtns.length !== 0;
-    return clients;
+    return $('.client').length !== 0;
 }

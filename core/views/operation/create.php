@@ -27,7 +27,7 @@ $this->title = "Метал : " . $model->getTypeName();
                     <div id="clients" class="btn-group container" role="group"></div>
                 </div>
                 <div class="col-sm-1">
-                    <button class="fnew-client btn btn-default">Новый клиент</button>
+                    <button class="new-client btn btn-default">+</button>
                 </div>
             </div>
 

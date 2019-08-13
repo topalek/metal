@@ -160,9 +160,12 @@ $('.process').on('click',(e)=>{
                     $(modal).modal('hide');
                     $('#id-'+clientId).remove();
                     delete(clients[clients.indexOf(clientId)]);
+                    setClientUrl(0);
                     if (!checkClients()){
                          window.location = "/";
-                    } 
+                    } else {
+                        
+                    }
                 } else {
                     alert(resp.message);
                 }
@@ -253,13 +256,14 @@ $('.fold').on('click',(e)=>{
     setToStorage();
     let products = getFromStorage();
     if (clients.includes(currentClient)){
+        if (!checkClients()){
+            addBtn(currentClient,products);
+        }
         setActiveBtn(currentClient,products);
-        setClientUrl(0)
     } else{
-        clients.push(++currentClient);
-        setClientUrl(currentClient);
+        addBtn(currentClient,products);
     }
-    
+    setClientUrl(0);
     localStorage.setItem(storageName, JSON.stringify({}));
     resetBtns();
 });
