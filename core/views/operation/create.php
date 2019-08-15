@@ -43,11 +43,13 @@ $this->title = "Метал : " . $model->getTypeName();
             <div class="flex flex-stretch">
                 <?= Html::a(
                     "Отложить в деловой", ['operation/get-move-modal', "id" => 25, 'client' => $client], [
-                    'class' => 'btn btn-primary flex-item operation-item',
+                    'class'       => 'btn btn-primary flex-item operation-item',
+                    'data-client' => $client
                 ]) ?>
                 <?= Html::a(
                     "Отложить в продажу", ['operation/get-move-modal', "id" => 35, 'client' => $client], [
-                    'class' => 'btn btn-success flex-item operation-item',
+                    'class'       => 'btn btn-success flex-item operation-item',
+                    'data-client' => $client
                 ]) ?>
             </div>
 
