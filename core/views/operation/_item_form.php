@@ -263,6 +263,7 @@ $('.fold').on('click',(e)=>{
     } else{
         addBtn(currentClient,products);
     }
+    hideDelBtn();
     setClientUrl(0);
     localStorage.setItem(storageName, JSON.stringify({}));
     resetBtns();

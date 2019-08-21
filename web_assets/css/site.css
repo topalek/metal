@@ -392,6 +392,14 @@ form#fill-cash-form, form#rest-cash-form {
     transform: translateX(-50%);
     margin: 0 auto;
 }
+
+.del-client.active {
+    visibility: visible;
+}
+
+.del-client {
+    visibility: hidden;
+}
 @media (max-width: 1440px) {
     .operation-btn {
         padding: 30px 100px 30px 30px;

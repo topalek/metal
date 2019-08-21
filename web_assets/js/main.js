@@ -75,6 +75,7 @@ $(document).ready(function () {
             clientId = btn.data('client');
         localStorage.setItem(storageName, JSON.stringify(products));
         setActiveBtn(clientId, products);
+        showDelBtn();
     });
     $('.new-client').on('click', e => {
         let btn = $(e.target);
@@ -82,6 +83,13 @@ $(document).ready(function () {
         clients.push(maxClient);
         addBtn(maxClient, {});
         setActiveBtn(maxClient, {});
+        showDelBtn();
+    });
+    $('.del-client').on('click', e => {
+        $('.client.btn-info').remove();
+        localStorage.setItem(storageName, JSON.stringify({}));
+        hideDelBtn();
+        setClientUrl(0);
     })
 });
 
@@ -103,6 +111,13 @@ function setActiveBtn(id, products) {
     setClientUrl(id);
 }
 
+function showDelBtn() {
+    $('.del-client').addClass('active');
+}
+
+function hideDelBtn() {
+    $('.del-client').removeClass('active');
+}
 function getFromStorage() {
     return (localStorage.getItem(storageName)) ? JSON.parse(localStorage.getItem(storageName)) : {};
 }
