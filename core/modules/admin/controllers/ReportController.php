@@ -144,6 +144,7 @@ class ReportController extends Controller {
     ];
     public $headers;
     public $productStartCol = "E";
+    public $operationRow = 1;
 
     public function actionIndex(){
 
@@ -204,14 +205,8 @@ class ReportController extends Controller {
         $colCount        = $this->getColumnCount($headers);
         $lastColumn      = $this->getLetterIdx($colCount);
         $sheet           = $this->buildHeaders($sheet, $headers);
-        $sheet->setCellValue("A1", "Дата")->mergeCells("A1:A2")
-            ->getStyle("A1:A2")->applyFromArray(array_merge($this->centerBold, $this->borders));
-        $sheet->setCellValue("B1", "Касса")->mergeCells("B1:B2")
-            ->getStyle("B1:B2")->applyFromArray(array_merge($this->centerBold, $this->borders));
-        $sheet->setCellValue("C1", "Остаток")->mergeCells("C1:C2")
-              ->getStyle("C1:C2")->applyFromArray(array_merge($this->centerBold, $this->borders));
-        $sheet->setCellValue("D1", "Коментарий")->mergeCells("D1:D2")
-              ->getStyle("D1:D2")->applyFromArray(array_merge($this->centerBold, $this->borders));
+        $sheet = $this->setColumnTitles($sheet, 1);
+
         $row = 3;
 
         foreach ($operations as $operation){
@@ -461,6 +456,20 @@ class ReportController extends Controller {
             }
         }
 
+        return $sheet;
+    }
+
+    private function setColumnTitles(Worksheet $sheet, $row)
+    {
+        $nextRow = $row + 1;
+        $sheet->setCellValue("A$row", "Дата")->mergeCells("A$row:A$nextRow")
+            ->getStyle("A$row:A$nextRow")->applyFromArray(array_merge($this->centerBold, $this->borders));
+        $sheet->setCellValue("B$row", "Касса")->mergeCells("B$row:B$nextRow")
+            ->getStyle("B$row:B$nextRow")->applyFromArray(array_merge($this->centerBold, $this->borders));
+        $sheet->setCellValue("C1", "Остаток")->mergeCells("C$row:C$nextRow")
+            ->getStyle("C$row:C$nextRow")->applyFromArray(array_merge($this->centerBold, $this->borders));
+        $sheet->setCellValue("D$row", "Коментарий")->mergeCells("D$row:D$nextRow")
+            ->getStyle("D$row:D$nextRow")->applyFromArray(array_merge($this->centerBold, $this->borders));
         return $sheet;
     }
 }

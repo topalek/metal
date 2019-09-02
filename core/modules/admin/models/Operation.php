@@ -121,7 +121,14 @@ class Operation extends ActiveRecord
             }
 
         }
+        $out = [];
 
+        foreach ($operations as $operation) {
+            $date = date('d-m-Y', strtotime($operation['created_at']));
+            $out[$date][] = $operation;
+        }
+        $operations = $out;
+        unset($out);
         return $operations;
     }
 
@@ -210,21 +217,24 @@ class Operation extends ActiveRecord
         $this->save();
     }
 
-    public static function getHeadings(array $operations){
+    public static function getHeadings(array $operationList)
+    {
         $list    = Product::getList();
         $headers = [];
-        foreach ($operations as $k => $operation){
-            $products = ArrayHelper::getValue($operation, 'products');
-            foreach ($products as $id => $product){
-                $headers[$id]['title'] = $list[$id];
-                foreach ($product as $item){
-                    $price = ArrayHelper::getValue($item, 'price');
-                    if (isset($headers[$id]['prices'])){
-                        if (!in_array($price, $headers[$id]['prices']) && $price != "?") {
+        foreach ($operationList as $date => $operations) {
+            foreach ($operations as $k => $operation) {
+                $products = ArrayHelper::getValue($operation, 'products');
+                foreach ($products as $id => $product) {
+                    $headers[$id]['title'] = $list[$id];
+                    foreach ($product as $item) {
+                        $price = ArrayHelper::getValue($item, 'price');
+                        if (isset($headers[$id]['prices'])) {
+                            if (!in_array($price, $headers[$id]['prices']) && $price != "?") {
+                                $headers[$id]['prices'][] = $price;
+                            }
+                        } else {
                             $headers[$id]['prices'][] = $price;
                         }
-                    }else{
-                        $headers[$id]['prices'][] = $price;
                     }
                 }
             }
