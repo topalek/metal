@@ -1,6 +1,6 @@
 <?php
 
-namespace app\modules\admin\controllers;
+namespace app\commands;
 
 use app\modules\admin\models\Operation;
 use InvalidArgumentException;
@@ -11,8 +11,8 @@ use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xls;
 use Yii;
+use yii\console\Controller;
 use yii\helpers\ArrayHelper;
-use yii\web\Controller;
 
 class ReportController extends Controller {
 
@@ -151,14 +151,6 @@ class ReportController extends Controller {
         return $this->render('index');
     }
 
-    public function getHeaders($operations){
-        if ( ! $this->headers){
-            $this->headers = Operation::getHeadings($operations);
-        }
-
-        return $this->headers;
-    }
-
     public function actionDay(){
         $date           = date('Y-m-d 00:00:00');
         $fromDate       = date('Y-m-d 00:00:00', strtotime($date));
@@ -171,34 +163,7 @@ class ReportController extends Controller {
 
     }
 
-    public function actionPeriod(){
-        $post     = Yii::$app->request->post();
-        $fromDate = ArrayHelper::getValue($post, 'from_date');
-        $toDate   = ArrayHelper::getValue($post, 'to_date');
-        if ( ! $fromDate or ! $toDate){
-            throw new InvalidArgumentException('Неверно заполнена дата');
-        }
-        $fromDate       = date('Y-m-d 00:00:00', strtotime($fromDate));
-        $toDate         = date('Y-m-d 00:00:00', strtotime($toDate . "+1 day"));
-        $operations     = Operation::getArrayForReport(Operation::getOperationByPeriod($fromDate, $toDate));
-        $file           = $this->generateReportFile($operations);
-        $reportFileName = "Отчет " . date('d.m.Y', strtotime($fromDate)) . "-" . date('d.m.Y', strtotime($toDate . "-1 day")) . ".xls";
-
-        return Yii::$app->response->sendFile($file, $reportFileName);
-
-    }
-
-    public function getLetterIdx(int $idx){
-        $lIdx = "A";
-        for ($i = 1; $i < $idx; $i ++){
-            $lIdx ++;
-        }
-
-        return $lIdx;
-    }
-
-    public function generateReportFile(array $operationList)
-    {
+    public function generateReportFile(array $operationList){
         $fileName    = Yii::$app->runtimePath . "/report.xls";
         $spreadsheet = new Spreadsheet();
         $sheet       = $spreadsheet->getActiveSheet();
@@ -345,10 +310,10 @@ class ReportController extends Controller {
                     $row ++;
                     $k ++;
                 }
-             }
+            }
 
             $sheet = $this->setFormulas($sheet, $headers, $dayRow, $row);
-            $row = $dayRow = $row + 2;
+            $row   = $dayRow = $row + 2;
             $sheet->getColumnDimension('A')->setAutoSize(true);
             $sheet->getColumnDimension('B')->setAutoSize(true);
             $sheet->getColumnDimension('C')->setAutoSize(true);
@@ -362,9 +327,40 @@ class ReportController extends Controller {
         return $fileName;
     }
 
+    public function getHeaders($operations){
+        if ( ! $this->headers){
+            $this->headers = Operation::getHeadings($operations);
+        }
+
+        return $this->headers;
+    }
+
+    private function getColumnCount(array $headers){
+        $colCount = 3;
+        foreach ($headers as $header){
+            $count = count(ArrayHelper::getValue($header, "prices"));
+            if ($count == 0){
+                $count = 1;
+            }
+            $count    += 2;
+            $colCount += $count;
+        }
+
+        return $colCount;
+    }
+
+    public function getLetterIdx(int $idx){
+        $lIdx = "A";
+        for ($i = 1; $i < $idx; $i ++){
+            $lIdx ++;
+        }
+
+        return $lIdx;
+    }
+
     public function buildHeaders(Worksheet $sheet, array $headers, $row){
         $sheet = $this->setColumnTitles($sheet, $row);
-        $col = $this->productStartCol;
+        $col   = $this->productStartCol;
         // Заполняем название товаров
         foreach ($headers as $header){
             $startCol = $col;
@@ -372,8 +368,8 @@ class ReportController extends Controller {
             if ($count == 0){
                 $count = 1;
             }
-            $count    += 2;
-            $title    = ArrayHelper::getValue($header, "title");
+            $count += 2;
+            $title = ArrayHelper::getValue($header, "title");
             $sheet->getCell($col . $row)->setValue($title);
             while ($count > 1){
                 $col ++;
@@ -384,7 +380,7 @@ class ReportController extends Controller {
             $col ++;
         }
         $col = $this->productStartCol;
-        $row++;
+        $row ++;
 
         // Заполняем название столбцов
         foreach ($headers as $header){
@@ -409,18 +405,18 @@ class ReportController extends Controller {
         return $sheet;
     }
 
-    private function getColumnCount(array $headers){
-        $colCount = 3;
-        foreach ($headers as $header){
-            $count = count(ArrayHelper::getValue($header, "prices"));
-            if ($count == 0){
-                $count = 1;
-            }
-            $count    += 2;
-            $colCount += $count;
-        }
+    private function setColumnTitles(Worksheet $sheet, $row){
+        $nextRow = $row + 1;
+        $sheet->setCellValue("A$row", "Дата")->mergeCells("A$row:A$nextRow")
+              ->getStyle("A$row:A$nextRow")->applyFromArray(array_merge($this->centerBold, $this->borders));
+        $sheet->setCellValue("B$row", "Касса")->mergeCells("B$row:B$nextRow")
+              ->getStyle("B$row:B$nextRow")->applyFromArray(array_merge($this->centerBold, $this->borders));
+        $sheet->setCellValue("C$row", "Остаток")->mergeCells("C$row:C$nextRow")
+              ->getStyle("C$row:C$nextRow")->applyFromArray(array_merge($this->centerBold, $this->borders));
+        $sheet->setCellValue("D$row", "Коментарий")->mergeCells("D$row:D$nextRow")
+              ->getStyle("D$row:D$nextRow")->applyFromArray(array_merge($this->centerBold, $this->borders));
 
-        return $colCount;
+        return $sheet;
     }
 
     private function setFormulas(Worksheet $sheet, array $headers, $startRow, $endRow){
@@ -464,17 +460,20 @@ class ReportController extends Controller {
         return $sheet;
     }
 
-    private function setColumnTitles(Worksheet $sheet, $row)
-    {
-        $nextRow = $row + 1;
-        $sheet->setCellValue("A$row", "Дата")->mergeCells("A$row:A$nextRow")
-            ->getStyle("A$row:A$nextRow")->applyFromArray(array_merge($this->centerBold, $this->borders));
-        $sheet->setCellValue("B$row", "Касса")->mergeCells("B$row:B$nextRow")
-            ->getStyle("B$row:B$nextRow")->applyFromArray(array_merge($this->centerBold, $this->borders));
-        $sheet->setCellValue("C$row", "Остаток")->mergeCells("C$row:C$nextRow")
-            ->getStyle("C$row:C$nextRow")->applyFromArray(array_merge($this->centerBold, $this->borders));
-        $sheet->setCellValue("D$row", "Коментарий")->mergeCells("D$row:D$nextRow")
-            ->getStyle("D$row:D$nextRow")->applyFromArray(array_merge($this->centerBold, $this->borders));
-        return $sheet;
+    public function actionPeriod(){
+        $post     = Yii::$app->request->post();
+        $fromDate = ArrayHelper::getValue($post, 'from_date');
+        $toDate   = ArrayHelper::getValue($post, 'to_date');
+        if ( ! $fromDate or ! $toDate){
+            throw new InvalidArgumentException('Неверно заполнена дата');
+        }
+        $fromDate       = date('Y-m-d 00:00:00', strtotime($fromDate));
+        $toDate         = date('Y-m-d 00:00:00', strtotime($toDate . "+1 day"));
+        $operations     = Operation::getArrayForReport(Operation::getOperationByPeriod($fromDate, $toDate));
+        $file           = $this->generateReportFile($operations);
+        $reportFileName = "Отчет " . date('d.m.Y', strtotime($fromDate)) . "-" . date('d.m.Y', strtotime($toDate . "-1 day")) . ".xls";
+
+        return Yii::$app->response->sendFile($file, $reportFileName);
+
     }
 }
