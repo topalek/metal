@@ -212,8 +212,8 @@ class ReportController extends Controller {
 
             $sheet->setCellValue($col . $row ++, $date);
             $sheet = $this->buildHeaders($sheet, $headers, $row ++);
-            $sheet = $this->setColumnTitles($sheet, $row++);
-            /* foreach ($operations as $operation) {
+
+            foreach ($operations as $operation) {
                  $type = ArrayHelper::getValue($operation, "type");
                  $date = ArrayHelper::getValue($operation, "created_at");
                  $sum = ArrayHelper::getValue($operation, "sum");
@@ -347,7 +347,7 @@ class ReportController extends Controller {
                  }
              }
 
-             $sheet = $this->setFormulas($sheet, $headers, $dayRow,$row);*/
+            $sheet = $this->setFormulas($sheet, $headers, $dayRow, $row);
             $row = $dayRow = $row + 2;
             $sheet->getColumnDimension('A')->setAutoSize(true);
             $sheet->getColumnDimension('B')->setAutoSize(true);
@@ -355,7 +355,7 @@ class ReportController extends Controller {
             $sheet->getColumnDimension('D')->setAutoSize(true);
         }
 
-        $sheet->freezePane('A3');
+        $sheet->freezePane('A4');
         $xls = new Xls($spreadsheet);
         $xls->save($fileName);
 
@@ -363,7 +363,7 @@ class ReportController extends Controller {
     }
 
     public function buildHeaders(Worksheet $sheet, array $headers, $row){
-
+        $sheet = $this->setColumnTitles($sheet, $row);
         $col = $this->productStartCol;
         // Заполняем название товаров
         foreach ($headers as $header){
@@ -384,7 +384,7 @@ class ReportController extends Controller {
             $col ++;
         }
         $col = $this->productStartCol;
-        $row = 2;
+        $row++;
 
         // Заполняем название столбцов
         foreach ($headers as $header){
@@ -471,7 +471,7 @@ class ReportController extends Controller {
             ->getStyle("A$row:A$nextRow")->applyFromArray(array_merge($this->centerBold, $this->borders));
         $sheet->setCellValue("B$row", "Касса")->mergeCells("B$row:B$nextRow")
             ->getStyle("B$row:B$nextRow")->applyFromArray(array_merge($this->centerBold, $this->borders));
-        $sheet->setCellValue("C1", "Остаток")->mergeCells("C$row:C$nextRow")
+        $sheet->setCellValue("C$row", "Остаток")->mergeCells("C$row:C$nextRow")
             ->getStyle("C$row:C$nextRow")->applyFromArray(array_merge($this->centerBold, $this->borders));
         $sheet->setCellValue("D$row", "Коментарий")->mergeCells("D$row:D$nextRow")
             ->getStyle("D$row:D$nextRow")->applyFromArray(array_merge($this->centerBold, $this->borders));
