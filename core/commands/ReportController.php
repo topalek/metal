@@ -3,7 +3,6 @@
 namespace app\commands;
 
 use app\modules\admin\models\Operation;
-use InvalidArgumentException;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
@@ -13,6 +12,7 @@ use PhpOffice\PhpSpreadsheet\Writer\Xls;
 use Yii;
 use yii\console\Controller;
 use yii\helpers\ArrayHelper;
+use yii\helpers\Html;
 
 class ReportController extends Controller {
 
@@ -148,17 +148,25 @@ class ReportController extends Controller {
 
     public function actionIndex(){
 
-        return $this->render('index');
+        for ($i = 0; $i <= 10; $i++) {
+            sleep(1);
+            print_r($i . "\n");
+        }
+        return $this->runAction('/report/index');
     }
 
-    public function actionDay(){
-        $date           = date('Y-m-d 00:00:00');
-        $fromDate       = date('Y-m-d 00:00:00', strtotime($date));
-        $toDate         = date('Y-m-d 00:00:00', strtotime($date . "+1 day"));
+    public function actionGet($start, $end, $day = true)
+    {
+        $fromDate = date('Y-m-d 00:00:00', strtotime($start));
+        $toDate = date('Y-m-d 00:00:00', strtotime($end));
         $operations     = Operation::getArrayForReport(Operation::getOperationByPeriod($fromDate, $toDate));
         $file           = $this->generateReportFile($operations);
-        $reportFileName = "Отчет " . date("d.m.Y") . ".xls";
-
+        if ($day) {
+            $reportFileName = "Отчет " . date("d.m.Y") . ".xls";
+        } else {
+            $reportFileName = "Отчет " . date('d.m.Y', strtotime($fromDate)) . "-" . date('d.m.Y', strtotime($toDate . "-1 day")) . ".xls";
+        }
+        Yii::$app->session->setFlash('success', Html::a($reportFileName, $file));
         return Yii::$app->response->sendFile($file, $reportFileName);
 
     }
@@ -458,22 +466,5 @@ class ReportController extends Controller {
         }
 
         return $sheet;
-    }
-
-    public function actionPeriod(){
-        $post     = Yii::$app->request->post();
-        $fromDate = ArrayHelper::getValue($post, 'from_date');
-        $toDate   = ArrayHelper::getValue($post, 'to_date');
-        if ( ! $fromDate or ! $toDate){
-            throw new InvalidArgumentException('Неверно заполнена дата');
-        }
-        $fromDate       = date('Y-m-d 00:00:00', strtotime($fromDate));
-        $toDate         = date('Y-m-d 00:00:00', strtotime($toDate . "+1 day"));
-        $operations     = Operation::getArrayForReport(Operation::getOperationByPeriod($fromDate, $toDate));
-        $file           = $this->generateReportFile($operations);
-        $reportFileName = "Отчет " . date('d.m.Y', strtotime($fromDate)) . "-" . date('d.m.Y', strtotime($toDate . "-1 day")) . ".xls";
-
-        return Yii::$app->response->sendFile($file, $reportFileName);
-
     }
 }
