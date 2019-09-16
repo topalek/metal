@@ -16,31 +16,33 @@ class ReportController extends Controller {
     }
 
     public function actionDay(){
-        $date = date('Y-m-d');
-        $fromDate = date('Y-m-d', strtotime($date));
-        $toDate = date('Y-m-d', strtotime($date . "+1 day"));
+
         $this->runAction('report', ['start' => $fromDate, 'end' => $toDate]);
 
     }
 
-    public function actionPeriod(){
-        $post     = Yii::$app->request->post();
-        $fromDate = ArrayHelper::getValue($post, 'from_date');
-        $toDate   = ArrayHelper::getValue($post, 'to_date');
-        if ( ! $fromDate or ! $toDate){
-            throw new InvalidArgumentException('Неверно заполнена дата');
-        }
-        $fromDate = date('Y-m-d', strtotime($fromDate));
-        $toDate = date('Y-m-d', strtotime($toDate . "+1 day"));
-        $this->runAction('report', ['start' => $fromDate, 'end' => $toDate, 'day' => 0]);
-
-    }
-
-    public function actionReport($start, $end, $day = true)
+    public function actionPeriod($day = null)
     {
+        $fileName = Yii::$app->runtimePath . "/report.xls";
+        if ($day) {
+            $date = date('Y-m-d');
+            $fromDate = date('Y-m-d', strtotime($date));
+            $toDate = date('Y-m-d', strtotime($date . "+1 day"));
+            $reportFileName = "Отчет " . date("d.m.Y") . ".xls";
+        } else {
+            $post = Yii::$app->request->post();
+            $fromDate = ArrayHelper::getValue($post, 'from_date');
+            $toDate = ArrayHelper::getValue($post, 'to_date');
+            if (!$fromDate or !$toDate) {
+                throw new InvalidArgumentException('Неверно заполнена дата');
+            }
+            $fromDate = date('Y-m-d', strtotime($fromDate));
+            $toDate = date('Y-m-d', strtotime($toDate . "+1 day"));
+            $reportFileName = "Отчет " . date('d.m.Y', strtotime($fromDate)) . "-" . date('d.m.Y', strtotime($toDate . "-1 day")) . ".xls";
+        }
         try {
             $basePath = Yii::$app->basePath . '/';
-            $cmd = "php " . $basePath . "yii report/get $start $end $day";
+            $cmd = "php " . $basePath . "yii report/get $fromDate $toDate $day";
 
             $locale = 'en_US.UTF-8';
             setlocale(LC_ALL, $locale);
@@ -50,7 +52,15 @@ class ReportController extends Controller {
             print_r($exception);
             Yii::$app->end();
         }
-        $fileName    = Yii::$app->runtimePath . "/report.xls";
+
+        $this->runAction('report', ['start' => $fromDate, 'end' => $toDate, 'day' => 0]);
+
+    }
+
+    public function actionReport($start, $end, $day = true)
+    {
+
+
         if ($day) {
             $reportFileName = "Отчет " . date("d.m.Y") . ".xls";
         } else {

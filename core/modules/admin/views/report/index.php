@@ -15,7 +15,7 @@ $this->params['breadcrumbs'][] = $this->title;
             <div class="row">
                 <div class="col-md-3">
                     <p>
-                        <?= Html::a('Отчет за день', ['day'], ['class' => 'btn btn-success']) ?>
+                        <?= Html::a('Отчет за день', ['report/period', 'day' => 1], ['class' => 'btn btn-success']) ?>
                     </p>
                 </div>
             </div>
