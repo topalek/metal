@@ -158,7 +158,6 @@ class ReportController extends Controller {
     {
         $fromDate = date('Y-m-d 00:00:00', strtotime($start));
         $toDate = date('Y-m-d 00:00:00', strtotime($end));
-        file_put_contents(Yii::$app->runtimePath . "/date.log", print_r([$fromDate, $toDate, $day], 1), FILE_APPEND);
         $operations     = Operation::getArrayForReport(Operation::getOperationByPeriod($fromDate, $toDate));
         $file           = $this->generateReportFile($operations);
         return $file;

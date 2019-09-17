@@ -10,7 +10,6 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="col-md-12">
     <div class="report-index box">
-        <? //= $basePath = Yii::$app->basePath . '/';?>
         <div class="box-body">
             <div class="row">
                 <div class="col-md-3">
@@ -90,10 +89,7 @@ $('.report').on('click',e=>{
     url = btn.attr('href'),
     data = $('form').serialize();
     $('.loader').fadeIn();
-    $.post(url,data//,resp=>{
-            //console.log(resp);
-   // }
-    )
+    $.post(url,data,resp=>{console.log(resp);})
 });
 JS
 ) ?>
