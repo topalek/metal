@@ -12,7 +12,6 @@ use PhpOffice\PhpSpreadsheet\Writer\Xls;
 use Yii;
 use yii\console\Controller;
 use yii\helpers\ArrayHelper;
-use yii\helpers\Html;
 
 class ReportController extends Controller {
 
@@ -159,16 +158,10 @@ class ReportController extends Controller {
     {
         $fromDate = date('Y-m-d 00:00:00', strtotime($start));
         $toDate = date('Y-m-d 00:00:00', strtotime($end));
+        file_put_contents(Yii::$app->runtimePath . "/date.log", print_r([$fromDate, $toDate, $day], 1), FILE_APPEND);
         $operations     = Operation::getArrayForReport(Operation::getOperationByPeriod($fromDate, $toDate));
         $file           = $this->generateReportFile($operations);
-        if ($day) {
-            $reportFileName = "Отчет " . date("d.m.Y") . ".xls";
-        } else {
-            $reportFileName = "Отчет " . date('d.m.Y', strtotime($fromDate)) . "-" . date('d.m.Y', strtotime($toDate . "-1 day")) . ".xls";
-        }
-        Yii::$app->session->setFlash('success', Html::a($reportFileName, $file));
-        return Yii::$app->response->sendFile($file, $reportFileName);
-
+        return $file;
     }
 
     public function generateReportFile(array $operationList){

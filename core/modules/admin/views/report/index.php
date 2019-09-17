@@ -10,12 +10,12 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="col-md-12">
     <div class="report-index box">
-
+        <? //= $basePath = Yii::$app->basePath . '/';?>
         <div class="box-body">
             <div class="row">
                 <div class="col-md-3">
                     <p>
-                        <?= Html::a('Отчет за день', ['report/period', 'day' => 1], ['class' => 'btn btn-success']) ?>
+                        <?= Html::a('Отчет за день', ['report/period', 'day' => 1], ['class' => 'btn btn-success report']) ?>
                     </p>
                 </div>
             </div>
@@ -62,7 +62,7 @@ $this->params['breadcrumbs'][] = $this->title;
             </div>
             <div class="row">
                 <div class="col-md-6">
-                    <?= Html::submitButton('Отчет за период', ['class' => 'btn btn-info', 'id' => 'period']) ?>
+                    <?= Html::a('Отчет за период', ['report/period'], ['class' => 'btn btn-info report', 'id' => 'period']) ?>
 
                 </div>
                 <?= Html::endForm() ?>
@@ -73,13 +73,28 @@ $this->params['breadcrumbs'][] = $this->title;
 
     </div>
 </div>
-
+<div class="loader" style="display: none">
+    <div class="pills">
+        <div class="dash uno"></div>
+        <div class="dash dos"></div>
+        <div class="dash tres"></div>
+        <div class="dash cuatro"></div>
+    </div>
+    <div class="shade"></div>
+</div>
 <?php
-$css = "
-/*#period{
-    position:relative;
-    top:25px;
-}*/
-";
-$this->registerCss($css) ?>
+$this->registerJs(<<<JS
+$('.report').on('click',e=>{
+    e.preventDefault();
+    let btn = $(e.target),
+    url = btn.attr('href'),
+    data = $('form').serialize();
+    $('.loader').fadeIn();
+    $.post(url,data//,resp=>{
+            //console.log(resp);
+   // }
+    )
+});
+JS
+) ?>
 
