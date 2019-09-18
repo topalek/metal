@@ -145,15 +145,6 @@ class ReportController extends Controller {
     public $productStartCol = "E";
     public $operationRow = 1;
 
-    public function actionIndex(){
-
-        for ($i = 0; $i <= 10; $i++) {
-            sleep(1);
-            print_r($i . "\n");
-        }
-        return $this->runAction('/report/index');
-    }
-
     public function actionGet($start, $end, $day = true)
     {
         $fromDate = date('Y-m-d 00:00:00', strtotime($start));

@@ -12,6 +12,7 @@ use yii\helpers\ArrayHelper;
 use yii\helpers\Json;
 use yii\web\Controller;
 use yii\web\Response;
+use function is_array;
 
 /**
  * OperationController implements the CRUD actions for Operation model.
@@ -44,9 +45,10 @@ class OperationController extends Controller
 
         $priceList = $this->renderPartial('price_list', ['products' => Product::getCachePrice()]);
         if (Yii::$app->request->isPost) {
-            $post = Yii::$app->request->post();
+            $response = ['status' => false, 'message' => "Возникла ошибка. Повторите операцию ещё раз."];
+            $post     = Yii::$app->request->post();
             $products = ArrayHelper::getValue($post, 'products');
-            if ($products) {
+            if ($products && is_array($products)){
                 $total = 0;
                 foreach ($products as $id => $product) {
                     if (!$product['weight']) {
@@ -59,13 +61,11 @@ class OperationController extends Controller
                 $model->products = $products;
                 if ($model->save()) {
                     Yii::$app->response->format = Response::FORMAT_JSON;
-                    $response = ['status' => true, 'message' => "OK"];
-                } else {
-                    $response = ['status' => false, 'message' => $model->errors];
+                    $response                   = ['status' => true, 'message' => "О"];
                 }
-
-                return $response;
             }
+
+            return $response;
         }
 
         return $this->render('create', [
