@@ -340,7 +340,7 @@ class ReportController extends Controller {
         return $colCount;
     }
 
-    public function getLetterIdx(int $idx){
+    public function getLetterIdx($idx){
         $lIdx = "A";
         for ($i = 1; $i < $idx; $i ++){
             $lIdx ++;
