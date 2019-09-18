@@ -139,3 +139,8 @@ function setClientUrl(clientId) {
 function checkClients() {
     return $('.client').length !== 0;
 }
+
+function round(float, precision = 2) {
+    precision = Math.pow(10, precision);
+    return (Math.round(float * precision)) / precision;
+}

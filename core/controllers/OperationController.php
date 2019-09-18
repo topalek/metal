@@ -12,7 +12,6 @@ use yii\helpers\ArrayHelper;
 use yii\helpers\Json;
 use yii\web\Controller;
 use yii\web\Response;
-use function is_array;
 
 /**
  * OperationController implements the CRUD actions for Operation model.
@@ -282,13 +281,13 @@ class OperationController extends Controller
             'id'    => $mModel->id,
         ];
 
-        $bMetal = array_merge($metal, $bMetal);
-        $weight = ArrayHelper::getValue($metal, 'weight');
-        $total = ArrayHelper::getValue($metal, 'total');
+        $bMetal          = array_merge($metal, $bMetal);
+        $weight          = ArrayHelper::getValue($metal, 'weight');
+        $total           = ArrayHelper::getValue($metal, 'total');
         $metal['weight'] = -$weight;
-        $metal['total'] = -$total;
-        $metal['title'] = $mModel->origin->title;
-        $metal['id'] = $mModel->origin->id;
+        $metal['total']  = - round($total, 2);
+        $metal['title']  = $mModel->origin->title;
+        $metal['id']     = $mModel->origin->id;
 
         $model = new Operation();
         $model->type = Operation::TYPE_BUY;
