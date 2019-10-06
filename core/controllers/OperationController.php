@@ -239,6 +239,7 @@ class OperationController extends Controller
         $query           = Operation::find()
                                     ->where(['>=', 'created_at', $fromDate])
                                     ->andWhere(['<=', 'created_at', $toDate])
+                                    ->andWhere(['NOT LIKE', 'products', 'Array'])
                                     ->orderBy('id DESC');
 
         // add conditions that should always apply here
