@@ -135,10 +135,11 @@ class Operation extends ActiveRecord
     public static function getOperationByPeriod($start, $end)
     {
         return Operation::find()
-            ->where(['>=', 'created_at', $start])
-            ->andWhere(['<=', 'created_at', $end])
-            ->asArray()
-            ->all();
+                        ->where(['>=', 'created_at', $start])
+                        ->andWhere(['<=', 'created_at', $end])
+                        ->andWhere(['NOT LIKE', 'products', 'Array'])
+                        ->asArray()
+                        ->all();
     }
 
     /**
