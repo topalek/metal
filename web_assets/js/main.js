@@ -21,10 +21,14 @@ $('.operation-item,.sell-item').click(function (e) {
 function getTime() {
     let date = new Date();
     let sec = date.getSeconds();
+    let min = date.getMinutes();
     if (sec < 10) {
         sec = "0" + sec;
     }
-    let timeStr = date.getHours() + ":" + date.getMinutes() + ":" + sec;
+    if (min < 10) {
+        min = "0" + min;
+    }
+    let timeStr = date.getHours() + ":" + min + ":" + sec;
     $('.time').html(timeStr);
 
 }

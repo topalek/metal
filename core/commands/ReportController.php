@@ -2,6 +2,7 @@
 
 namespace app\commands;
 
+use app\models\User;
 use app\modules\admin\models\Operation;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
@@ -142,15 +143,15 @@ class ReportController extends Controller {
         ],
     ];
     public $headers;
-    public $productStartCol = "E";
+    public $productStartCol = "F";
     public $operationRow = 1;
 
-    public function actionGet($start, $end, $day = true)
-    {
-        $fromDate = date('Y-m-d 00:00:00', strtotime($start));
-        $toDate = date('Y-m-d 00:00:00', strtotime($end));
-        $operations     = Operation::getArrayForReport(Operation::getOperationByPeriod($fromDate, $toDate));
-        $file           = $this->generateReportFile($operations);
+    public function actionGet($start, $end, $day = true){
+        $fromDate   = date('Y-m-d 00:00:00', strtotime($start));
+        $toDate     = date('Y-m-d 00:00:00', strtotime($end));
+        $operations = Operation::getArrayForReport(Operation::getOperationByPeriod($fromDate, $toDate));
+        $file       = $this->generateReportFile($operations);
+
         return $file;
     }
 
@@ -161,6 +162,7 @@ class ReportController extends Controller {
         $headers     = $this->getHeaders($operationList);
         $colCount    = $this->getColumnCount($headers);
         $lastColumn  = $this->getLetterIdx($colCount);
+        $users       = User::find()->select(['username', 'id'])->indexBy('id')->column();
         $row         = 1;
         $dayRow      = 2;
         foreach ($operationList as $listDate => $operations){
@@ -171,10 +173,13 @@ class ReportController extends Controller {
             foreach ($operations as $operation){
                 $col     = "A";
                 $type    = ArrayHelper::getValue($operation, "type");
+                $user    = ArrayHelper::getValue($users, ArrayHelper::getValue($operation, "user_id"));
                 $date    = ArrayHelper::getValue($operation, "created_at");
                 $sum     = ArrayHelper::getValue($operation, "sum");
                 $comment = ArrayHelper::getValue($operation, "comment");
                 $sheet->setCellValue($col . $row, $date);
+                $sheet->getStyle($col ++ . $row)->applyFromArray($this->borders);
+                $sheet->setCellValue($col . $row, $user);
                 $sheet->getStyle($col ++ . $row)->applyFromArray($this->borders);
                 if ($type != Operation::TYPE_BUY){
                     if ($type == Operation::TYPE_FILL_CASH){
@@ -309,6 +314,7 @@ class ReportController extends Controller {
             $sheet->getColumnDimension('B')->setAutoSize(true);
             $sheet->getColumnDimension('C')->setAutoSize(true);
             $sheet->getColumnDimension('D')->setAutoSize(true);
+            $sheet->getColumnDimension('E')->setAutoSize(true);
         }
 
         $sheet->freezePane('A4');
@@ -400,12 +406,14 @@ class ReportController extends Controller {
         $nextRow = $row + 1;
         $sheet->setCellValue("A$row", "Дата")->mergeCells("A$row:A$nextRow")
               ->getStyle("A$row:A$nextRow")->applyFromArray(array_merge($this->centerBold, $this->borders));
-        $sheet->setCellValue("B$row", "Касса")->mergeCells("B$row:B$nextRow")
+        $sheet->setCellValue("B$row", "Пользователь")->mergeCells("B$row:B$nextRow")
               ->getStyle("B$row:B$nextRow")->applyFromArray(array_merge($this->centerBold, $this->borders));
-        $sheet->setCellValue("C$row", "Остаток")->mergeCells("C$row:C$nextRow")
+        $sheet->setCellValue("C$row", "Касса")->mergeCells("C$row:C$nextRow")
               ->getStyle("C$row:C$nextRow")->applyFromArray(array_merge($this->centerBold, $this->borders));
-        $sheet->setCellValue("D$row", "Коментарий")->mergeCells("D$row:D$nextRow")
+        $sheet->setCellValue("D$row", "Остаток")->mergeCells("D$row:D$nextRow")
               ->getStyle("D$row:D$nextRow")->applyFromArray(array_merge($this->centerBold, $this->borders));
+        $sheet->setCellValue("E$row", "Коментарий")->mergeCells("E$row:E$nextRow")
+              ->getStyle("E$row:E$nextRow")->applyFromArray(array_merge($this->centerBold, $this->borders));
 
         return $sheet;
     }
@@ -415,6 +423,7 @@ class ReportController extends Controller {
         $row        = $endRow;
         $formulaRow = $row - 1;
         $sheet->setCellValue($col . $row, "Итого:");
+        $sheet->getStyle($col ++ . $row)->applyFromArray($this->borders);
         $sheet->getStyle($col ++ . $row)->applyFromArray($this->borders);
 
         $formula = "=SUM($col$startRow:$col$formulaRow)";
