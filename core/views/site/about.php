@@ -16,8 +16,10 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="site-about" style="margin-top: 60px">
     <pre>
     </pre>
-    <img class="image img-responsive" src="https://drive.google.com/open?id=1rq3uAH8vQOdS_8IpD6cDNhJbdLhm7eTH" alt="">
+    <img class="image img-responsive" src="https://lorempixel.com/600/300" alt="">
     <pre>
-<?php print_r(round(45.45454, 2)) ?>
+<?php //print_r(round(45.45454, 2)) ?>
+<?php print_r(Yii::$app->user->getId() . "\n") ?>
+<?php print_r(Yii::$app->user->id . "\n") ?>
     </pre>
 </div>

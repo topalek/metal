@@ -2,6 +2,8 @@
 
 namespace app\modules\admin\models;
 
+use app\models\User;
+use Yii;
 use yii\db\ActiveRecord;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Json;
@@ -11,6 +13,7 @@ use yii\helpers\Json;
  *
  * @property int    $id
  * @property int    $type       Тип операции
+ * @property int $user_id     пользователь
  * @property string $sum        Общая сумма
  * @property        $products   [] Товары
  * @property        $comment    Коментарий
@@ -31,13 +34,11 @@ class Operation extends ActiveRecord
     const REST_CASH_COMMENT = "Остаток денежных средств ";
     const FILL_CASH_COMMENT = "Пополнение кассы ";
 
-    public static function tableName()
-    {
+    public static function tableName(){
         return 'operation';
     }
 
-    public static function getArrayForReport(array $operations)
-    {
+    public static function getArrayForReport(array $operations){
         $productList = Product::getList();
         foreach ($operations as $i => $item) {
             if (array_key_exists('products', $item)) {
@@ -54,11 +55,11 @@ class Operation extends ActiveRecord
 
                 $out = [];
                 foreach ($prods as $prod) {
-                    $prodId = ArrayHelper::getValue($prod, "id");
-                    $weight = ArrayHelper::getValue($prod, "weight");
-                    $price = ArrayHelper::getValue($prod, "sale_price");
-                    $total = ArrayHelper::getValue($prod, "total");
-                    $discount = ArrayHelper::getValue($prod, "discount");
+                    $prodId         = ArrayHelper::getValue($prod, "id");
+                    $weight         = ArrayHelper::getValue($prod, "weight");
+                    $price          = ArrayHelper::getValue($prod, "sale_price");
+                    $total          = ArrayHelper::getValue($prod, "total");
+                    $discount       = ArrayHelper::getValue($prod, "discount");
                     $discount_price = ArrayHelper::getValue($prod, "discount_price");
                     if ($type != Operation::TYPE_SELL) {
                         if ($weight) {
@@ -66,7 +67,7 @@ class Operation extends ActiveRecord
                         }
                         $dirt = ArrayHelper::getValue($prod, "dirt");
                         if ($dirt) {
-                            $dirt = floatval($dirt);
+                            $dirt   = floatval($dirt);
                             $weight = $weight - ($weight / 100) * $dirt;
                         }
                     }
@@ -87,14 +88,14 @@ class Operation extends ActiveRecord
                 foreach ($productList as $id => $productTitle) {
                     if (array_key_exists($id, $out)) {
                         $products = ArrayHelper::getValue($out, $id);
-                        $count = count($products);
+                        $count    = count($products);
                         while ($count < $max) {
                             $products[] = static::setEmptyProduct();
                             $count++;
                         }
                     } else {
                         $products = [];
-                        $count = 0;
+                        $count    = 0;
                         while ($count < $max) {
                             $products[] = static::setEmptyProduct();
                             $count++;
@@ -108,9 +109,9 @@ class Operation extends ActiveRecord
             ksort($operations[$i]['products']);
             $reportArray = [];
             foreach ($operations as $key => $operation) {
-                $date = date("d/m/Y H:i:s", strtotime($operation['created_at']));
-                $type = $operation['type'];
-                $total = $operation['sum'];
+                $date              = date("d/m/Y H:i:s", strtotime($operation['created_at']));
+                $type              = $operation['type'];
+                $total             = $operation['sum'];
                 $reportArray[$key] = ['Дата' => $date];
                 if ($type == self::TYPE_FILL_CASH) {
                     $reportArray[$key] = ['Касса' => $total];
@@ -124,16 +125,16 @@ class Operation extends ActiveRecord
         $out = [];
 
         foreach ($operations as $operation) {
-            $date = date('d-m-Y', strtotime($operation['created_at']));
+            $date         = date('d-m-Y', strtotime($operation['created_at']));
             $out[$date][] = $operation;
         }
         $operations = $out;
         unset($out);
+
         return $operations;
     }
 
-    public static function getOperationByPeriod($start, $end)
-    {
+    public static function getOperationByPeriod($start, $end){
         return Operation::find()
                         ->where(['>=', 'created_at', $start])
                         ->andWhere(['<=', 'created_at', $end])
@@ -145,10 +146,9 @@ class Operation extends ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public function rules()
-    {
+    public function rules(){
         return [
-            [['type', 'status'], 'integer'],
+            [['type', 'status', 'user_id'], 'integer'],
             [['sum'], 'number'],
             [['updated_at', 'created_at', 'comment'], 'safe'],
         ];
@@ -157,8 +157,7 @@ class Operation extends ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public function attributeLabels()
-    {
+    public function attributeLabels(){
         return [
             'id'         => 'ID',
             'type'       => 'Тип операции',
@@ -171,8 +170,7 @@ class Operation extends ActiveRecord
         ];
     }
 
-    public function afterFind()
-    {
+    public function afterFind(){
         if ($this->products) {
             try {
                 $this->products = Json::decode($this->products);
@@ -183,27 +181,24 @@ class Operation extends ActiveRecord
         parent::afterFind();
     }
 
-    public function beforeSave($insert)
-    {
+    public function beforeSave($insert){
         if ($this->products) {
             $this->products = Json::encode($this->products);
         }
+        $this->user_id = Yii::$app->user->getId();
 
         return parent::beforeSave($insert);
     }
 
-    public function afterSave($insert, $changedAttributes)
-    {
+    public function afterSave($insert, $changedAttributes){
         parent::afterSave($insert, $changedAttributes);
     }
 
-    public function getTypeName()
-    {
+    public function getTypeName(){
         return ArrayHelper::getValue(self::getNameList(), $this->type);
     }
 
-    public function getNameList()
-    {
+    public function getNameList(){
         return [
             static::TYPE_BUY       => 'Покупка',
             static::TYPE_SELL      => 'Продажа',
@@ -212,14 +207,12 @@ class Operation extends ActiveRecord
         ];
     }
 
-    public function setComment($comment)
-    {
+    public function setComment($comment){
         $this->comment = $comment;
         $this->save();
     }
 
-    public static function getHeadings(array $operationList)
-    {
+    public static function getHeadings(array $operationList){
         $list    = Product::getList();
         $headers = [];
         foreach ($operationList as $date => $operations) {
@@ -250,8 +243,7 @@ class Operation extends ActiveRecord
         return $headers;
     }
 
-    private static function setEmptyProduct()
-    {
+    private static function setEmptyProduct(){
         return [
             'weight'         => null,
             'price'          => null,
@@ -259,5 +251,9 @@ class Operation extends ActiveRecord
             "discount"       => null,
             "discount_price" => null,
         ];
+    }
+
+    public function getUser(){
+        return $this->hasOne(User::class, ['id' => 'user_id']);
     }
 }
