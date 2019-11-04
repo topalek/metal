@@ -31,7 +31,7 @@ rmrevin\yii\fontawesome\AssetBundle::register($this);
 <div class="wrap">
 	<?php
 	NavBar::begin([
-        'brandLabel' => "<span class='date'>" . date('d.m.Y') . "</span> | <span class='time'></span>",
+        'brandLabel' => Yii::$app->user->identity->username . " <span class='date'>" . date('d.m.Y') . "</span> | <span class='time'></span>",
         'brandUrl'   => Yii::$app->homeUrl,
         'options'    => [
             'class' => 'navbar navbar-fixed-top navbar-default',
