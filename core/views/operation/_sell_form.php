@@ -134,13 +134,13 @@ $('.add-sell').on('click',(e)=>{
     let url = $(e.target).data('url');
     let data = form.serializeArray();
     console.log(data);
-    
+    log('_sell_form',data);
     $.post(url,{data:data},(resp)=>{
 // console.log(resp);return false;
         if (resp.status){
-            if (!clients){
+            // if (!clients){
                  window.location = "/";
-            } 
+            // } 
         } else {
             alert(resp.message);
         }

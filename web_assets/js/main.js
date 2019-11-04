@@ -34,8 +34,8 @@ function getTime() {
 }
 
 function buildItemList() {
-
     let products = getFromStorage();
+    log('buildItemList', products);
     if (products) {
         var html = '<ul class="list-group">';
         $.each(products, (i, item) => {
@@ -55,6 +55,7 @@ function writeToStorage(json) {
     });
     let key = Object.keys(products).length;
     products[key++] = product;
+    log('writeToStorage', products);
     localStorage.setItem(storageName, JSON.stringify(products));
     return true;
 }
@@ -147,4 +148,8 @@ function checkClients() {
 function round(float, precision = 2) {
     precision = Math.pow(10, precision);
     return (Math.round(float * precision)) / precision;
+}
+
+function log(fnName, data) {
+    $.post('/site/set-log', {'data': data, 'name': fnName}, resp => console.log(resp));
 }

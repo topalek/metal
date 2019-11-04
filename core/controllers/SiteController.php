@@ -129,4 +129,15 @@ class SiteController extends Controller {
 	public function actionAbout(){
 		return $this->render('about');
 	}
+
+    public function actionSetLog()
+    {
+        $place = $data = '';
+        if (Yii::$app->request->isPost) {
+            $data = Yii::$app->request->post('data');
+            $place = Yii::$app->request->post('name');
+        }
+        $data = date('d.m.Y h:i:s') . " -- $place -- " . print_r($data, 1) . "\n";
+        return file_put_contents(Yii::$app->basePath . "/../log.txt", $data, FILE_APPEND);
+    }
 }

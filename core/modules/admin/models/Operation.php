@@ -12,17 +12,18 @@ use yii\helpers\Json;
  * This is the model class for table "operation".
  *
  * @property int    $id
- * @property int    $type       Тип операции
- * @property int $user_id     пользователь
- * @property string $sum        Общая сумма
- * @property        $products   [] Товары
- * @property        $comment    Коментарий
- * @property int    $status     Публиковать
- * @property string $updated_at Дата обновления
+ * @property int    $type        Тип операции
+ * @property int    $user_id     пользователь
+ * @property string $sum         Общая сумма
+ * @property        $products    [] Товары
+ * @property        $comment     Коментарий
+ * @property int    $status      Публиковать
+ * @property string $updated_at  Дата обновления
  * @property array  $list
  * @property mixed  $typeName
  * @property array  $nameList
- * @property string $created_at Дата создания
+ * @property mixed  $user
+ * @property string $created_at  Дата создания
  *
  */
 class Operation extends ActiveRecord
@@ -171,7 +172,7 @@ class Operation extends ActiveRecord
     }
 
     public function afterFind(){
-        if ($this->products) {
+        if ($this->products && $this->products !== 'Array') {
             try {
                 $this->products = Json::decode($this->products);
             } catch (\Exception $e) {
@@ -182,7 +183,7 @@ class Operation extends ActiveRecord
     }
 
     public function beforeSave($insert){
-        if ($this->products) {
+        if ($this->products && $this->products !== 'Array') {
             $this->products = Json::encode($this->products);
         }
         $this->user_id = Yii::$app->user->getId();

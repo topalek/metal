@@ -96,29 +96,29 @@ class OperationController extends Controller
             }
             $emptyArr = Product::getEmptyArray();
             $arr = [];
+            if ($products) {
+                foreach ($emptyArr as $i => $item) {
+                    $id = ArrayHelper::getValue($item, 'id');
+                    if (array_key_exists($id, $products)) {
+                        $arr[$id] = $emptyArr[$i];
+                        $weight = ArrayHelper::getValue($products[$id], 'weight');
+                        $sale_price = ArrayHelper::getValue($products[$id], 'sale_price');
+                        $total = ArrayHelper::getValue($products[$id], 'total');
+                        $dirt = ArrayHelper::getValue($products[$id], 'dirt');
 
-            foreach ($emptyArr as $i => $item) {
-                $id = ArrayHelper::getValue($item, 'id');
-                if (array_key_exists($id, $products)) {
-                    $arr[$id] = $emptyArr[$i];
-                    $weight = ArrayHelper::getValue($products[$id], 'weight');
-                    $sale_price = ArrayHelper::getValue($products[$id], 'sale_price');
-                    $total = ArrayHelper::getValue($products[$id], 'total');
-                    $dirt = ArrayHelper::getValue($products[$id], 'dirt');
+                        $arr[$id]['weight'] = $weight ? $weight : '?';
+                        $arr[$id]['sale_price'] = $sale_price ? $sale_price : '?';
+                        $arr[$id]['total'] = $total ? $total : '?';
+                        $arr[$id]['id'] = $id ? $id : '?';
+                        $arr[$id]['dirt'] = $dirt ? $dirt : '?';
+                    }
 
-                    $arr[$id]['weight'] = $weight ? $weight : '?';
-                    $arr[$id]['sale_price'] = $sale_price ? $sale_price : '?';
-                    $arr[$id]['total'] = $total ? $total : '?';
-                    $arr[$id]['id'] = $id ? $id : '?';
-                    $arr[$id]['dirt'] = $dirt ? $dirt : '?';
                 }
-
+                $model->products = $arr;
+                $model->comment = $comment;
+                $model->save();
             }
-            $model->products = $arr;
-            $model->comment = $comment;
-            if ($model->save()) {
-                return $this->goHome();
-            }
+            return $this->goHome();
         }
 
 
