@@ -152,6 +152,7 @@ class ReportController extends Controller {
         $operations = Operation::getArrayForReport(Operation::getOperationByPeriod($fromDate, $toDate));
         $file       = $this->generateReportFile($operations);
 
+        echo $file;
         return $file;
     }
 
