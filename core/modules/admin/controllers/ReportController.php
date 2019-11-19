@@ -21,7 +21,12 @@ class ReportController extends Controller {
     {
         $this->reportFileName = $fileName;
         $file = Yii::$app->runtimePath . "/report.xls";
-        return Yii::$app->response->sendFile($file, $this->reportFileName);
+        if (file_exists($file)) {
+            return Yii::$app->response->sendFile($file, $this->reportFileName);
+        } else {
+            Yii::$app->session->setFlash('error', 'Возникла ошибка. Файл не сформирован');
+            return $this->redirect(Yii::$app->request->referrer);
+        }
     }
 
     public function actionPeriod($day = 0)
@@ -49,8 +54,13 @@ class ReportController extends Controller {
             $locale = 'en_US.UTF-8';
             setlocale(LC_ALL, $locale);
             putenv('LC_ALL=' . $locale);
-            shell_exec($cmd);
-            Yii::$app->session->setFlash('success', Html::a('Скачать отчет', ['report/get-file', 'fileName' => $this->reportFileName]));
+            if (shell_exec($cmd)) {
+                file_put_contents(Yii::$app->runtimePath . "/log.txt", print_r($cmd . "\n", 1));
+                Yii::$app->session->setFlash('success', Html::a('Скачать отчет', ['report/get-file', 'fileName' => $this->reportFileName]));
+            } else {
+                Yii::$app->session->setFlash('error', 'Возникла ошибка');
+            }
+
         } catch (Exception $exception) {
             print_r($exception);
             Yii::$app->session->setFlash('error', 'Возникла ошибка');
