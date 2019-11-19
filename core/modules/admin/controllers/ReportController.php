@@ -54,8 +54,8 @@ class ReportController extends Controller {
             $locale = 'en_US.UTF-8';
             setlocale(LC_ALL, $locale);
             putenv('LC_ALL=' . $locale);
+            file_put_contents(Yii::$app->runtimePath . "/log.txt", print_r($cmd . "\n", 1), FILE_APPEND);
             if (shell_exec($cmd)) {
-                file_put_contents(Yii::$app->runtimePath . "/log.txt", print_r($cmd . "\n", 1));
                 Yii::$app->session->setFlash('success', Html::a('Скачать отчет', ['report/get-file', 'fileName' => $this->reportFileName]));
             } else {
                 Yii::$app->session->setFlash('error', 'Возникла ошибка');
