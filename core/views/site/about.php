@@ -19,7 +19,7 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="site-about" style="margin-top: 60px">
     <pre>
     </pre>
-    <img class="image img-responsive" src="https://lorempixel.com/600/300" alt="">
+    <!--    <img class="image img-responsive" src="https://lorempixel.com/600/300" alt="">-->
     <pre>
 <?php echo Html::a('run command', ['/admin/report/run-command']) ?>
 <?php print_r(Yii::$app->user->getId() . "\n") ?>
