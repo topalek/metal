@@ -464,7 +464,7 @@ class ReportController extends Controller {
     }
 
     public function actionTest(){
-        file_put_contents(Yii::$app->runtimePath . "/test.txt", date("dd.mm.YYYY H:i:s\n"));
+        file_put_contents(Yii::$app->runtimePath . "/test.txt", date("d.m.Y H:i:s\n"));
         echo "ok";
 
         return true;
