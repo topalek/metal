@@ -71,15 +71,16 @@ class ReportController extends Controller {
 
     public function actionRunCommand(){
         $cmd = file_get_contents(Yii::$app->runtimePath . "/log.txt");
-        if (shell_exec($cmd)){
-            Yii::$app->session->setFlash('success', Html::a('Скачать отчет', [
-                'report/get-file', 'fileName' => $this->reportFileName
-            ]));
-        }else{
-            Yii::$app->session->setFlash('error', 'Возникла ошибка');
-        }
-
-        return $this->redirect(Yii::$app->request->referrer);
+        var_dump(shell_exec($cmd));
+        //if (shell_exec($cmd)){
+        //    Yii::$app->session->setFlash('success', Html::a('Скачать отчет', [
+        //        'report/get-file', 'fileName' => $this->reportFileName
+        //    ]));
+        //}else{
+        //    Yii::$app->session->setFlash('error', 'Возникла ошибка');
+        //}
+        //
+        //return $this->redirect(Yii::$app->request->referrer);
     }
 
 }
