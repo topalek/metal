@@ -54,17 +54,31 @@ class ReportController extends Controller {
             $locale = 'en_US.UTF-8';
             setlocale(LC_ALL, $locale);
             putenv('LC_ALL=' . $locale);
-            file_put_contents(Yii::$app->runtimePath . "/log.txt", print_r($cmd . "\n", 1), FILE_APPEND);
+            file_put_contents(Yii::$app->runtimePath . "/log.txt", print_r($cmd . "\n", 1));
             if (shell_exec($cmd)) {
                 Yii::$app->session->setFlash('success', Html::a('Скачать отчет', ['report/get-file', 'fileName' => $this->reportFileName]));
-            } else {
+            }else{
                 Yii::$app->session->setFlash('error', 'Возникла ошибка');
             }
 
-        } catch (Exception $exception) {
+        }catch (Exception $exception){
             print_r($exception);
             Yii::$app->session->setFlash('error', 'Возникла ошибка');
         }
+
+        return $this->redirect(Yii::$app->request->referrer);
+    }
+
+    public function actionRunCommand(){
+        $cmd = file_get_contents(Yii::$app->runtimePath . "/log.txt");
+        if (shell_exec($cmd)){
+            Yii::$app->session->setFlash('success', Html::a('Скачать отчет', [
+                'report/get-file', 'fileName' => $this->reportFileName
+            ]));
+        }else{
+            Yii::$app->session->setFlash('error', 'Возникла ошибка');
+        }
+
         return $this->redirect(Yii::$app->request->referrer);
     }
 

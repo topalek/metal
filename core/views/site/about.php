@@ -2,6 +2,9 @@
 
 /* @var $this yii\web\View */
 
+
+use yii\helpers\Html;
+
 $this->title                   = 'About';
 $this->params['breadcrumbs'][] = $this->title;
 
@@ -18,7 +21,7 @@ $this->params['breadcrumbs'][] = $this->title;
     </pre>
     <img class="image img-responsive" src="https://lorempixel.com/600/300" alt="">
     <pre>
-<?php //print_r(round(45.45454, 2)) ?>
+<?php echo Html::a('run command', ['/admin/report/run-command']) ?>
 <?php print_r(Yii::$app->user->getId() . "\n") ?>
 <?php print_r(Yii::$app->user->id . "\n") ?>
     </pre>
