@@ -13,6 +13,8 @@ use PhpOffice\PhpSpreadsheet\Writer\Xls;
 use Yii;
 use yii\console\Controller;
 use yii\helpers\ArrayHelper;
+use function date;
+use function file_put_contents;
 
 class ReportController extends Controller {
 
@@ -459,5 +461,12 @@ class ReportController extends Controller {
         }
 
         return $sheet;
+    }
+
+    public function actionTest(){
+        file_put_contents(Yii::$app->runtimePath . "/test.txt", date("dd.mm.YYYY H:i:s\n"));
+        echo "ok";
+
+        return true;
     }
 }

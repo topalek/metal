@@ -70,7 +70,7 @@ class ReportController extends Controller {
     }
 
     public function actionRunCommand(){
-        $cmd = file_get_contents(Yii::$app->runtimePath . "/log.txt");
+        $cmd = "php /home/cp369200/kram-met.club/www/core/yii report/test";
         var_dump(shell_exec($cmd));
         //if (shell_exec($cmd)){
         //    Yii::$app->session->setFlash('success', Html::a('Скачать отчет', [
