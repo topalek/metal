@@ -86,15 +86,21 @@ class UserController extends Controller
      */
     public function actionCreate()
     {
-        $model = new User();
+        $model           = new User();
         $model->scenario = "registration";
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+            $model->generatePasswordHash();
+            $model->save();
+
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
-        return $this->render('create', [
-            'model' => $model,
-        ]);
+        return $this->render(
+            'create',
+            [
+                'model' => $model,
+            ]
+        );
     }
 
     /**
